@@ -1,0 +1,8 @@
+balloon_data/*
+executables/*
+data_files/*
+mem_profiles/*
+*.out
+*.json
+Trash/
+stxxl/
