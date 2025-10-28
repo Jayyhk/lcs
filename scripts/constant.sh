@@ -12,6 +12,15 @@ BASE_CASE=2048  # Adjust this value to control memory pressure (larger = more me
 CGROUP_NAME="constant"
 CGROUP_PATH="/sys/fs/cgroup/$CGROUP_NAME"
 
+# Cleanup function
+cleanup() {
+    echo "Cleaning up cgroup: $CGROUP_NAME"
+    rmdir "$CGROUP_PATH" 2>/dev/null || true
+}
+
+# Trap to ensure cleanup on exit
+trap cleanup EXIT
+
 # --- Cgroup Setup ---
 echo "Setting up cgroup: $CGROUP_NAME"
 mkdir -p "$CGROUP_PATH"
@@ -35,7 +44,7 @@ for N in 32768 65536 131072 262144 524288 1048576; do
   
   # Run Hirschberg (non-adaptive) inside the cgroup
   # Base case is set to $BASE_CASE to force memory pressure
-  LCS_HIRSCHBERG_IO=$(cgexec -g memory:$CGROUP_NAME bin/lcs_hirschberg $N 1 $BASE_CASE < rsrc/data-$N.in 2>&1 | grep 'I/Os' | awk '{print $5}')
+  LCS_HIRSCHBERG_IO=$(cgexec -g memory:$CGROUP_NAME bin/lcs_hirschberg $N 1 $BASE_CASE < rsrc/data-$N.in 2>&1 | grep 'I/Os' | awk '{print $4}')
   LCS_HIRSCHBERG_IO=${LCS_HIRSCHBERG_IO:-0}
 
   # Clear caches again
@@ -43,19 +52,16 @@ for N in 32768 65536 131072 262144 524288 1048576; do
 
   # Run Oblivious (adaptive) inside the cgroup
   # Base case is set to $BASE_CASE to force memory pressure
-  LCS_OBLIVIOUS_IO=$(cgexec -g memory:$CGROUP_NAME bin/lcs_oblivious $N 1 $BASE_CASE < rsrc/data-$N.in 2>&1 | grep 'I/Os' | awk '{print $5}')
+  LCS_OBLIVIOUS_IO=$(cgexec -g memory:$CGROUP_NAME bin/lcs_oblivious $N 1 $BASE_CASE < rsrc/data-$N.in 2>&1 | grep 'I/Os' | awk '{print $4}')
   LCS_OBLIVIOUS_IO=${LCS_OBLIVIOUS_IO:-0}
 
   # Calculate and print the normalized I/O for plotting
   if [ "$LCS_OBLIVIOUS_IO" -gt 0 ]; then
     RESULT=$(echo "scale=6; $LCS_HIRSCHBERG_IO / $LCS_OBLIVIOUS_IO" | bc -l)
-    echo "$N, $RESULT"
+    echo "$N, $LCS_HIRSCHBERG_IO, $LCS_OBLIVIOUS_IO, $RESULT"
   else
-    echo "$N, 0"
+    echo "$N, $LCS_HIRSCHBERG_IO, $LCS_OBLIVIOUS_IO, 0"
   fi
 done
 
-# --- Cgroup Cleanup ---
-echo "Cleaning up cgroup: $CGROUP_NAME"
-rmdir "$CGROUP_PATH"
 echo "Experiment complete."

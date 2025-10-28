@@ -6,11 +6,6 @@ Method: Both algorithms are run inside a cgroup with a static 4MiB memory limit,
 
 Expected Result: This run establishes the baseline performance ratio. Consistent with the paper, the non-adaptive, cache-aware algorithm (lcs_hirschberg) is expected to be slightly more I/O-efficient (fewer I/Os) than the adaptive, cache-oblivious algorithm (lcs_oblivious) in this stable environment.
 
-Constant: (base case 1024)
-32768, .080250
-65536, .124097
-131072, .179881
-
 Constant: (base case 2048)
 32768, .769038
 65536, .761463
