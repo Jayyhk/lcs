@@ -5,9 +5,12 @@ SUITE = lcs_classic lcs_hirschberg lcs_oblivious
 .PHONY: lcs
 lcs: $(SUITE)
 
-% : src/%.c
+lcs_classic: src/lcs_classic.c
 	$(CXX) $(C_OPT) -Iinclude $< -o bin/$@
-% : src/%.cpp
+lcs_hirschberg: src/lcs_hirschberg.c
 	$(CXX) $(C_OPT) -Iinclude $< -o bin/$@
+lcs_oblivious: src/lcs_oblivious.c
+	$(CXX) $(C_OPT) -Iinclude $< -o bin/$@
+
 clean:
-	rm -f $(SUITE)
+	rm -f $(addprefix bin/,$(SUITE))

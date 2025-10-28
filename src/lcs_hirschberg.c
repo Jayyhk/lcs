@@ -339,21 +339,6 @@ int lcs_hirschberg(void) {
     return zp;
 }
 
-char *conv_sec(double t, char *st) {
-    int h, m, s;
-
-    s = (int)floor(t);
-    if (t - s >= 0.5) s++;
-    m = (int)floor(s / 60.0);
-    s -= m * 60;
-    h = (int)floor(m / 60.0);
-    m -= h * 60;
-
-    sprintf(st, "%dh %dm %ds", h, m, s);
-
-    return st;
-}
-
 int main(int argc, char *argv[]) {
     int i, l, m, n, r, b, prn;
     double ut, st, tt;
@@ -467,19 +452,7 @@ int main(int argc, char *argv[]) {
          (ru[0].ru_stime.tv_sec + (ru[0].ru_stime.tv_usec * 0.000001));
     tt = ut + st;
 
-    printf("\n");
-    printf("FINAL RESULTS\n");
-    printf("LCS Length: %d\n", zps[r - 1]);
-
-    printf("Overall execution time:\n");
-    printf("  User time:               %.4f seconds (%s)\n", ut, conv_sec(ut, str));
-    printf("  System time:             %.4f seconds (%s)\n", st, conv_sec(st, str));
-    printf("  Total time:              %.4f seconds (%s)\n", tt, conv_sec(tt, str));
-
-    printf("Average per run:\n");
-    printf("  User time:               %.4f seconds (%s)\n", ut / r, conv_sec(ut / r, str));
-    printf("  System time:             %.4f seconds (%s)\n", st / r, conv_sec(st / r, str));
-    printf("  Total time:              %.4f seconds (%s)\n", tt / r, conv_sec(tt / r, str));
+    print_final_results(zps[r - 1], ut, st, tt, r, str);
 
     free_memory(r);
 

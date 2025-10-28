@@ -4,6 +4,7 @@
 #include <sys/time.h>
 #include <time.h>
 #include <unistd.h>
+#include <math.h>
 
 // Global variables to store previous I/O counters for difference calculation
 long long io_counter_sda[11];
@@ -16,6 +17,21 @@ int io_counters_initialized = 0;
 long initial_minor_faults = 0;
 long initial_major_faults = 0;
 int page_faults_initialized = 0;
+
+char *conv_sec(double t, char *st) {
+    int h, m, s;
+
+    s = (int)floor(t);
+    if (t - s >= 0.5) s++;
+    m = (int)floor(s / 60.0);
+    s -= m * 60;
+    h = (int)floor(m / 60.0);
+    m -= h * 60;
+
+    sprintf(st, "%dh %dm %ds", h, m, s);
+
+    return st;
+}
 
 double get_wall_time() {
     struct timeval time;
@@ -134,34 +150,20 @@ void print_disk_io() {
         return;
     }
 
-    printf("Disk I/O:\n");
-    printf("  sdc (swap):\n");  // Memory pressure indicator
-    printf("    Read operations:         %'12lld\n", io_counter_sda_new[0] - io_counter_sda[0]);
-    printf("    Read operations merged:  %'12lld\n", io_counter_sda_new[1] - io_counter_sda[1]);
-    printf("    Sectors read:            %'12lld (%'.1f MB)\n",
+    printf("Disk I/O (sdc swap):\n");
+    printf("  Read operations:           %'12lld\n", io_counter_sda_new[0] - io_counter_sda[0]);
+    printf("  Read operations merged:    %'12lld\n", io_counter_sda_new[1] - io_counter_sda[1]);
+    printf("  Sectors read:              %'12lld (%'.1f MB)\n",
            io_counter_sda_new[2] - io_counter_sda[2],
            (io_counter_sda_new[2] - io_counter_sda[2]) * 512.0 / (1024.0 * 1024.0));
-    printf("    Read time:               %'12lld ms\n", io_counter_sda_new[3] - io_counter_sda[3]);
-    printf("    Write operations:        %'12lld\n", io_counter_sda_new[4] - io_counter_sda[4]);
-    printf("    Write operations merged: %'12lld\n", io_counter_sda_new[5] - io_counter_sda[5]);
-    printf("    Sectors written:         %'12lld (%'.1f MB)\n",
+    printf("  Read time:                 %'12lld ms\n", io_counter_sda_new[3] - io_counter_sda[3]);
+    printf("  Write operations:          %'12lld\n", io_counter_sda_new[4] - io_counter_sda[4]);
+    printf("  Write operations merged:   %'12lld\n", io_counter_sda_new[5] - io_counter_sda[5]);
+    printf("  Sectors written:           %'12lld (%'.1f MB)\n",
            io_counter_sda_new[6] - io_counter_sda[6],
            (io_counter_sda_new[6] - io_counter_sda[6]) * 512.0 / (1024.0 * 1024.0));
-    printf("    Write time:              %'12lld ms\n", io_counter_sda_new[7] - io_counter_sda[7]);
-
-    printf("  sdd (main):\n");  // File I/O indicator
-    printf("    Read operations:         %'12lld\n", io_counter_sdc_new[0] - io_counter_sdc[0]);
-    printf("    Read operations merged:  %'12lld\n", io_counter_sdc_new[1] - io_counter_sdc[1]);
-    printf("    Sectors read:            %'12lld (%'.1f MB)\n",
-           io_counter_sdc_new[2] - io_counter_sdc[2],
-           (io_counter_sdc_new[2] - io_counter_sdc[2]) * 512.0 / (1024.0 * 1024.0));
-    printf("    Read time:               %'12lld ms\n", io_counter_sdc_new[3] - io_counter_sdc[3]);
-    printf("    Write operations:        %'12lld\n", io_counter_sdc_new[4] - io_counter_sdc[4]);
-    printf("    Write operations merged: %'12lld\n", io_counter_sdc_new[5] - io_counter_sdc[5]);
-    printf("    Sectors written:         %'12lld (%'.1f MB)\n",
-           io_counter_sdc_new[6] - io_counter_sdc[6],
-           (io_counter_sdc_new[6] - io_counter_sdc[6]) * 512.0 / (1024.0 * 1024.0));
-    printf("    Write time:              %'12lld ms\n", io_counter_sdc_new[7] - io_counter_sdc[7]);
+    printf("  Write time:                %'12lld ms\n", io_counter_sda_new[7] - io_counter_sda[7]);
+    printf("  I/Os (sectors read/written):  %'9lld\n", (io_counter_sda_new[2] - io_counter_sda[2]) + (io_counter_sda_new[6] - io_counter_sda[6]));
 }
 
 void read_page_faults(long *minor_faults, long *major_faults) {
@@ -246,4 +248,20 @@ void print_mem_data() {
            dt * page_size / (1024.0 * 1024.0));
     printf("  Minor page faults:   %'12ld (soft faults)\n", minor_diff);
     printf("  Major page faults:   %'12ld (hard faults)\n", major_diff);
+}
+
+void print_final_results(int lcs_length, double ut, double st, double tt, int r, char *str) {
+    printf("\n");
+    printf("FINAL RESULTS\n");
+    printf("LCS Length: %d\n", lcs_length);
+
+    printf("Overall execution time:\n");
+    printf("  User time:               %.4f seconds (%s)\n", ut, conv_sec(ut, str));
+    printf("  System time:             %.4f seconds (%s)\n", st, conv_sec(st, str));
+    printf("  Total time:              %.4f seconds (%s)\n", tt, conv_sec(tt, str));
+
+    printf("Average per run:\n");
+    printf("  User time:               %.4f seconds (%s)\n", ut / r, conv_sec(ut / r, str));
+    printf("  System time:             %.4f seconds (%s)\n", st / r, conv_sec(st / r, str));
+    printf("  Total time:              %.4f seconds (%s)\n", tt / r, conv_sec(tt / r, str));
 }

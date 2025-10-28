@@ -1,8 +1,6 @@
-balloon_data/*
-executables/*
-data_files/*
-mem_profiles/*
+bin/
+*.o
+*.obj
+*.exe
 *.out
-*.json
-Trash/
-stxxl/
+*.a
