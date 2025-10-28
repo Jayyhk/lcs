@@ -23,7 +23,7 @@ fi
 # Set memory limits
 echo 4194304 > "$CGROUP_PATH/memory.max"
 echo 2147483648 > "$CGROUP_PATH/memory.swap.max"
-echo 1 > "$CGROUP_PATH/memory.oom.group"
+echo 0 > "$CGROUP_PATH/memory.oom.group"
 echo "Cgroup setup complete. Memory limit: 4MiB, Swap limit: 2GiB."
 
 # --- Experiment Loop ---

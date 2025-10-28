@@ -11,13 +11,13 @@ fi
 mkdir -p /sys/fs/cgroup/constant
 
 # Set memory limit to 4MB
-echo "4194304" > /sys/fs/cgroup/constant/memory.max
+echo 4194304 > /sys/fs/cgroup/constant/memory.max
 
 # Allow swapping (set large swap limit)
-echo "2147483648" > /sys/fs/cgroup/constant/memory.swap.max
+echo 2147483648 > /sys/fs/cgroup/constant/memory.swap.max
 
-# Enable OOM killer
-echo "1" > /sys/fs/cgroup/constant/memory.oom.group
+# Disable OOM killer
+echo 0 > /sys/fs/cgroup/constant/memory.oom.group
 
 declare -a ip_size=( "8192" "16384" "32768" "65536" "131072" "262144" "524288" "1048576" "2097152" "4194304" "8388608" )
 numruns=1
