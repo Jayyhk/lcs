@@ -35,7 +35,12 @@ echo 2147483648 > "$CGROUP_PATH/memory.swap.max"
 echo 0 > "$CGROUP_PATH/memory.oom.group"
 echo "Cgroup setup complete. Memory limit: 4MiB, Swap limit: 2GiB."
 
-# --- Experiment Loop ---
+# Write setup info to results file
+echo "Cgroup setup: constant" > constant_results.txt
+echo "Memory limit: 4MiB, Swap limit: 2GiB." >> constant_results.txt
+echo "BASE_CASE: $BASE_CASE" >> constant_results.txt
+echo "" >> constant_results.txt
+echo "N, Hirschberg_IO, Oblivious_IO, Ratio" >> constant_results.txt
 for N in 32768 65536 131072 262144 524288 1048576; do
   echo "Running for N = $N"
   
@@ -58,10 +63,10 @@ for N in 32768 65536 131072 262144 524288 1048576; do
   # Calculate and print the normalized I/O for plotting
   if [ "$LCS_OBLIVIOUS_IO" -gt 0 ]; then
     RESULT=$(echo "scale=6; $LCS_HIRSCHBERG_IO / $LCS_OBLIVIOUS_IO" | bc -l)
-    echo "$N, $LCS_HIRSCHBERG_IO, $LCS_OBLIVIOUS_IO, $RESULT"
+    echo "$N, $LCS_HIRSCHBERG_IO, $LCS_OBLIVIOUS_IO, $RESULT" >> constant_results.txt
   else
-    echo "$N, $LCS_HIRSCHBERG_IO, $LCS_OBLIVIOUS_IO, 0"
+    echo "$N, $LCS_HIRSCHBERG_IO, $LCS_OBLIVIOUS_IO, 0" >> constant_results.txt
   fi
 done
 
-echo "Experiment complete."
+echo "Experiment complete. Results saved to constant_results.txt."

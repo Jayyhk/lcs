@@ -10,8 +10,8 @@ chmod +x run-lcs.sh
 sudo cgcreate -g memory:cache-test-arghya
 sudo ./run-lcs.sh
 
-| File Name                | Algorithm Type    | Time Complexity | Space Complexity | Block Transfers | Notes                |
-|--------------------------|-------------------|-----------------|------------------|-----------------|----------------------|
-| lcs_classic.c            | Classic DP        | Θ(mn)           | Θ(mn)            | Θ(mn/B)         |                      |
-| lcs_hirschberg.c         | Hirschberg        | Θ(mn)           | Θ(min(m,n))      | O(mn/B)         | Quadratic base case  |
-| lcs_oblivious.c          | Cache-Oblivious   | O(mn)           | O(m+n)           | O(mn/(BM))      |                      |
+| File Name                | Algorithm Type    | Time Complexity | Space Complexity | Block Transfers | Notes               |
+|--------------------------|-------------------|-----------------|------------------|-----------------|---------------------|
+| lcs_classic.c            | Classic DP        | Θ(mn)           | Θ(mn)            | Θ(mn/B)         |                     |
+| lcs_hirschberg.c         | Hirschberg        | Θ(mn)           | Θ(min(m,n))      | O(mn/B)         | Quadratic base case |
+| lcs_oblivious.c          | Cache-Oblivious   | O(mn)           | O(m+n)           | O(mn/(BM))      |                     |
