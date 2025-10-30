@@ -13,7 +13,9 @@ mkdir -p res
 BASE_CASE=2048        # Base case for recursion, larger = more memory usage
 MEM_LIMIT=4194304     # 4MiB
 SWAP_LIMIT=2147483648 # 2GiB
+
 CGROUP_NAME="constant"
+CGROUP_PATH="/sys/fs/cgroup/$CGROUP_NAME"
 RESULTS_FILE="res/constant_results.txt"
 
 # Temp log files
@@ -25,9 +27,6 @@ rm -f $HIRSCHBERG_LOG $OBLIVIOUS_LOG
 
 # Clear results file
 rm -f $RESULTS_FILE
-
-# --- Derived Configuration (Do not change) ---
-CGROUP_PATH="/sys/fs/cgroup/$CGROUP_NAME"
 
 # Cleanup function
 cleanup() {
