@@ -1,4 +1,7 @@
-C_OPT = -std=c++11 
+CC = gcc
+CXX = g++
+CFLAGS = -std=c99 -Iinclude
+CXXFLAGS = -std=c++11 -Iinclude
 
 SUITE = lcs_classic lcs_hirschberg lcs_oblivious lcs_hirschberg_instrumented balloon
 
@@ -6,15 +9,15 @@ SUITE = lcs_classic lcs_hirschberg lcs_oblivious lcs_hirschberg_instrumented bal
 lcs: $(SUITE)
 
 lcs_classic: src/lcs_classic.c
-	$(CXX) $(C_OPT) -Iinclude $< -o bin/$@
+	$(CC) $(CFLAGS) $< -lm -o bin/$@
 lcs_hirschberg: src/lcs_hirschberg.c
-	$(CXX) $(C_OPT) -Iinclude $< -o bin/$@
+	$(CC) $(CFLAGS) $< -lm -o bin/$@
 lcs_oblivious: src/lcs_oblivious.c
-	$(CXX) $(C_OPT) -Iinclude $< -o bin/$@
+	$(CC) $(CFLAGS) $< -lm -o bin/$@
 lcs_hirschberg_instrumented: src/lcs_hirschberg_instrumented.c
-	gcc -Iinclude $< -lm -std=c99 -o bin/lcs_hirschberg_instrumented
+	$(CC) $(CFLAGS) $< -lm -o bin/$@
 balloon: src/balloon.cpp
-	$(CXX) $(C_OPT) -Iinclude $< -o bin/$@
+	$(CXX) $(CXXFLAGS) $< -o bin/$@
 
 clean:
 	rm -f $(addprefix bin/,$(SUITE))
