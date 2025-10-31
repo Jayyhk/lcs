@@ -2,7 +2,6 @@
 \usepackage{style} % requires style.sty
 \pgfplotsset{compat=1.18} % Use a modern compatibility version
 
-% --- This block defines the styles for each line ---
 \pgfplotsset{
     % Style for the 'Constant' line
     style-constant/.style={
@@ -40,7 +39,6 @@
 
 \begin{document}
 
-% Using a 'figure' environment is good practice
 \begin{figure}[ht!] 
 \centering % Center the figure
 \begin{tikzpicture}
@@ -78,15 +76,13 @@
     
     % --- PLOT 2: Adversarial ---
     \addplot[style-adversarial] coordinates {
-        (32768, 1.943950)
-        (65536, 2.301401)
-        (131072, 2.655752)
+        (32768, 0.000000)
     };
     \addlegendentry{Adversarial}
     
     % --- PLOT 3: Benevolent ---
     \addplot[style-benevolent] coordinates {
-        (32768, 0)
+        (32768, 0.000000)
     };
     \addlegendentry{Benevolent}
     

@@ -50,7 +50,7 @@ mkdir -p res/adversarial/balloon # Ensure directory exists for balloon
 # Write headers to results file
 echo "Cgroup setup: $CGROUP_NAME" >> $RESULTS_FILE
 echo "Memory limit: ${MEM_LIMIT_MB}MiB" >> $RESULTS_FILE
-echo "Swap limit: $(($SWAP_LIMIT / 1024 / 1024))GiB" >> $RESULTS_FILE
+echo "Swap limit: $(($SWAP_LIMIT / 1024 / 1024 / 1024))GiB" >> $RESULTS_FILE
 echo "BASE_CASE: $BASE_CASE" >> $RESULTS_FILE
 echo "" >> $RESULTS_FILE
 echo "N, Hirschberg_IO, Oblivious_IO, Ratio" >> $RESULTS_FILE

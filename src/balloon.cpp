@@ -47,6 +47,10 @@ void read_memory_profile(std::string mem_profile_filename) {
   bool timestamp = true;
   double value;
   std::ifstream input_mem_profile = std::ifstream(mem_profile_filename.c_str());
+  if (!input_mem_profile.is_open()) {
+    std::cout << "Error: Cannot open memory profile file " << mem_profile_filename << std::endl;
+    exit(1);
+  }
   while (input_mem_profile >> value){
     std::cout << "Value: " << value << std::endl;
     if (timestamp)
@@ -63,7 +67,7 @@ void read_memory_profile(std::string mem_profile_filename) {
 
 int main(int argc, char *argv[]){
   std::cout << "Starting balloon program" << std::endl;
-  if (argc < 6){
+  if (argc < 7){
     std::cout << "Insufficient arguments! Usage: balloon.cpp <memory_profile_type>"
     "<cgroup_memory> <desired_memory> <num_balloons> <balloon_id> <memory_profile_file>\n";
     exit(1);
@@ -75,30 +79,32 @@ int main(int argc, char *argv[]){
   BALLOON_ID = atoi(argv[5]);
   std::string mem_profile_filename = argv[6];
   
+  // Extract directory from profile filename
+  std::string balloon_dir = ".";
+  size_t last_slash = mem_profile_filename.find_last_of('/');
+  if (last_slash != std::string::npos) {
+    balloon_dir = mem_profile_filename.substr(0, last_slash);
+  }
+  
   // Create balloon directory if it doesn't exist
-  if (mkdir("res/adversarial/balloon", 0777) != 0 && errno != EEXIST) {
-    std::cout << "Failed to create res/adversarial/balloon directory" << std::endl;
+  if (mkdir(balloon_dir.c_str(), 0777) != 0 && errno != EEXIST) {
+    std::cout << "Failed to create " << balloon_dir << " directory" << std::endl;
     return 1;
   }
   
   int fdout, ipcfd = -1;  // Initialize ipcfd to -1
   unsigned long long* dst2 = nullptr;  // Initialize dst2 to nullptr
-  std::string filename = "res/adversarial/balloon/balloon_data" + std::to_string(BALLOON_ID);
+  std::string filename = balloon_dir + "/balloon_data" + std::to_string(BALLOON_ID);
   std::cout << "Balloon data filename: " << filename << std::endl;
   if ((fdout = open(filename.c_str(), O_RDWR | O_CREAT, 0x0777 )) < 0){
     printf ("can't create/open balloon data files for writing\n");
     return 0;
   }
   
-  // Set file size for mmap
-  if (ftruncate(fdout, MEMORY) != 0) {
-    printf ("ftruncate error\n");
-    return 0;
-  }
-  
   // Only create IPCTEST for mode 3 (dynamic memory control)
   if (memory_profile_type == 3) {
-    if ((ipcfd = open("res/adversarial/balloon/IPCTEST", O_RDWR | O_CREAT, 0x0777 )) < 0) {
+    std::string ipctest_file = balloon_dir + "/IPCTEST";
+    if ((ipcfd = open(ipctest_file.c_str(), O_RDWR | O_CREAT, 0x0777 )) < 0) {
       printf ("can't create/open file for writing\n");
       return 0;
     }
@@ -139,13 +145,17 @@ int main(int argc, char *argv[]){
   unsigned long index = 0;
   unsigned int counter = 0;
   while(true){
-    index %= (MEMORY/4);
-    //std::cout << index << "here" << MEMORY << std::endl;
-    //dst[rand()%MEMORY] = 1;
-    *(dst + rand()%(MEMORY/4)) = 1;
-    *(dst + index) = 1;
-    //dst[index] = 1;
-    index += 1000;
+    if (MEMORY > 0) {
+      index %= (MEMORY/4);
+      //std::cout << index << "here" << MEMORY << std::endl;
+      //dst[rand()%MEMORY] = 1;
+      *(dst + rand()%(MEMORY/4)) = 1;
+      *(dst + index) = 1;
+      //dst[index] = 1;
+      index += 1000;
+    } else {
+      std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
     std::chrono::system_clock::time_point t_end = std::chrono::system_clock::now();
     auto wall_time_ms = std::chrono::duration<double, std::milli>(t_end-t_start).count();
     double wall_time = wall_time_ms / 1000.0;
