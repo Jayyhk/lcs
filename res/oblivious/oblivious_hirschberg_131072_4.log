@@ -1,0 +1,49 @@
+=====================================================================================
+Program: bin/lcs_hirschberg
+m = 131072, n = 131072
+Runs = 1, base case = 2048
+
+RUN 1 RESULTS
+Time:
+  Wall time:               640.1772 seconds (0h 10m 40s)
+  User time:               231.1739 seconds (0h 3m 51s)
+  System time:             81.1745 seconds (0h 1m 21s)
+  Total time:              312.3484 seconds (0h 5m 12s)
+Process I/O:
+  Characters read:                 289577
+  Characters written:                 414
+  Read syscalls:                      108
+  Write syscalls:                      14
+  Bytes read:                 13601689600 (12971.6 MB)
+  Bytes written:                     8192 (0.0 MB)
+Disk I/O (sdc swap):
+  Read operations:                6049035
+  Read operations merged:         7389555
+  Sectors read:                 107508720 (52494.5 MB)
+  Read time:                      1435325 ms
+  Write operations:               1139903
+  Write operations merged:        5505374
+  Sectors written:               53162216 (25958.1 MB)
+  Write time:                     2038652 ms
+  I/Os (sectors read/written):  160670936
+Memory Usage:
+  Total (virtual):             5692 pages (22.2 MB)
+  Resident (RSS):               832 pages (3.2 MB)
+  Shared:                       544 pages (2.1 MB)
+  Text (code):                    5 pages (0.0 MB)
+  Library:                        0 pages (0.0 MB)
+  Data + stack:                4873 pages (19.0 MB)
+  Dirty pages:                    0 pages (0.0 MB)
+  Minor page faults:        3246985 (soft faults)
+  Major page faults:           8400 (hard faults)
+
+FINAL RESULTS
+LCS Length: 42705
+Overall execution time:
+  User time:               231.1739 seconds (0h 3m 51s)
+  System time:             81.1745 seconds (0h 1m 21s)
+  Total time:              312.3484 seconds (0h 5m 12s)
+Average per run:
+  User time:               231.1739 seconds (0h 3m 51s)
+  System time:             81.1745 seconds (0h 1m 21s)
+  Total time:              312.3484 seconds (0h 5m 12s)

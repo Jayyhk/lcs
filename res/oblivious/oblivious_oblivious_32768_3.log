@@ -1,0 +1,49 @@
+=====================================================================================
+Program: bin/lcs_oblivious
+m = 32768, n = 32768
+Runs = 1, base case = 2048
+
+RUN 1 RESULTS
+Time:
+  Wall time:               40.8784 seconds (0h 0m 41s)
+  User time:               9.6856 seconds (0h 0m 10s)
+  System time:             5.6810 seconds (0h 0m 6s)
+  Total time:              15.3666 seconds (0h 0m 15s)
+Process I/O:
+  Characters read:                  92967
+  Characters written:                 404
+  Read syscalls:                       60
+  Write syscalls:                      14
+  Bytes read:                   626982912 (597.9 MB)
+  Bytes written:                     8192 (0.0 MB)
+Disk I/O (sdc swap):
+  Read operations:                 567592
+  Read operations merged:           27682
+  Sectors read:                   4762200 (2325.3 MB)
+  Read time:                       116518 ms
+  Write operations:                111426
+  Write operations merged:         376172
+  Sectors written:                3900784 (1904.7 MB)
+  Write time:                      365841 ms
+  I/Os (sectors read/written):    8662984
+Memory Usage:
+  Total (virtual):             5368 pages (21.0 MB)
+  Resident (RSS):               800 pages (3.1 MB)
+  Shared:                       512 pages (2.0 MB)
+  Text (code):                    6 pages (0.0 MB)
+  Library:                        0 pages (0.0 MB)
+  Data + stack:                4548 pages (17.8 MB)
+  Dirty pages:                    0 pages (0.0 MB)
+  Minor page faults:         169333 (soft faults)
+  Major page faults:             56 (hard faults)
+
+FINAL RESULTS
+LCS Length: 10627
+Overall execution time:
+  User time:               9.6856 seconds (0h 0m 10s)
+  System time:             5.6810 seconds (0h 0m 6s)
+  Total time:              15.3666 seconds (0h 0m 15s)
+Average per run:
+  User time:               9.6856 seconds (0h 0m 10s)
+  System time:             5.6810 seconds (0h 0m 6s)
+  Total time:              15.3666 seconds (0h 0m 15s)

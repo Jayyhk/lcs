@@ -1,0 +1,49 @@
+=====================================================================================
+Program: bin/lcs_oblivious
+m = 131072, n = 131072
+Runs = 1, base case = 2048
+
+RUN 1 RESULTS
+Time:
+  Wall time:               305.1606 seconds (0h 5m 5s)
+  User time:               146.1245 seconds (0h 2m 26s)
+  System time:             26.0216 seconds (0h 0m 26s)
+  Total time:              172.1461 seconds (0h 2m 52s)
+Process I/O:
+  Characters read:                 289581
+  Characters written:                 411
+  Read syscalls:                      108
+  Write syscalls:                      14
+  Bytes read:                  2832846848 (2701.6 MB)
+  Bytes written:                     8192 (0.0 MB)
+Disk I/O (sdc swap):
+  Read operations:                2626052
+  Read operations merged:          128952
+  Sectors read:                  22040032 (10761.7 MB)
+  Read time:                       546410 ms
+  Write operations:                618729
+  Write operations merged:        1661136
+  Sectors written:               18239000 (8905.8 MB)
+  Write time:                     1682286 ms
+  I/Os (sectors read/written):   40279032
+Memory Usage:
+  Total (virtual):             6523 pages (25.5 MB)
+  Resident (RSS):               992 pages (3.9 MB)
+  Shared:                       544 pages (2.1 MB)
+  Text (code):                    6 pages (0.0 MB)
+  Library:                        0 pages (0.0 MB)
+  Data + stack:                5703 pages (22.3 MB)
+  Dirty pages:                    0 pages (0.0 MB)
+  Minor page faults:         787341 (soft faults)
+  Major page faults:            274 (hard faults)
+
+FINAL RESULTS
+LCS Length: 42705
+Overall execution time:
+  User time:               146.1245 seconds (0h 2m 26s)
+  System time:             26.0216 seconds (0h 0m 26s)
+  Total time:              172.1461 seconds (0h 2m 52s)
+Average per run:
+  User time:               146.1245 seconds (0h 2m 26s)
+  System time:             26.0216 seconds (0h 0m 26s)
+  Total time:              172.1461 seconds (0h 2m 52s)

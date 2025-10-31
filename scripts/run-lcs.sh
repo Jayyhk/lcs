@@ -1,4 +1,5 @@
 #!/bin/bash
+
 now=$(date)
 echo "$now"
 
@@ -28,14 +29,14 @@ cleanup() {
 # Trap to ensure cleanup on exit
 trap cleanup EXIT
 
-declare -a ip_size=( "8192" "16384" "32768" "65536" "131072" "262144" "524288" "1048576" "2097152" "4194304" "8388608" )
+declare -a ip_size=( "8192" "16384" "32768" "65536" "131072" )
 numruns=1
 
 for (( j=0; j<=${#ip_size[@]}-1; j++ ));
 do
-    cgexec -g memory:/constant ./bin/lcs_classic ${ip_size[$j]} $numruns < rsrc/data-${ip_size[$j]}.in
-    cgexec -g memory:/constant ./bin/lcs_hirschberg ${ip_size[$j]} $numruns 2048 < rsrc/data-${ip_size[$j]}.in
-    cgexec -g memory:/constant ./bin/lcs_oblivious ${ip_size[$j]} $numruns 2048 < rsrc/data-${ip_size[$j]}.in
+    cgexec -g memory:constant ./bin/lcs_classic ${ip_size[$j]} $numruns < rsrc/data-${ip_size[$j]}.in
+    cgexec -g memory:constant ./bin/lcs_hirschberg ${ip_size[$j]} $numruns 2048 < rsrc/data-${ip_size[$j]}.in
+    cgexec -g memory:constant ./bin/lcs_oblivious ${ip_size[$j]} $numruns 2048 < rsrc/data-${ip_size[$j]}.in
 done
 
 echo "All runs complete."

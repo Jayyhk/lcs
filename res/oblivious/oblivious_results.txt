@@ -1,0 +1,8 @@
+Cgroup setup: oblivious (Oblivious)
+Memory limit: 4MiB (Shared by 4 instances)
+BASE_CASE: 2048
+
+N, Hirschberg_IO_Avg, Oblivious_IO_Avg, Ratio
+32768, 7159632.00, 8814380.00, .812267
+65536, 14062400.00, 17981580.00, .782044
+131072, 162684294.00, 39761238.00, 4.091529

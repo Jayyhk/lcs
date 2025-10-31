@@ -1,5 +1,8 @@
 #!/bin/bash
 
+now=$(date)
+echo "$now"
+
 # This script must be run as root to manage cgroups
 if [ "$EUID" -ne 0 ]; then
     echo "Please run as root (using sudo)"
@@ -7,24 +10,23 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 # Create res directory if it doesn't exist
-mkdir -p res
+mkdir -p res/oblivious
 
 # --- Configuration ---
 BASE_CASE=2048
 MEM_LIMIT=4194304     # 4MiB (This is the TOTAL pool they all share)
 SWAP_LIMIT=2147483648 # 2GiB
-NUM_INSTANCES=3       # Number of concurrent programs to run
+NUM_INSTANCES=4       # Number of concurrent programs to run
 
 CGROUP_NAME="oblivious"
 CGROUP_PATH="/sys/fs/cgroup/$CGROUP_NAME"
-RESULTS_FILE="res/oblivious_results.txt"
+RESULTS_FILE="res/oblivious/oblivious_results.txt"
 
 # Temp log directory
-LOG_DIR="res/oblivious_logs"
-mkdir -p $LOG_DIR
+LOG_DIR="res/oblivious"
 
 # Clear log files
-rm -f $LOG_DIR/* # Clear old logs
+rm -f $LOG_DIR/oblivious_*.log # Clear old logs
 
 # Clear results file
 rm -f $RESULTS_FILE
@@ -59,16 +61,16 @@ echo "BASE_CASE: $BASE_CASE" >> $RESULTS_FILE
 echo "" >> $RESULTS_FILE
 echo "N, Hirschberg_IO_Avg, Oblivious_IO_Avg, Ratio" >> $RESULTS_FILE
 
-for N in 32768 65536 131072 262144 524288 1048576; do
+for N in 32768 65536 131072; do
     echo "Running OBLIVIOUS test for N = $N"
     
     # --- Run Hirschberg (Oblivious) ---
-    echo "  Running $NUM_INSTANCES concurrent Hirschberg..."
+    echo "  Running Hirschberg (oblivious)..."
     sync; echo 3 > /proc/sys/vm/drop_caches
     
     # Run all instances in the background
     for i in $(seq 1 $NUM_INSTANCES); do
-        stdbuf -o0 cgexec -g memory:$CGROUP_NAME bin/lcs_hirschberg $N 1 $BASE_CASE < rsrc/data-$N.in > "$LOG_DIR/oblivious_hirschberg_${N}_$i.log" 2>&1 &
+        stdbuf -o0 cgexec -g memory:$CGROUP_NAME ./bin/lcs_hirschberg $N 1 $BASE_CASE < rsrc/data-$N.in > "$LOG_DIR/oblivious_hirschberg_${N}_$i.log" 2>&1 &
     done
     
     # Wait for all background jobs to finish
@@ -84,11 +86,11 @@ for N in 32768 65536 131072 262144 524288 1048576; do
     LCS_HIRSCHBERG_IO_AVG=$(echo "scale=2; $HIRSCHBERG_TOTAL_IO / $NUM_INSTANCES" | bc)
 
     # --- Run Oblivious (Oblivious) ---
-    echo "  Running $NUM_INSTANCES concurrent Oblivious..."
+    echo "  Running Oblivious (oblivious)..."
     sync; echo 3 > /proc/sys/vm/drop_caches
 
     for i in $(seq 1 $NUM_INSTANCES); do
-        stdbuf -o0 cgexec -g memory:$CGROUP_NAME bin/lcs_oblivious $N 1 $BASE_CASE < rsrc/data-$N.in > "$LOG_DIR/oblivious_oblivious_${N}_$i.log" 2>&1 &
+        stdbuf -o0 cgexec -g memory:$CGROUP_NAME ./bin/lcs_oblivious $N 1 $BASE_CASE < rsrc/data-$N.in > "$LOG_DIR/oblivious_oblivious_${N}_$i.log" 2>&1 &
     done
     
     wait
@@ -110,4 +112,7 @@ for N in 32768 65536 131072 262144 524288 1048576; do
     fi
 done
 
-echo "Oblivious experiment complete. Results saved to $RESULTS_FILE."
+echo "Oblivious experiment complete. Results saved to res/oblivious/oblivious_results.txt."
+
+# Fix permissions
+chown -R $SUDO_USER:$SUDO_USER res/oblivious/

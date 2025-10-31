@@ -6,18 +6,6 @@
 #include <unistd.h>
 #include <math.h>
 
-// Global variables to store previous I/O counters for difference calculation
-long long io_counter_sda[11];
-long long io_counter_sda_new[11];
-long long io_counter_sdc[11];
-long long io_counter_sdc_new[11];
-int io_counters_initialized = 0;
-
-// Global variables for page fault tracking
-long initial_minor_faults = 0;
-long initial_major_faults = 0;
-int page_faults_initialized = 0;
-
 char *conv_sec(double t, char *st) {
     int h, m, s;
 
@@ -31,6 +19,22 @@ char *conv_sec(double t, char *st) {
     sprintf(st, "%dh %dm %ds", h, m, s);
 
     return st;
+}
+
+static double T_START = 0.0;
+
+double get_time_sec() {
+    struct timeval t;
+    gettimeofday(&t, NULL);
+    double time_in_sec = (double)t.tv_sec + (double)t.tv_usec / 1000000.0;
+
+    // If this is the first time we're called, set the global start time.
+    if (T_START == 0.0) {
+        T_START = time_in_sec;
+    }
+
+    // Return time elapsed since the first call.
+    return time_in_sec - T_START;
 }
 
 double get_wall_time() {
@@ -83,6 +87,13 @@ void print_proc_io() {
     printf("  Bytes written:             %'12ld (%'.1f MB)\n", write_bytes,
            write_bytes / (1024.0 * 1024.0));
 }
+
+// Global variables to store previous I/O counters for difference calculation
+long long io_counter_sda[11];
+long long io_counter_sda_new[11];
+long long io_counter_sdc[11];
+long long io_counter_sdc_new[11];
+int io_counters_initialized = 0;
 
 void init_disk_io() {
     FILE *in = fopen("/proc/diskstats", "r");
@@ -197,6 +208,11 @@ void read_page_faults(long *minor_faults, long *major_faults) {
 
     fclose(fp);
 }
+
+// Global variables for page fault tracking
+long initial_minor_faults = 0;
+long initial_major_faults = 0;
+int page_faults_initialized = 0;
 
 void init_page_faults() {
     read_page_faults(&initial_minor_faults, &initial_major_faults);

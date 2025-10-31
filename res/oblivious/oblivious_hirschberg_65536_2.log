@@ -1,0 +1,49 @@
+=====================================================================================
+Program: bin/lcs_hirschberg
+m = 65536, n = 65536
+Runs = 1, base case = 2048
+
+RUN 1 RESULTS
+Time:
+  Wall time:               114.3580 seconds (0h 1m 54s)
+  User time:               59.8486 seconds (0h 1m 0s)
+  System time:             9.3236 seconds (0h 0m 9s)
+  Total time:              69.1722 seconds (0h 1m 9s)
+Process I/O:
+  Characters read:                 158505
+  Characters written:                 405
+  Read syscalls:                       76
+  Write syscalls:                      14
+  Bytes read:                  1027629056 (980.0 MB)
+  Bytes written:                     8192 (0.0 MB)
+Disk I/O (sdc swap):
+  Read operations:                 870432
+  Read operations merged:           60216
+  Sectors read:                   7445184 (3635.3 MB)
+  Read time:                       177353 ms
+  Write operations:                256619
+  Write operations merged:         470454
+  Sectors written:                5816584 (2840.1 MB)
+  Write time:                      772895 ms
+  I/Os (sectors read/written):   13261768
+Memory Usage:
+  Total (virtual):             5352 pages (20.9 MB)
+  Resident (RSS):               800 pages (3.1 MB)
+  Shared:                       544 pages (2.1 MB)
+  Text (code):                    5 pages (0.0 MB)
+  Library:                        0 pages (0.0 MB)
+  Data + stack:                4533 pages (17.7 MB)
+  Dirty pages:                    0 pages (0.0 MB)
+  Minor page faults:         289540 (soft faults)
+  Major page faults:            125 (hard faults)
+
+FINAL RESULTS
+LCS Length: 21269
+Overall execution time:
+  User time:               59.8486 seconds (0h 1m 0s)
+  System time:             9.3236 seconds (0h 0m 9s)
+  Total time:              69.1722 seconds (0h 1m 9s)
+Average per run:
+  User time:               59.8486 seconds (0h 1m 0s)
+  System time:             9.3236 seconds (0h 0m 9s)
+  Total time:              69.1722 seconds (0h 1m 9s)

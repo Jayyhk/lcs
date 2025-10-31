@@ -1,5 +1,8 @@
 #!/bin/bash
 
+now=$(date)
+echo "$now"
+
 # This script must be run as root to manage cgroups
 if [ "$EUID" -ne 0 ]; then
     echo "Please run as root (using sudo)"
@@ -7,7 +10,7 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 # Create res directory if it doesn't exist
-mkdir -p res
+mkdir -p res/constant
 
 # --- Configuration ---
 BASE_CASE=2048        # Base case for recursion, larger = more memory usage
@@ -16,11 +19,11 @@ SWAP_LIMIT=2147483648 # 2GiB
 
 CGROUP_NAME="constant"
 CGROUP_PATH="/sys/fs/cgroup/$CGROUP_NAME"
-RESULTS_FILE="res/constant_results.txt"
+RESULTS_FILE="res/constant/constant_results.txt"
 
 # Temp log files
-HIRSCHBERG_LOG="res/constant_hirschberg.log"
-OBLIVIOUS_LOG="res/constant_oblivious.log"
+HIRSCHBERG_LOG="res/constant/constant_hirschberg.log"
+OBLIVIOUS_LOG="res/constant/constant_oblivious.log"
 
 # Clear log files
 rm -f $HIRSCHBERG_LOG $OBLIVIOUS_LOG
@@ -59,15 +62,15 @@ echo "BASE_CASE: $BASE_CASE" >> $RESULTS_FILE
 echo "" >> $RESULTS_FILE
 echo "N, Hirschberg_IO, Oblivious_IO, Ratio" >> $RESULTS_FILE
 
-for N in 32768 65536 131072 262144 524288 1048576; do
+for N in 32768 65536 131072; do
     echo "Running CONSTANT test for N = $N"
   
     # Clear caches
     sync; echo 3 > /proc/sys/vm/drop_caches
   
     # Run Hirschberg (non-adaptive) inside the cgroup
-    echo "  Running Hirschberg (constant) for N = $N"
-    stdbuf -o0 cgexec -g memory:$CGROUP_NAME bin/lcs_hirschberg $N 1 $BASE_CASE < rsrc/data-$N.in >> $HIRSCHBERG_LOG 2>&1
+    echo "  Running Hirschberg (constant)..."
+    stdbuf -o0 cgexec -g memory:$CGROUP_NAME ./bin/lcs_hirschberg $N 1 $BASE_CASE < rsrc/data-$N.in >> $HIRSCHBERG_LOG 2>&1
     LCS_HIRSCHBERG_IO=$(cat $HIRSCHBERG_LOG | grep 'I/Os' | tail -1 | awk '{print $4}')
     LCS_HIRSCHBERG_IO=${LCS_HIRSCHBERG_IO:-0}
 
@@ -75,8 +78,8 @@ for N in 32768 65536 131072 262144 524288 1048576; do
     sync; echo 3 > /proc/sys/vm/drop_caches
 
     # Run Oblivious (adaptive) inside the cgroup
-    echo "  Running Oblivious (constant) for N = $N"
-    stdbuf -o0 cgexec -g memory:$CGROUP_NAME bin/lcs_oblivious $N 1 $BASE_CASE < rsrc/data-$N.in >> $OBLIVIOUS_LOG 2>&1
+    echo "  Running Oblivious (constant)..."
+    stdbuf -o0 cgexec -g memory:$CGROUP_NAME ./bin/lcs_oblivious $N 1 $BASE_CASE < rsrc/data-$N.in >> $OBLIVIOUS_LOG 2>&1
     LCS_OBLIVIOUS_IO=$(cat $OBLIVIOUS_LOG | grep 'I/Os' | tail -1 | awk '{print $4}')
     LCS_OBLIVIOUS_IO=${LCS_OBLIVIOUS_IO:-0}
 
@@ -89,4 +92,7 @@ for N in 32768 65536 131072 262144 524288 1048576; do
     fi
 done
 
-echo "Constant experiment complete. Results saved to res/constant_results.txt."
+echo "Constant experiment complete. Results saved to res/constant/constant_results.txt."
+
+# Fix permissions
+chown -R $SUDO_USER:$SUDO_USER res/constant/
