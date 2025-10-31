@@ -1,0 +1,1229 @@
+Starting balloon program
+Balloon data filename: res/adversarial/balloon/balloon_data1
+Value: 0
+Value: 2048
+Value: 0.001625
+Value: 4
+Value: 65.2364
+Value: 2048
+Value: 65.2365
+Value: 4
+Value: 137.081
+Value: 2048
+Value: 137.083
+Value: 4
+Value: 151.487
+Value: 2048
+Value: 151.487
+Value: 4
+Value: 167.044
+Value: 2048
+Value: 167.045
+Value: 4
+Value: 171.353
+Value: 2048
+Value: 171.353
+Value: 4
+Value: 175.637
+Value: 2048
+Value: 175.638
+Value: 4
+Value: 176.724
+Value: 2048
+Value: 176.724
+Value: 4
+Value: 177.845
+Value: 2048
+Value: 177.845
+Value: 4
+Value: 178.095
+Value: 2048
+Value: 178.095
+Value: 4
+Value: 178.361
+Value: 2048
+Value: 178.361
+Value: 4
+Value: 178.415
+Value: 2048
+Value: 178.415
+Value: 4
+Value: 178.467
+Value: 2048
+Value: 178.54
+Value: 4
+Value: 178.613
+Value: 2048
+Value: 178.613
+Value: 4
+Value: 178.673
+Value: 2048
+Value: 178.673
+Value: 4
+Value: 178.689
+Value: 2048
+Value: 178.689
+Value: 4
+Value: 178.704
+Value: 2048
+Value: 178.732
+Value: 4
+Value: 178.996
+Value: 2048
+Value: 178.997
+Value: 4
+Value: 179.281
+Value: 2048
+Value: 179.281
+Value: 4
+Value: 179.356
+Value: 2048
+Value: 179.356
+Value: 4
+Value: 179.434
+Value: 2048
+Value: 179.435
+Value: 4
+Value: 179.452
+Value: 2048
+Value: 179.452
+Value: 4
+Value: 179.47
+Value: 2048
+Value: 179.486
+Value: 4
+Value: 179.505
+Value: 2048
+Value: 179.505
+Value: 4
+Value: 179.522
+Value: 2048
+Value: 179.539
+Value: 4
+Value: 179.607
+Value: 2048
+Value: 179.608
+Value: 4
+Value: 179.676
+Value: 2048
+Value: 179.676
+Value: 4
+Value: 179.693
+Value: 2048
+Value: 179.693
+Value: 4
+Value: 179.71
+Value: 2048
+Value: 179.741
+Value: 4
+Value: 180.754
+Value: 2048
+Value: 180.754
+Value: 4
+Value: 181.78
+Value: 2048
+Value: 181.78
+Value: 4
+Value: 182.056
+Value: 2048
+Value: 182.056
+Value: 4
+Value: 182.336
+Value: 2048
+Value: 182.336
+Value: 4
+Value: 182.405
+Value: 2048
+Value: 182.405
+Value: 4
+Value: 182.475
+Value: 2048
+Value: 182.475
+Value: 4
+Value: 182.491
+Value: 2048
+Value: 182.491
+Value: 4
+Value: 182.507
+Value: 2048
+Value: 182.522
+Value: 4
+Value: 182.544
+Value: 2048
+Value: 182.544
+Value: 4
+Value: 182.563
+Value: 2048
+Value: 182.579
+Value: 4
+Value: 182.647
+Value: 2048
+Value: 182.647
+Value: 4
+Value: 182.716
+Value: 2048
+Value: 182.716
+Value: 4
+Value: 182.736
+Value: 2048
+Value: 182.737
+Value: 4
+Value: 182.757
+Value: 2048
+Value: 182.794
+Value: 4
+Value: 183.039
+Value: 2048
+Value: 183.039
+Value: 4
+Value: 183.281
+Value: 2048
+Value: 183.281
+Value: 4
+Value: 183.337
+Value: 2048
+Value: 183.337
+Value: 4
+Value: 183.393
+Value: 2048
+Value: 183.435
+Value: 4
+Value: 183.501
+Value: 2048
+Value: 183.501
+Value: 4
+Value: 183.558
+Value: 2048
+Value: 183.598
+Value: 4
+Value: 188.336
+Value: 2048
+Value: 188.337
+Value: 4
+Value: 193.011
+Value: 2048
+Value: 193.012
+Value: 4
+Value: 194.215
+Value: 2048
+Value: 194.215
+Value: 4
+Value: 195.504
+Value: 2048
+Value: 195.505
+Value: 4
+Value: 195.831
+Value: 2048
+Value: 195.831
+Value: 4
+Value: 196.199
+Value: 2048
+Value: 196.199
+Value: 4
+Value: 196.362
+Value: 2048
+Value: 196.362
+Value: 4
+Value: 196.462
+Value: 2048
+Value: 196.462
+Value: 4
+Value: 196.485
+Value: 2048
+Value: 196.485
+Value: 4
+Value: 196.507
+Value: 2048
+Value: 196.522
+Value: 4
+Value: 196.542
+Value: 2048
+Value: 196.542
+Value: 4
+Value: 196.561
+Value: 2048
+Value: 196.574
+Value: 4
+Value: 196.647
+Value: 2048
+Value: 196.647
+Value: 4
+Value: 196.728
+Value: 2048
+Value: 196.728
+Value: 4
+Value: 196.751
+Value: 2048
+Value: 196.751
+Value: 4
+Value: 196.772
+Value: 2048
+Value: 196.813
+Value: 4
+Value: 197.106
+Value: 2048
+Value: 197.106
+Value: 4
+Value: 197.417
+Value: 2048
+Value: 197.417
+Value: 4
+Value: 197.498
+Value: 2048
+Value: 197.498
+Value: 4
+Value: 197.568
+Value: 2048
+Value: 197.568
+Value: 4
+Value: 197.586
+Value: 2048
+Value: 197.587
+Value: 4
+Value: 197.605
+Value: 2048
+Value: 197.638
+Value: 4
+Value: 197.709
+Value: 2048
+Value: 197.709
+Value: 4
+Value: 197.789
+Value: 2048
+Value: 197.789
+Value: 4
+Value: 197.809
+Value: 2048
+Value: 197.809
+Value: 4
+Value: 197.835
+Value: 2048
+Value: 197.851
+Value: 4
+Value: 197.874
+Value: 2048
+Value: 197.874
+Value: 4
+Value: 197.897
+Value: 2048
+Value: 197.911
+Value: 4
+Value: 199.043
+Value: 2048
+Value: 199.043
+Value: 4
+Value: 200.251
+Value: 2048
+Value: 200.251
+Value: 4
+Value: 200.523
+Value: 2048
+Value: 200.523
+Value: 4
+Value: 200.784
+Value: 2048
+Value: 200.785
+Value: 4
+Value: 200.845
+Value: 2048
+Value: 200.845
+Value: 4
+Value: 200.903
+Value: 2048
+Value: 200.945
+Value: 4
+Value: 201.019
+Value: 2048
+Value: 201.019
+Value: 4
+Value: 201.094
+Value: 2048
+Value: 201.094
+Value: 4
+Value: 201.112
+Value: 2048
+Value: 201.112
+Value: 4
+Value: 201.132
+Value: 2048
+Value: 201.145
+Value: 4
+Value: 201.163
+Value: 2048
+Value: 201.163
+Value: 4
+Value: 201.181
+Value: 2048
+Value: 201.197
+Value: 4
+Value: 201.465
+Value: 2048
+Value: 201.465
+Value: 4
+Value: 201.729
+Value: 2048
+Value: 201.73
+Value: 4
+Value: 201.793
+Value: 2048
+Value: 201.793
+Value: 4
+Value: 201.856
+Value: 2048
+Value: 201.878
+Value: 4
+Value: 201.896
+Value: 2048
+Value: 201.896
+Value: 4
+Value: 201.914
+Value: 2048
+Value: 201.928
+Value: 4
+Value: 201.997
+Value: 2048
+Value: 201.998
+Value: 4
+Value: 202.067
+Value: 2048
+Value: 202.067
+Value: 4
+Value: 202.084
+Value: 2048
+Value: 202.084
+Value: 4
+Value: 202.101
+Value: 2048
+Value: 202.114
+Value: 4
+Value: 202.132
+Value: 2048
+Value: 202.132
+Value: 4
+Value: 202.149
+Value: 2048
+Value: 202.164
+Value: 4
+Value: 220.084
+Value: 2048
+Value: 220.084
+Value: 4
+Value: 232.419
+Value: 2048
+Value: 232.42
+Value: 4
+Value: 237.286
+Value: 2048
+Value: 237.286
+Value: 4
+Value: 241.604
+Value: 2048
+Value: 241.605
+Value: 4
+Value: 242.624
+Value: 2048
+Value: 242.624
+Value: 4
+Value: 243.616
+Value: 2048
+Value: 243.617
+Value: 4
+Value: 243.879
+Value: 2048
+Value: 243.879
+Value: 4
+Value: 244.138
+Value: 2048
+Value: 244.138
+Value: 4
+Value: 244.194
+Value: 2048
+Value: 244.194
+Value: 4
+Value: 244.254
+Value: 2048
+Value: 244.254
+Value: 4
+Value: 244.27
+Value: 2048
+Value: 244.27
+Value: 4
+Value: 244.287
+Value: 2048
+Value: 244.317
+Value: 4
+Value: 244.381
+Value: 2048
+Value: 244.381
+Value: 4
+Value: 244.452
+Value: 2048
+Value: 244.471
+Value: 4
+Value: 244.487
+Value: 2048
+Value: 244.487
+Value: 4
+Value: 244.502
+Value: 2048
+Value: 244.513
+Value: 4
+Value: 244.751
+Value: 2048
+Value: 244.752
+Value: 4
+Value: 245.006
+Value: 2048
+Value: 245.006
+Value: 4
+Value: 245.063
+Value: 2048
+Value: 245.063
+Value: 4
+Value: 245.118
+Value: 2048
+Value: 245.118
+Value: 4
+Value: 245.135
+Value: 2048
+Value: 245.135
+Value: 4
+Value: 245.152
+Value: 2048
+Value: 245.179
+Value: 4
+Value: 245.244
+Value: 2048
+Value: 245.244
+Value: 4
+Value: 245.313
+Value: 2048
+Value: 245.313
+Value: 4
+Value: 245.329
+Value: 2048
+Value: 245.329
+Value: 4
+Value: 245.347
+Value: 2048
+Value: 245.361
+Value: 4
+Value: 245.376
+Value: 2048
+Value: 245.377
+Value: 4
+Value: 245.393
+Value: 2048
+Value: 245.405
+Value: 4
+Value: 246.388
+Value: 2048
+Value: 246.388
+Value: 4
+Value: 247.361
+Value: 2048
+Value: 247.362
+Value: 4
+Value: 247.623
+Value: 2048
+Value: 247.623
+Value: 4
+Value: 247.848
+Value: 2048
+Value: 247.848
+Value: 4
+Value: 247.909
+Value: 2048
+Value: 247.91
+Value: 4
+Value: 247.968
+Value: 2048
+Value: 247.989
+Value: 4
+Value: 248.003
+Value: 2048
+Value: 248.003
+Value: 4
+Value: 248.016
+Value: 2048
+Value: 248.026
+Value: 4
+Value: 248.084
+Value: 2048
+Value: 248.084
+Value: 4
+Value: 248.142
+Value: 2048
+Value: 248.16
+Value: 4
+Value: 248.175
+Value: 2048
+Value: 248.175
+Value: 4
+Value: 248.188
+Value: 2048
+Value: 248.197
+Value: 4
+Value: 248.414
+Value: 2048
+Value: 248.414
+Value: 4
+Value: 248.633
+Value: 2048
+Value: 248.633
+Value: 4
+Value: 248.693
+Value: 2048
+Value: 248.693
+Value: 4
+Value: 248.75
+Value: 2048
+Value: 248.75
+Value: 4
+Value: 248.765
+Value: 2048
+Value: 248.765
+Value: 4
+Value: 248.781
+Value: 2048
+Value: 248.81
+Value: 4
+Value: 248.867
+Value: 2048
+Value: 248.867
+Value: 4
+Value: 248.925
+Value: 2048
+Value: 248.964
+Value: 4
+Value: 253.151
+Value: 2048
+Value: 253.151
+Value: 4
+Value: 257.315
+Value: 2048
+Value: 257.315
+Value: 4
+Value: 258.379
+Value: 2048
+Value: 258.379
+Value: 4
+Value: 259.466
+Value: 2048
+Value: 259.466
+Value: 4
+Value: 259.757
+Value: 2048
+Value: 259.757
+Value: 4
+Value: 260.064
+Value: 2048
+Value: 260.064
+Value: 4
+Value: 260.128
+Value: 2048
+Value: 260.128
+Value: 4
+Value: 260.193
+Value: 2048
+Value: 260.193
+Value: 4
+Value: 260.207
+Value: 2048
+Value: 260.207
+Value: 4
+Value: 260.221
+Value: 2048
+Value: 260.23
+Value: 4
+Value: 260.248
+Value: 2048
+Value: 260.248
+Value: 4
+Value: 260.266
+Value: 2048
+Value: 260.279
+Value: 4
+Value: 260.345
+Value: 2048
+Value: 260.345
+Value: 4
+Value: 260.416
+Value: 2048
+Value: 260.417
+Value: 4
+Value: 260.432
+Value: 2048
+Value: 260.433
+Value: 4
+Value: 260.448
+Value: 2048
+Value: 260.459
+Value: 4
+Value: 260.476
+Value: 2048
+Value: 260.476
+Value: 4
+Value: 260.493
+Value: 2048
+Value: 260.504
+Value: 4
+Value: 260.77
+Value: 2048
+Value: 260.77
+Value: 4
+Value: 261.036
+Value: 2048
+Value: 261.036
+Value: 4
+Value: 261.1
+Value: 2048
+Value: 261.1
+Value: 4
+Value: 261.163
+Value: 2048
+Value: 261.163
+Value: 4
+Value: 261.18
+Value: 2048
+Value: 261.18
+Value: 4
+Value: 261.195
+Value: 2048
+Value: 261.207
+Value: 4
+Value: 261.223
+Value: 2048
+Value: 261.223
+Value: 4
+Value: 261.239
+Value: 2048
+Value: 261.251
+Value: 4
+Value: 261.314
+Value: 2048
+Value: 261.314
+Value: 4
+Value: 261.375
+Value: 2048
+Value: 261.393
+Value: 4
+Value: 261.409
+Value: 2048
+Value: 261.41
+Value: 4
+Value: 261.425
+Value: 2048
+Value: 261.437
+Value: 4
+Value: 262.438
+Value: 2048
+Value: 262.438
+Value: 4
+Value: 263.467
+Value: 2048
+Value: 263.467
+Value: 4
+Value: 263.729
+Value: 2048
+Value: 263.729
+Value: 4
+Value: 264.022
+Value: 2048
+Value: 264.022
+Value: 4
+Value: 264.093
+Value: 2048
+Value: 264.093
+Value: 4
+Value: 264.159
+Value: 2048
+Value: 264.178
+Value: 4
+Value: 264.194
+Value: 2048
+Value: 264.194
+Value: 4
+Value: 264.209
+Value: 2048
+Value: 264.22
+Value: 4
+Value: 264.277
+Value: 2048
+Value: 264.278
+Value: 4
+Value: 264.333
+Value: 2048
+Value: 264.333
+Value: 4
+Value: 264.348
+Value: 2048
+Value: 264.349
+Value: 4
+Value: 264.364
+Value: 2048
+Value: 264.397
+Value: 4
+Value: 264.657
+Value: 2048
+Value: 264.657
+Value: 4
+Value: 264.904
+Value: 2048
+Value: 264.904
+Value: 4
+Value: 264.959
+Value: 2048
+Value: 264.959
+Value: 4
+Value: 265.013
+Value: 2048
+Value: 265.027
+Value: 4
+Value: 265.043
+Value: 2048
+Value: 265.043
+Value: 4
+Value: 265.059
+Value: 2048
+Value: 265.071
+Value: 4
+Value: 265.135
+Value: 2048
+Value: 265.135
+Value: 4
+Value: 265.199
+Value: 2048
+Value: 265.218
+Value: 4
+Value: 265.234
+Value: 2048
+Value: 265.234
+Value: 4
+Value: 265.249
+Value: 2048
+Time: 0 Memory: 2147483648
+Time: 0.001625 Memory: 4194304
+Time: 65.2364 Memory: 2147483648
+Time: 65.2365 Memory: 4194304
+Time: 137.081 Memory: 2147483648
+Time: 137.083 Memory: 4194304
+Time: 151.487 Memory: 2147483648
+Time: 151.487 Memory: 4194304
+Time: 167.044 Memory: 2147483648
+Time: 167.045 Memory: 4194304
+Time: 171.353 Memory: 2147483648
+Time: 171.353 Memory: 4194304
+Time: 175.637 Memory: 2147483648
+Time: 175.638 Memory: 4194304
+Time: 176.724 Memory: 2147483648
+Time: 176.724 Memory: 4194304
+Time: 177.845 Memory: 2147483648
+Time: 177.845 Memory: 4194304
+Time: 178.095 Memory: 2147483648
+Time: 178.095 Memory: 4194304
+Time: 178.361 Memory: 2147483648
+Time: 178.361 Memory: 4194304
+Time: 178.415 Memory: 2147483648
+Time: 178.415 Memory: 4194304
+Time: 178.467 Memory: 2147483648
+Time: 178.54 Memory: 4194304
+Time: 178.613 Memory: 2147483648
+Time: 178.613 Memory: 4194304
+Time: 178.673 Memory: 2147483648
+Time: 178.673 Memory: 4194304
+Time: 178.689 Memory: 2147483648
+Time: 178.689 Memory: 4194304
+Time: 178.704 Memory: 2147483648
+Time: 178.732 Memory: 4194304
+Time: 178.996 Memory: 2147483648
+Time: 178.997 Memory: 4194304
+Time: 179.281 Memory: 2147483648
+Time: 179.281 Memory: 4194304
+Time: 179.356 Memory: 2147483648
+Time: 179.356 Memory: 4194304
+Time: 179.434 Memory: 2147483648
+Time: 179.435 Memory: 4194304
+Time: 179.452 Memory: 2147483648
+Time: 179.452 Memory: 4194304
+Time: 179.47 Memory: 2147483648
+Time: 179.486 Memory: 4194304
+Time: 179.505 Memory: 2147483648
+Time: 179.505 Memory: 4194304
+Time: 179.522 Memory: 2147483648
+Time: 179.539 Memory: 4194304
+Time: 179.607 Memory: 2147483648
+Time: 179.608 Memory: 4194304
+Time: 179.676 Memory: 2147483648
+Time: 179.676 Memory: 4194304
+Time: 179.693 Memory: 2147483648
+Time: 179.693 Memory: 4194304
+Time: 179.71 Memory: 2147483648
+Time: 179.741 Memory: 4194304
+Time: 180.754 Memory: 2147483648
+Time: 180.754 Memory: 4194304
+Time: 181.78 Memory: 2147483648
+Time: 181.78 Memory: 4194304
+Time: 182.056 Memory: 2147483648
+Time: 182.056 Memory: 4194304
+Time: 182.336 Memory: 2147483648
+Time: 182.336 Memory: 4194304
+Time: 182.405 Memory: 2147483648
+Time: 182.405 Memory: 4194304
+Time: 182.475 Memory: 2147483648
+Time: 182.475 Memory: 4194304
+Time: 182.491 Memory: 2147483648
+Time: 182.491 Memory: 4194304
+Time: 182.507 Memory: 2147483648
+Time: 182.522 Memory: 4194304
+Time: 182.544 Memory: 2147483648
+Time: 182.544 Memory: 4194304
+Time: 182.563 Memory: 2147483648
+Time: 182.579 Memory: 4194304
+Time: 182.647 Memory: 2147483648
+Time: 182.647 Memory: 4194304
+Time: 182.716 Memory: 2147483648
+Time: 182.716 Memory: 4194304
+Time: 182.736 Memory: 2147483648
+Time: 182.737 Memory: 4194304
+Time: 182.757 Memory: 2147483648
+Time: 182.794 Memory: 4194304
+Time: 183.039 Memory: 2147483648
+Time: 183.039 Memory: 4194304
+Time: 183.281 Memory: 2147483648
+Time: 183.281 Memory: 4194304
+Time: 183.337 Memory: 2147483648
+Time: 183.337 Memory: 4194304
+Time: 183.393 Memory: 2147483648
+Time: 183.435 Memory: 4194304
+Time: 183.501 Memory: 2147483648
+Time: 183.501 Memory: 4194304
+Time: 183.558 Memory: 2147483648
+Time: 183.598 Memory: 4194304
+Time: 188.336 Memory: 2147483648
+Time: 188.337 Memory: 4194304
+Time: 193.011 Memory: 2147483648
+Time: 193.012 Memory: 4194304
+Time: 194.215 Memory: 2147483648
+Time: 194.215 Memory: 4194304
+Time: 195.504 Memory: 2147483648
+Time: 195.505 Memory: 4194304
+Time: 195.831 Memory: 2147483648
+Time: 195.831 Memory: 4194304
+Time: 196.199 Memory: 2147483648
+Time: 196.199 Memory: 4194304
+Time: 196.362 Memory: 2147483648
+Time: 196.362 Memory: 4194304
+Time: 196.462 Memory: 2147483648
+Time: 196.462 Memory: 4194304
+Time: 196.485 Memory: 2147483648
+Time: 196.485 Memory: 4194304
+Time: 196.507 Memory: 2147483648
+Time: 196.522 Memory: 4194304
+Time: 196.542 Memory: 2147483648
+Time: 196.542 Memory: 4194304
+Time: 196.561 Memory: 2147483648
+Time: 196.574 Memory: 4194304
+Time: 196.647 Memory: 2147483648
+Time: 196.647 Memory: 4194304
+Time: 196.728 Memory: 2147483648
+Time: 196.728 Memory: 4194304
+Time: 196.751 Memory: 2147483648
+Time: 196.751 Memory: 4194304
+Time: 196.772 Memory: 2147483648
+Time: 196.813 Memory: 4194304
+Time: 197.106 Memory: 2147483648
+Time: 197.106 Memory: 4194304
+Time: 197.417 Memory: 2147483648
+Time: 197.417 Memory: 4194304
+Time: 197.498 Memory: 2147483648
+Time: 197.498 Memory: 4194304
+Time: 197.568 Memory: 2147483648
+Time: 197.568 Memory: 4194304
+Time: 197.586 Memory: 2147483648
+Time: 197.587 Memory: 4194304
+Time: 197.605 Memory: 2147483648
+Time: 197.638 Memory: 4194304
+Time: 197.709 Memory: 2147483648
+Time: 197.709 Memory: 4194304
+Time: 197.789 Memory: 2147483648
+Time: 197.789 Memory: 4194304
+Time: 197.809 Memory: 2147483648
+Time: 197.809 Memory: 4194304
+Time: 197.835 Memory: 2147483648
+Time: 197.851 Memory: 4194304
+Time: 197.874 Memory: 2147483648
+Time: 197.874 Memory: 4194304
+Time: 197.897 Memory: 2147483648
+Time: 197.911 Memory: 4194304
+Time: 199.043 Memory: 2147483648
+Time: 199.043 Memory: 4194304
+Time: 200.251 Memory: 2147483648
+Time: 200.251 Memory: 4194304
+Time: 200.523 Memory: 2147483648
+Time: 200.523 Memory: 4194304
+Time: 200.784 Memory: 2147483648
+Time: 200.785 Memory: 4194304
+Time: 200.845 Memory: 2147483648
+Time: 200.845 Memory: 4194304
+Time: 200.903 Memory: 2147483648
+Time: 200.945 Memory: 4194304
+Time: 201.019 Memory: 2147483648
+Time: 201.019 Memory: 4194304
+Time: 201.094 Memory: 2147483648
+Time: 201.094 Memory: 4194304
+Time: 201.112 Memory: 2147483648
+Time: 201.112 Memory: 4194304
+Time: 201.132 Memory: 2147483648
+Time: 201.145 Memory: 4194304
+Time: 201.163 Memory: 2147483648
+Time: 201.163 Memory: 4194304
+Time: 201.181 Memory: 2147483648
+Time: 201.197 Memory: 4194304
+Time: 201.465 Memory: 2147483648
+Time: 201.465 Memory: 4194304
+Time: 201.729 Memory: 2147483648
+Time: 201.73 Memory: 4194304
+Time: 201.793 Memory: 2147483648
+Time: 201.793 Memory: 4194304
+Time: 201.856 Memory: 2147483648
+Time: 201.878 Memory: 4194304
+Time: 201.896 Memory: 2147483648
+Time: 201.896 Memory: 4194304
+Time: 201.914 Memory: 2147483648
+Time: 201.928 Memory: 4194304
+Time: 201.997 Memory: 2147483648
+Time: 201.998 Memory: 4194304
+Time: 202.067 Memory: 2147483648
+Time: 202.067 Memory: 4194304
+Time: 202.084 Memory: 2147483648
+Time: 202.084 Memory: 4194304
+Time: 202.101 Memory: 2147483648
+Time: 202.114 Memory: 4194304
+Time: 202.132 Memory: 2147483648
+Time: 202.132 Memory: 4194304
+Time: 202.149 Memory: 2147483648
+Time: 202.164 Memory: 4194304
+Time: 220.084 Memory: 2147483648
+Time: 220.084 Memory: 4194304
+Time: 232.419 Memory: 2147483648
+Time: 232.42 Memory: 4194304
+Time: 237.286 Memory: 2147483648
+Time: 237.286 Memory: 4194304
+Time: 241.604 Memory: 2147483648
+Time: 241.605 Memory: 4194304
+Time: 242.624 Memory: 2147483648
+Time: 242.624 Memory: 4194304
+Time: 243.616 Memory: 2147483648
+Time: 243.617 Memory: 4194304
+Time: 243.879 Memory: 2147483648
+Time: 243.879 Memory: 4194304
+Time: 244.138 Memory: 2147483648
+Time: 244.138 Memory: 4194304
+Time: 244.194 Memory: 2147483648
+Time: 244.194 Memory: 4194304
+Time: 244.254 Memory: 2147483648
+Time: 244.254 Memory: 4194304
+Time: 244.27 Memory: 2147483648
+Time: 244.27 Memory: 4194304
+Time: 244.287 Memory: 2147483648
+Time: 244.317 Memory: 4194304
+Time: 244.381 Memory: 2147483648
+Time: 244.381 Memory: 4194304
+Time: 244.452 Memory: 2147483648
+Time: 244.471 Memory: 4194304
+Time: 244.487 Memory: 2147483648
+Time: 244.487 Memory: 4194304
+Time: 244.502 Memory: 2147483648
+Time: 244.513 Memory: 4194304
+Time: 244.751 Memory: 2147483648
+Time: 244.752 Memory: 4194304
+Time: 245.006 Memory: 2147483648
+Time: 245.006 Memory: 4194304
+Time: 245.063 Memory: 2147483648
+Time: 245.063 Memory: 4194304
+Time: 245.118 Memory: 2147483648
+Time: 245.118 Memory: 4194304
+Time: 245.135 Memory: 2147483648
+Time: 245.135 Memory: 4194304
+Time: 245.152 Memory: 2147483648
+Time: 245.179 Memory: 4194304
+Time: 245.244 Memory: 2147483648
+Time: 245.244 Memory: 4194304
+Time: 245.313 Memory: 2147483648
+Time: 245.313 Memory: 4194304
+Time: 245.329 Memory: 2147483648
+Time: 245.329 Memory: 4194304
+Time: 245.347 Memory: 2147483648
+Time: 245.361 Memory: 4194304
+Time: 245.376 Memory: 2147483648
+Time: 245.377 Memory: 4194304
+Time: 245.393 Memory: 2147483648
+Time: 245.405 Memory: 4194304
+Time: 246.388 Memory: 2147483648
+Time: 246.388 Memory: 4194304
+Time: 247.361 Memory: 2147483648
+Time: 247.362 Memory: 4194304
+Time: 247.623 Memory: 2147483648
+Time: 247.623 Memory: 4194304
+Time: 247.848 Memory: 2147483648
+Time: 247.848 Memory: 4194304
+Time: 247.909 Memory: 2147483648
+Time: 247.91 Memory: 4194304
+Time: 247.968 Memory: 2147483648
+Time: 247.989 Memory: 4194304
+Time: 248.003 Memory: 2147483648
+Time: 248.003 Memory: 4194304
+Time: 248.016 Memory: 2147483648
+Time: 248.026 Memory: 4194304
+Time: 248.084 Memory: 2147483648
+Time: 248.084 Memory: 4194304
+Time: 248.142 Memory: 2147483648
+Time: 248.16 Memory: 4194304
+Time: 248.175 Memory: 2147483648
+Time: 248.175 Memory: 4194304
+Time: 248.188 Memory: 2147483648
+Time: 248.197 Memory: 4194304
+Time: 248.414 Memory: 2147483648
+Time: 248.414 Memory: 4194304
+Time: 248.633 Memory: 2147483648
+Time: 248.633 Memory: 4194304
+Time: 248.693 Memory: 2147483648
+Time: 248.693 Memory: 4194304
+Time: 248.75 Memory: 2147483648
+Time: 248.75 Memory: 4194304
+Time: 248.765 Memory: 2147483648
+Time: 248.765 Memory: 4194304
+Time: 248.781 Memory: 2147483648
+Time: 248.81 Memory: 4194304
+Time: 248.867 Memory: 2147483648
+Time: 248.867 Memory: 4194304
+Time: 248.925 Memory: 2147483648
+Time: 248.964 Memory: 4194304
+Time: 253.151 Memory: 2147483648
+Time: 253.151 Memory: 4194304
+Time: 257.315 Memory: 2147483648
+Time: 257.315 Memory: 4194304
+Time: 258.379 Memory: 2147483648
+Time: 258.379 Memory: 4194304
+Time: 259.466 Memory: 2147483648
+Time: 259.466 Memory: 4194304
+Time: 259.757 Memory: 2147483648
+Time: 259.757 Memory: 4194304
+Time: 260.064 Memory: 2147483648
+Time: 260.064 Memory: 4194304
+Time: 260.128 Memory: 2147483648
+Time: 260.128 Memory: 4194304
+Time: 260.193 Memory: 2147483648
+Time: 260.193 Memory: 4194304
+Time: 260.207 Memory: 2147483648
+Time: 260.207 Memory: 4194304
+Time: 260.221 Memory: 2147483648
+Time: 260.23 Memory: 4194304
+Time: 260.248 Memory: 2147483648
+Time: 260.248 Memory: 4194304
+Time: 260.266 Memory: 2147483648
+Time: 260.279 Memory: 4194304
+Time: 260.345 Memory: 2147483648
+Time: 260.345 Memory: 4194304
+Time: 260.416 Memory: 2147483648
+Time: 260.417 Memory: 4194304
+Time: 260.432 Memory: 2147483648
+Time: 260.433 Memory: 4194304
+Time: 260.448 Memory: 2147483648
+Time: 260.459 Memory: 4194304
+Time: 260.476 Memory: 2147483648
+Time: 260.476 Memory: 4194304
+Time: 260.493 Memory: 2147483648
+Time: 260.504 Memory: 4194304
+Time: 260.77 Memory: 2147483648
+Time: 260.77 Memory: 4194304
+Time: 261.036 Memory: 2147483648
+Time: 261.036 Memory: 4194304
+Time: 261.1 Memory: 2147483648
+Time: 261.1 Memory: 4194304
+Time: 261.163 Memory: 2147483648
+Time: 261.163 Memory: 4194304
+Time: 261.18 Memory: 2147483648
+Time: 261.18 Memory: 4194304
+Time: 261.195 Memory: 2147483648
+Time: 261.207 Memory: 4194304
+Time: 261.223 Memory: 2147483648
+Time: 261.223 Memory: 4194304
+Time: 261.239 Memory: 2147483648
+Time: 261.251 Memory: 4194304
+Time: 261.314 Memory: 2147483648
+Time: 261.314 Memory: 4194304
+Time: 261.375 Memory: 2147483648
+Time: 261.393 Memory: 4194304
+Time: 261.409 Memory: 2147483648
+Time: 261.41 Memory: 4194304
+Time: 261.425 Memory: 2147483648
+Time: 261.437 Memory: 4194304
+Time: 262.438 Memory: 2147483648
+Time: 262.438 Memory: 4194304
+Time: 263.467 Memory: 2147483648
+Time: 263.467 Memory: 4194304
+Time: 263.729 Memory: 2147483648
+Time: 263.729 Memory: 4194304
+Time: 264.022 Memory: 2147483648
+Time: 264.022 Memory: 4194304
+Time: 264.093 Memory: 2147483648
+Time: 264.093 Memory: 4194304
+Time: 264.159 Memory: 2147483648
+Time: 264.178 Memory: 4194304
+Time: 264.194 Memory: 2147483648
+Time: 264.194 Memory: 4194304
+Time: 264.209 Memory: 2147483648
+Time: 264.22 Memory: 4194304
+Time: 264.277 Memory: 2147483648
+Time: 264.278 Memory: 4194304
+Time: 264.333 Memory: 2147483648
+Time: 264.333 Memory: 4194304
+Time: 264.348 Memory: 2147483648
+Time: 264.349 Memory: 4194304
+Time: 264.364 Memory: 2147483648
+Time: 264.397 Memory: 4194304
+Time: 264.657 Memory: 2147483648
+Time: 264.657 Memory: 4194304
+Time: 264.904 Memory: 2147483648
+Time: 264.904 Memory: 4194304
+Time: 264.959 Memory: 2147483648
+Time: 264.959 Memory: 4194304
+Time: 265.013 Memory: 2147483648
+Time: 265.027 Memory: 4194304
+Time: 265.043 Memory: 2147483648
+Time: 265.043 Memory: 4194304
+Time: 265.059 Memory: 2147483648
+Time: 265.071 Memory: 4194304
+Time: 265.135 Memory: 2147483648
+Time: 265.135 Memory: 4194304
+Time: 265.199 Memory: 2147483648
+Time: 265.218 Memory: 4194304
+Time: 265.234 Memory: 2147483648
+Time: 265.234 Memory: 4194304
+Time: 265.249 Memory: 2147483648
+2147483648 2147483648
+Each balloon is mmapping 50
+cgroup memory 2147483648, target memory 2147483648
+num balloons 1
+Time 2.3186e-05s reached. Changing memory.
+value stored in times array: 0
+2147483648 2147483648
+Changing memory to (bytes): 2147483648 (Balloon size: 50)
+Done changing memory 50
+Time 0.00162508s reached. Changing memory.
+value stored in times array: 0.001625
+2147483648 4194304
+Changing memory to (bytes): 4194304 (Balloon size: 2143027200)
+Done changing memory 2143027200
+Time 65.2528s reached. Changing memory.
+value stored in times array: 65.2364
+2147483648 2147483648
+Changing memory to (bytes): 2147483648 (Balloon size: 50)
+Done changing memory 50
+Time 67.2536s reached. Changing memory.
+value stored in times array: 65.2365
+2147483648 4194304
+Changing memory to (bytes): 4194304 (Balloon size: 2143027200)
+Done changing memory 2143027200

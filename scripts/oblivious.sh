@@ -25,10 +25,8 @@ RESULTS_FILE="res/oblivious/oblivious_results.txt"
 # Temp log directory
 LOG_DIR="res/oblivious"
 
-# Clear log files
-rm -f $LOG_DIR/oblivious_*.log # Clear old logs
-
-# Clear results file
+# Clear files
+rm -f $LOG_DIR/oblivious_*.log
 rm -f $RESULTS_FILE
 
 # Cleanup function
@@ -57,6 +55,7 @@ echo "Cgroup setup complete. Memory limit: 4MiB, Swap limit: 2GiB."
 # Write setup info to results file
 echo "Cgroup setup: $CGROUP_NAME (Oblivious)" >> $RESULTS_FILE
 echo "Memory limit: $(($MEM_LIMIT / 1024 / 1024))MiB (Shared by $NUM_INSTANCES instances)" >> $RESULTS_FILE
+echo "Swap limit: $(($SWAP_LIMIT / 1024 / 1024 / 1024))GiB" >> $RESULTS_FILE
 echo "BASE_CASE: $BASE_CASE" >> $RESULTS_FILE
 echo "" >> $RESULTS_FILE
 echo "N, Hirschberg_IO_Avg, Oblivious_IO_Avg, Ratio" >> $RESULTS_FILE
@@ -65,7 +64,7 @@ for N in 32768 65536 131072; do
     echo "Running OBLIVIOUS test for N = $N"
     
     # --- Run Hirschberg (Oblivious) ---
-    echo "  Running Hirschberg (oblivious)..."
+    echo "  Running $NUM_INSTANCES Hirschberg (oblivious)..."
     sync; echo 3 > /proc/sys/vm/drop_caches
     
     # Run all instances in the background
@@ -86,7 +85,7 @@ for N in 32768 65536 131072; do
     LCS_HIRSCHBERG_IO_AVG=$(echo "scale=2; $HIRSCHBERG_TOTAL_IO / $NUM_INSTANCES" | bc)
 
     # --- Run Oblivious (Oblivious) ---
-    echo "  Running Oblivious (oblivious)..."
+    echo "  Running $NUM_INSTANCES Oblivious (oblivious)..."
     sync; echo 3 > /proc/sys/vm/drop_caches
 
     for i in $(seq 1 $NUM_INSTANCES); do
@@ -112,7 +111,7 @@ for N in 32768 65536 131072; do
     fi
 done
 
-echo "Oblivious experiment complete. Results saved to res/oblivious/oblivious_results.txt."
+echo "Oblivious experiment complete. Results saved to $RESULTS_FILE."
 
 # Fix permissions
 chown -R $SUDO_USER:$SUDO_USER res/oblivious/

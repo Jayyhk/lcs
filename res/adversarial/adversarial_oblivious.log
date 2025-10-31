@@ -1,0 +1,147 @@
+=====================================================================================
+Program: ./bin/lcs_oblivious
+m = 32768, n = 32768
+Runs = 1, base case = 2048
+
+RUN 1 RESULTS
+Time:
+  Wall time:               9.0993 seconds (0h 0m 9s)
+  User time:               8.3251 seconds (0h 0m 8s)
+  System time:             0.0744 seconds (0h 0m 0s)
+  Total time:              8.3995 seconds (0h 0m 8s)
+Process I/O:
+  Characters read:                  93143
+  Characters written:                 401
+  Read syscalls:                       60
+  Write syscalls:                      14
+  Bytes read:                     1396736 (1.3 MB)
+  Bytes written:                     8192 (0.0 MB)
+Disk I/O (sdc swap):
+  Read operations:                  86463
+  Read operations merged:          123474
+  Sectors read:                   1679448 (820.0 MB)
+  Read time:                        28158 ms
+  Write operations:                  6036
+  Write operations merged:          74488
+  Sectors written:                 644192 (314.5 MB)
+  Write time:                        4653 ms
+  I/Os (sectors read/written):    2323640
+Memory Usage:
+  Total (virtual):             5368 pages (21.0 MB)
+  Resident (RSS):              4896 pages (19.1 MB)
+  Shared:                       512 pages (2.0 MB)
+  Text (code):                    4 pages (0.0 MB)
+  Library:                        0 pages (0.0 MB)
+  Data + stack:                4548 pages (17.8 MB)
+  Dirty pages:                    0 pages (0.0 MB)
+  Minor page faults:           4348 (soft faults)
+  Major page faults:              0 (hard faults)
+
+FINAL RESULTS
+LCS Length: 10627
+Overall execution time:
+  User time:               8.3251 seconds (0h 0m 8s)
+  System time:             0.0744 seconds (0h 0m 0s)
+  Total time:              8.3995 seconds (0h 0m 8s)
+Average per run:
+  User time:               8.3251 seconds (0h 0m 8s)
+  System time:             0.0744 seconds (0h 0m 0s)
+  Total time:              8.3995 seconds (0h 0m 8s)
+=====================================================================================
+Program: ./bin/lcs_oblivious
+m = 65536, n = 65536
+Runs = 1, base case = 2048
+
+RUN 1 RESULTS
+Time:
+  Wall time:               35.8602 seconds (0h 0m 36s)
+  User time:               35.3564 seconds (0h 0m 35s)
+  System time:             0.0342 seconds (0h 0m 0s)
+  Total time:              35.3906 seconds (0h 0m 35s)
+Process I/O:
+  Characters read:                 158673
+  Characters written:                 407
+  Read syscalls:                       76
+  Write syscalls:                      14
+  Bytes read:                     1654784 (1.6 MB)
+  Bytes written:                     8192 (0.0 MB)
+Disk I/O (sdc swap):
+  Read operations:                 288362
+  Read operations merged:          426175
+  Sectors read:                   5716312 (2791.2 MB)
+  Read time:                       119005 ms
+  Write operations:                 21445
+  Write operations merged:         271320
+  Sectors written:                2342288 (1143.7 MB)
+  Write time:                      137872 ms
+  I/Os (sectors read/written):    8058600
+Memory Usage:
+  Total (virtual):             5768 pages (22.5 MB)
+  Resident (RSS):              5152 pages (20.1 MB)
+  Shared:                       512 pages (2.0 MB)
+  Text (code):                    4 pages (0.0 MB)
+  Library:                        0 pages (0.0 MB)
+  Data + stack:                4948 pages (19.3 MB)
+  Dirty pages:                    0 pages (0.0 MB)
+  Minor page faults:           4608 (soft faults)
+  Major page faults:              2 (hard faults)
+
+FINAL RESULTS
+LCS Length: 21269
+Overall execution time:
+  User time:               35.3564 seconds (0h 0m 35s)
+  System time:             0.0342 seconds (0h 0m 0s)
+  Total time:              35.3906 seconds (0h 0m 35s)
+Average per run:
+  User time:               35.3564 seconds (0h 0m 35s)
+  System time:             0.0342 seconds (0h 0m 0s)
+  Total time:              35.3906 seconds (0h 0m 35s)
+=====================================================================================
+Program: ./bin/lcs_oblivious
+m = 131072, n = 131072
+Runs = 1, base case = 2048
+
+RUN 1 RESULTS
+Time:
+  Wall time:               134.0036 seconds (0h 2m 14s)
+  User time:               132.7611 seconds (0h 2m 13s)
+  System time:             0.0629 seconds (0h 0m 0s)
+  Total time:              132.8240 seconds (0h 2m 13s)
+Process I/O:
+  Characters read:                 289759
+  Characters written:                 412
+  Read syscalls:                      108
+  Write syscalls:                      14
+  Bytes read:                     1908736 (1.8 MB)
+  Bytes written:                    12288 (0.0 MB)
+Disk I/O (sdc swap):
+  Read operations:                 983015
+  Read operations merged:          731564
+  Sectors read:                  13716712 (6697.6 MB)
+  Read time:                       481905 ms
+  Write operations:                 75963
+  Write operations merged:         654750
+  Sectors written:                5845528 (2854.3 MB)
+  Write time:                     2029454 ms
+  I/Os (sectors read/written):   19562240
+Memory Usage:
+  Total (virtual):             6523 pages (25.5 MB)
+  Resident (RSS):              5728 pages (22.4 MB)
+  Shared:                       512 pages (2.0 MB)
+  Text (code):                    4 pages (0.0 MB)
+  Library:                        0 pages (0.0 MB)
+  Data + stack:                5703 pages (22.3 MB)
+  Dirty pages:                    0 pages (0.0 MB)
+  Minor page faults:           5125 (soft faults)
+  Major page faults:              2 (hard faults)
+
+FINAL RESULTS
+LCS Length: 42705
+Overall execution time:
+  User time:               132.7611 seconds (0h 2m 13s)
+  System time:             0.0629 seconds (0h 0m 0s)
+  Total time:              132.8240 seconds (0h 2m 13s)
+Average per run:
+  User time:               132.7611 seconds (0h 2m 13s)
+  System time:             0.0629 seconds (0h 0m 0s)
+  Total time:              132.8240 seconds (0h 2m 13s)

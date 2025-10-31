@@ -1,0 +1,147 @@
+=====================================================================================
+Program: ./bin/lcs_hirschberg
+m = 32768, n = 32768
+Runs = 1, base case = 2048
+
+RUN 1 RESULTS
+Time:
+  Wall time:               17.6564 seconds (0h 0m 18s)
+  User time:               16.2919 seconds (0h 0m 16s)
+  System time:             0.0061 seconds (0h 0m 0s)
+  Total time:              16.2979 seconds (0h 0m 16s)
+Process I/O:
+  Characters read:                  93143
+  Characters written:                 408
+  Read syscalls:                       60
+  Write syscalls:                      14
+  Bytes read:                      704512 (0.7 MB)
+  Bytes written:                     8192 (0.0 MB)
+Disk I/O (sdc swap):
+  Read operations:                 170116
+  Read operations merged:          239066
+  Sectors read:                   3273464 (1598.4 MB)
+  Read time:                        55279 ms
+  Write operations:                 11966
+  Write operations merged:         143481
+  Sectors written:                1243576 (607.2 MB)
+  Write time:                        8974 ms
+  I/Os (sectors read/written):    4517040
+Memory Usage:
+  Total (virtual):             5184 pages (20.2 MB)
+  Resident (RSS):              4768 pages (18.6 MB)
+  Shared:                       512 pages (2.0 MB)
+  Text (code):                    4 pages (0.0 MB)
+  Library:                        0 pages (0.0 MB)
+  Data + stack:                4364 pages (17.0 MB)
+  Dirty pages:                    0 pages (0.0 MB)
+  Minor page faults:           4223 (soft faults)
+  Major page faults:              0 (hard faults)
+
+FINAL RESULTS
+LCS Length: 10627
+Overall execution time:
+  User time:               16.2919 seconds (0h 0m 16s)
+  System time:             0.0061 seconds (0h 0m 0s)
+  Total time:              16.2979 seconds (0h 0m 16s)
+Average per run:
+  User time:               16.2919 seconds (0h 0m 16s)
+  System time:             0.0061 seconds (0h 0m 0s)
+  Total time:              16.2979 seconds (0h 0m 16s)
+=====================================================================================
+Program: ./bin/lcs_hirschberg
+m = 65536, n = 65536
+Runs = 1, base case = 2048
+
+RUN 1 RESULTS
+Time:
+  Wall time:               74.8778 seconds (0h 1m 15s)
+  User time:               71.2411 seconds (0h 1m 11s)
+  System time:             2.4604 seconds (0h 0m 2s)
+  Total time:              73.7015 seconds (0h 1m 14s)
+Process I/O:
+  Characters read:                 158679
+  Characters written:                 408
+  Read syscalls:                       76
+  Write syscalls:                      14
+  Bytes read:                     1159168 (1.1 MB)
+  Bytes written:                     8192 (0.0 MB)
+Disk I/O (sdc swap):
+  Read operations:                 597649
+  Read operations merged:         1044173
+  Sectors read:                  13134552 (6413.4 MB)
+  Read time:                       245773 ms
+  Write operations:                 47269
+  Write operations merged:         629171
+  Sectors written:                5411520 (2642.3 MB)
+  Write time:                       85330 ms
+  I/Os (sectors read/written):   18546072
+Memory Usage:
+  Total (virtual):             5353 pages (20.9 MB)
+  Resident (RSS):              4896 pages (19.1 MB)
+  Shared:                       512 pages (2.0 MB)
+  Text (code):                    4 pages (0.0 MB)
+  Library:                        0 pages (0.0 MB)
+  Data + stack:                4533 pages (17.7 MB)
+  Dirty pages:                    0 pages (0.0 MB)
+  Minor page faults:           4366 (soft faults)
+  Major page faults:              1 (hard faults)
+
+FINAL RESULTS
+LCS Length: 21269
+Overall execution time:
+  User time:               71.2411 seconds (0h 1m 11s)
+  System time:             2.4604 seconds (0h 0m 2s)
+  Total time:              73.7015 seconds (0h 1m 14s)
+Average per run:
+  User time:               71.2411 seconds (0h 1m 11s)
+  System time:             2.4604 seconds (0h 0m 2s)
+  Total time:              73.7015 seconds (0h 1m 14s)
+=====================================================================================
+Program: ./bin/lcs_hirschberg
+m = 131072, n = 131072
+Runs = 1, base case = 2048
+
+RUN 1 RESULTS
+Time:
+  Wall time:               273.2174 seconds (0h 4m 33s)
+  User time:               272.2970 seconds (0h 4m 32s)
+  System time:             0.0512 seconds (0h 0m 0s)
+  Total time:              272.3482 seconds (0h 4m 32s)
+Process I/O:
+  Characters read:                 289747
+  Characters written:                 413
+  Read syscalls:                      108
+  Write syscalls:                      14
+  Bytes read:                     1642496 (1.6 MB)
+  Bytes written:                    12288 (0.0 MB)
+Disk I/O (sdc swap):
+  Read operations:                2019566
+  Read operations merged:         2585287
+  Sectors read:                  36838776 (17987.7 MB)
+  Read time:                       959362 ms
+  Write operations:                147907
+  Write operations merged:        1741322
+  Sectors written:               15113688 (7379.7 MB)
+  Write time:                     1592875 ms
+  I/Os (sectors read/written):   51952464
+Memory Usage:
+  Total (virtual):             5693 pages (22.2 MB)
+  Resident (RSS):              5216 pages (20.4 MB)
+  Shared:                       512 pages (2.0 MB)
+  Text (code):                    4 pages (0.0 MB)
+  Library:                        0 pages (0.0 MB)
+  Data + stack:                4873 pages (19.0 MB)
+  Dirty pages:                    0 pages (0.0 MB)
+  Minor page faults:           4639 (soft faults)
+  Major page faults:              1 (hard faults)
+
+FINAL RESULTS
+LCS Length: 42705
+Overall execution time:
+  User time:               272.2970 seconds (0h 4m 32s)
+  System time:             0.0512 seconds (0h 0m 0s)
+  Total time:              272.3482 seconds (0h 4m 32s)
+Average per run:
+  User time:               272.2970 seconds (0h 4m 32s)
+  System time:             0.0512 seconds (0h 0m 0s)
+  Total time:              272.3482 seconds (0h 4m 32s)

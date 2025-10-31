@@ -1,0 +1,782 @@
+Starting balloon program
+Balloon data filename: res/adversarial/balloon/balloon_data1
+Value: 0
+Value: 2048
+Value: 0.000568
+Value: 4
+Value: 4.39768
+Value: 2048
+Value: 4.39778
+Value: 4
+Value: 8.77339
+Value: 2048
+Value: 8.77365
+Value: 4
+Value: 9.90071
+Value: 2048
+Value: 9.90086
+Value: 4
+Value: 11.0638
+Value: 2048
+Value: 11.0642
+Value: 4
+Value: 11.3474
+Value: 2048
+Value: 11.3476
+Value: 4
+Value: 11.6257
+Value: 2048
+Value: 11.6258
+Value: 4
+Value: 11.6916
+Value: 2048
+Value: 11.6917
+Value: 4
+Value: 11.758
+Value: 2048
+Value: 11.7581
+Value: 4
+Value: 11.7762
+Value: 2048
+Value: 11.7763
+Value: 4
+Value: 11.7939
+Value: 2048
+Value: 11.8478
+Value: 4
+Value: 11.9118
+Value: 2048
+Value: 11.9119
+Value: 4
+Value: 11.9755
+Value: 2048
+Value: 11.9945
+Value: 4
+Value: 12.0118
+Value: 2048
+Value: 12.0119
+Value: 4
+Value: 12.0284
+Value: 2048
+Value: 12.0389
+Value: 4
+Value: 12.3545
+Value: 2048
+Value: 12.3546
+Value: 4
+Value: 12.6546
+Value: 2048
+Value: 12.6547
+Value: 4
+Value: 12.7305
+Value: 2048
+Value: 12.7306
+Value: 4
+Value: 12.8053
+Value: 2048
+Value: 12.8054
+Value: 4
+Value: 12.8213
+Value: 2048
+Value: 12.8214
+Value: 4
+Value: 12.8407
+Value: 2048
+Value: 12.8536
+Value: 4
+Value: 12.874
+Value: 2048
+Value: 12.8741
+Value: 4
+Value: 12.8966
+Value: 2048
+Value: 12.9105
+Value: 4
+Value: 12.9829
+Value: 2048
+Value: 12.983
+Value: 4
+Value: 13.0521
+Value: 2048
+Value: 13.0522
+Value: 4
+Value: 13.0687
+Value: 2048
+Value: 13.0688
+Value: 4
+Value: 13.0862
+Value: 2048
+Value: 13.1227
+Value: 4
+Value: 11.7036
+Value: 2048
+Value: 11.7037
+Value: 4
+Value: 12.8568
+Value: 2048
+Value: 12.857
+Value: 4
+Value: 13.1573
+Value: 2048
+Value: 13.1574
+Value: 4
+Value: 13.4362
+Value: 2048
+Value: 13.4363
+Value: 4
+Value: 13.5043
+Value: 2048
+Value: 13.5044
+Value: 4
+Value: 13.5733
+Value: 2048
+Value: 13.5938
+Value: 4
+Value: 13.6118
+Value: 2048
+Value: 13.6119
+Value: 4
+Value: 13.6299
+Value: 2048
+Value: 13.6416
+Value: 4
+Value: 13.7147
+Value: 2048
+Value: 13.7147
+Value: 4
+Value: 13.7885
+Value: 2048
+Value: 13.7886
+Value: 4
+Value: 13.8066
+Value: 2048
+Value: 13.8067
+Value: 4
+Value: 13.8241
+Value: 2048
+Value: 13.8389
+Value: 4
+Value: 13.857
+Value: 2048
+Value: 13.8571
+Value: 4
+Value: 13.876
+Value: 2048
+Value: 13.8878
+Value: 4
+Value: 14.1532
+Value: 2048
+Value: 14.1533
+Value: 4
+Value: 14.4439
+Value: 2048
+Value: 14.444
+Value: 4
+Value: 14.4989
+Value: 2048
+Value: 14.4991
+Value: 4
+Value: 14.5537
+Value: 2048
+Value: 14.5868
+Value: 4
+Value: 14.6597
+Value: 2048
+Value: 14.6598
+Value: 4
+Value: 14.732
+Value: 2048
+Value: 14.7528
+Value: 4
+Value: 14.7726
+Value: 2048
+Value: 14.7727
+Value: 4
+Value: 14.7933
+Value: 2048
+Time: 0 Memory: 2147483648
+Time: 0.000568 Memory: 4194304
+Time: 4.39768 Memory: 2147483648
+Time: 4.39778 Memory: 4194304
+Time: 8.77339 Memory: 2147483648
+Time: 8.77365 Memory: 4194304
+Time: 9.90071 Memory: 2147483648
+Time: 9.90086 Memory: 4194304
+Time: 11.0638 Memory: 2147483648
+Time: 11.0642 Memory: 4194304
+Time: 11.3474 Memory: 2147483648
+Time: 11.3476 Memory: 4194304
+Time: 11.6257 Memory: 2147483648
+Time: 11.6258 Memory: 4194304
+Time: 11.6916 Memory: 2147483648
+Time: 11.6917 Memory: 4194304
+Time: 11.758 Memory: 2147483648
+Time: 11.7581 Memory: 4194304
+Time: 11.7762 Memory: 2147483648
+Time: 11.7763 Memory: 4194304
+Time: 11.7939 Memory: 2147483648
+Time: 11.8478 Memory: 4194304
+Time: 11.9118 Memory: 2147483648
+Time: 11.9119 Memory: 4194304
+Time: 11.9755 Memory: 2147483648
+Time: 11.9945 Memory: 4194304
+Time: 12.0118 Memory: 2147483648
+Time: 12.0119 Memory: 4194304
+Time: 12.0284 Memory: 2147483648
+Time: 12.0389 Memory: 4194304
+Time: 12.3545 Memory: 2147483648
+Time: 12.3546 Memory: 4194304
+Time: 12.6546 Memory: 2147483648
+Time: 12.6547 Memory: 4194304
+Time: 12.7305 Memory: 2147483648
+Time: 12.7306 Memory: 4194304
+Time: 12.8053 Memory: 2147483648
+Time: 12.8054 Memory: 4194304
+Time: 12.8213 Memory: 2147483648
+Time: 12.8214 Memory: 4194304
+Time: 12.8407 Memory: 2147483648
+Time: 12.8536 Memory: 4194304
+Time: 12.874 Memory: 2147483648
+Time: 12.8741 Memory: 4194304
+Time: 12.8966 Memory: 2147483648
+Time: 12.9105 Memory: 4194304
+Time: 12.9829 Memory: 2147483648
+Time: 12.983 Memory: 4194304
+Time: 13.0521 Memory: 2147483648
+Time: 13.0522 Memory: 4194304
+Time: 13.0687 Memory: 2147483648
+Time: 13.0688 Memory: 4194304
+Time: 13.0862 Memory: 2147483648
+Time: 13.1227 Memory: 4194304
+Time: 11.7036 Memory: 2147483648
+Time: 11.7037 Memory: 4194304
+Time: 12.8568 Memory: 2147483648
+Time: 12.857 Memory: 4194304
+Time: 13.1573 Memory: 2147483648
+Time: 13.1574 Memory: 4194304
+Time: 13.4362 Memory: 2147483648
+Time: 13.4363 Memory: 4194304
+Time: 13.5043 Memory: 2147483648
+Time: 13.5044 Memory: 4194304
+Time: 13.5733 Memory: 2147483648
+Time: 13.5938 Memory: 4194304
+Time: 13.6118 Memory: 2147483648
+Time: 13.6119 Memory: 4194304
+Time: 13.6299 Memory: 2147483648
+Time: 13.6416 Memory: 4194304
+Time: 13.7147 Memory: 2147483648
+Time: 13.7147 Memory: 4194304
+Time: 13.7885 Memory: 2147483648
+Time: 13.7886 Memory: 4194304
+Time: 13.8066 Memory: 2147483648
+Time: 13.8067 Memory: 4194304
+Time: 13.8241 Memory: 2147483648
+Time: 13.8389 Memory: 4194304
+Time: 13.857 Memory: 2147483648
+Time: 13.8571 Memory: 4194304
+Time: 13.876 Memory: 2147483648
+Time: 13.8878 Memory: 4194304
+Time: 14.1532 Memory: 2147483648
+Time: 14.1533 Memory: 4194304
+Time: 14.4439 Memory: 2147483648
+Time: 14.444 Memory: 4194304
+Time: 14.4989 Memory: 2147483648
+Time: 14.4991 Memory: 4194304
+Time: 14.5537 Memory: 2147483648
+Time: 14.5868 Memory: 4194304
+Time: 14.6597 Memory: 2147483648
+Time: 14.6598 Memory: 4194304
+Time: 14.732 Memory: 2147483648
+Time: 14.7528 Memory: 4194304
+Time: 14.7726 Memory: 2147483648
+Time: 14.7727 Memory: 4194304
+Time: 14.7933 Memory: 2147483648
+2147483648 2147483648
+Each balloon is mmapping 50
+cgroup memory 2147483648, target memory 2147483648
+num balloons 1
+Time 3.5212e-05s reached. Changing memory.
+value stored in times array: 0
+2147483648 2147483648
+Changing memory to (bytes): 2147483648 (Balloon size: 50)
+Done changing memory 50
+Time 0.000568024s reached. Changing memory.
+value stored in times array: 0.000568
+2147483648 4194304
+Changing memory to (bytes): 4194304 (Balloon size: 2143027200)
+Done changing memory 2143027200
+Time 4.39776s reached. Changing memory.
+value stored in times array: 4.39768
+2147483648 2147483648
+Changing memory to (bytes): 2147483648 (Balloon size: 50)
+Done changing memory 50
+Time 5.22932s reached. Changing memory.
+value stored in times array: 4.39778
+2147483648 4194304
+Changing memory to (bytes): 4194304 (Balloon size: 2143027200)
+Done changing memory 2143027200
+Time 8.77355s reached. Changing memory.
+value stored in times array: 8.77339
+2147483648 2147483648
+Changing memory to (bytes): 2147483648 (Balloon size: 50)
+Done changing memory 50
+Time 9.65236s reached. Changing memory.
+value stored in times array: 8.77365
+2147483648 4194304
+Changing memory to (bytes): 4194304 (Balloon size: 2143027200)
+Done changing memory 2143027200
+Time 9.90082s reached. Changing memory.
+value stored in times array: 9.90071
+2147483648 2147483648
+Changing memory to (bytes): 2147483648 (Balloon size: 50)
+Done changing memory 50
+Time 10.0247s reached. Changing memory.
+value stored in times array: 9.90086
+2147483648 4194304
+Changing memory to (bytes): 4194304 (Balloon size: 2143027200)
+Done changing memory 2143027200
+Time 11.0639s reached. Changing memory.
+value stored in times array: 11.0638
+2147483648 2147483648
+Changing memory to (bytes): 2147483648 (Balloon size: 50)
+Done changing memory 50
+Time 11.4894s reached. Changing memory.
+value stored in times array: 11.0642
+2147483648 4194304
+Changing memory to (bytes): 4194304 (Balloon size: 2143027200)
+Done changing memory 2143027200
+Time 11.4898s reached. Changing memory.
+value stored in times array: 11.3474
+2147483648 2147483648
+Changing memory to (bytes): 2147483648 (Balloon size: 50)
+Done changing memory 50
+Time 11.4901s reached. Changing memory.
+value stored in times array: 11.3476
+2147483648 4194304
+Changing memory to (bytes): 4194304 (Balloon size: 2143027200)
+Done changing memory 2143027200
+Time 11.6259s reached. Changing memory.
+value stored in times array: 11.6257
+2147483648 2147483648
+Changing memory to (bytes): 2147483648 (Balloon size: 50)
+Done changing memory 50
+Time 11.6764s reached. Changing memory.
+value stored in times array: 11.6258
+2147483648 4194304
+Changing memory to (bytes): 4194304 (Balloon size: 2143027200)
+Done changing memory 2143027200
+Time 11.6917s reached. Changing memory.
+value stored in times array: 11.6916
+2147483648 2147483648
+Changing memory to (bytes): 2147483648 (Balloon size: 50)
+Done changing memory 50
+Time 11.6994s reached. Changing memory.
+value stored in times array: 11.6917
+2147483648 4194304
+Changing memory to (bytes): 4194304 (Balloon size: 2143027200)
+Done changing memory 2143027200
+Time 11.7581s reached. Changing memory.
+value stored in times array: 11.758
+2147483648 2147483648
+Changing memory to (bytes): 2147483648 (Balloon size: 50)
+Done changing memory 50
+Time 11.7839s reached. Changing memory.
+value stored in times array: 11.7581
+2147483648 4194304
+Changing memory to (bytes): 4194304 (Balloon size: 2143027200)
+Done changing memory 2143027200
+Time 11.7845s reached. Changing memory.
+value stored in times array: 11.7762
+2147483648 2147483648
+Changing memory to (bytes): 2147483648 (Balloon size: 50)
+Done changing memory 50
+Time 11.7849s reached. Changing memory.
+value stored in times array: 11.7763
+2147483648 4194304
+Changing memory to (bytes): 4194304 (Balloon size: 2143027200)
+Done changing memory 2143027200
+Time 11.7942s reached. Changing memory.
+value stored in times array: 11.7939
+2147483648 2147483648
+Changing memory to (bytes): 2147483648 (Balloon size: 50)
+Done changing memory 50
+Time 11.8478s reached. Changing memory.
+value stored in times array: 11.8478
+2147483648 4194304
+Changing memory to (bytes): 4194304 (Balloon size: 2143027200)
+Done changing memory 2143027200
+Time 11.9118s reached. Changing memory.
+value stored in times array: 11.9118
+2147483648 2147483648
+Changing memory to (bytes): 2147483648 (Balloon size: 50)
+Done changing memory 50
+Time 11.9356s reached. Changing memory.
+value stored in times array: 11.9119
+2147483648 4194304
+Changing memory to (bytes): 4194304 (Balloon size: 2143027200)
+Done changing memory 2143027200
+Time 11.9757s reached. Changing memory.
+value stored in times array: 11.9755
+2147483648 2147483648
+Changing memory to (bytes): 2147483648 (Balloon size: 50)
+Done changing memory 50
+Time 11.9967s reached. Changing memory.
+value stored in times array: 11.9945
+2147483648 4194304
+Changing memory to (bytes): 4194304 (Balloon size: 2143027200)
+Done changing memory 2143027200
+Time 12.0119s reached. Changing memory.
+value stored in times array: 12.0118
+2147483648 2147483648
+Changing memory to (bytes): 2147483648 (Balloon size: 50)
+Done changing memory 50
+Time 12.0176s reached. Changing memory.
+value stored in times array: 12.0119
+2147483648 4194304
+Changing memory to (bytes): 4194304 (Balloon size: 2143027200)
+Done changing memory 2143027200
+Time 12.0286s reached. Changing memory.
+value stored in times array: 12.0284
+2147483648 2147483648
+Changing memory to (bytes): 2147483648 (Balloon size: 50)
+Done changing memory 50
+Time 12.0389s reached. Changing memory.
+value stored in times array: 12.0389
+2147483648 4194304
+Changing memory to (bytes): 4194304 (Balloon size: 2143027200)
+Done changing memory 2143027200
+Time 12.3546s reached. Changing memory.
+value stored in times array: 12.3545
+2147483648 2147483648
+Changing memory to (bytes): 2147483648 (Balloon size: 50)
+Done changing memory 50
+Time 12.4752s reached. Changing memory.
+value stored in times array: 12.3546
+2147483648 4194304
+Changing memory to (bytes): 4194304 (Balloon size: 2143027200)
+Done changing memory 2143027200
+Time 12.6546s reached. Changing memory.
+value stored in times array: 12.6546
+2147483648 2147483648
+Changing memory to (bytes): 2147483648 (Balloon size: 50)
+Done changing memory 50
+Time 12.7312s reached. Changing memory.
+value stored in times array: 12.6547
+2147483648 4194304
+Changing memory to (bytes): 4194304 (Balloon size: 2143027200)
+Done changing memory 2143027200
+Time 12.732s reached. Changing memory.
+value stored in times array: 12.7305
+2147483648 2147483648
+Changing memory to (bytes): 2147483648 (Balloon size: 50)
+Done changing memory 50
+Time 12.7326s reached. Changing memory.
+value stored in times array: 12.7306
+2147483648 4194304
+Changing memory to (bytes): 4194304 (Balloon size: 2143027200)
+Done changing memory 2143027200
+Time 12.8054s reached. Changing memory.
+value stored in times array: 12.8053
+2147483648 2147483648
+Changing memory to (bytes): 2147483648 (Balloon size: 50)
+Done changing memory 50
+Time 12.8322s reached. Changing memory.
+value stored in times array: 12.8054
+2147483648 4194304
+Changing memory to (bytes): 4194304 (Balloon size: 2143027200)
+Done changing memory 2143027200
+Time 12.8327s reached. Changing memory.
+value stored in times array: 12.8213
+2147483648 2147483648
+Changing memory to (bytes): 2147483648 (Balloon size: 50)
+Done changing memory 50
+Time 12.833s reached. Changing memory.
+value stored in times array: 12.8214
+2147483648 4194304
+Changing memory to (bytes): 4194304 (Balloon size: 2143027200)
+Done changing memory 2143027200
+Time 12.8408s reached. Changing memory.
+value stored in times array: 12.8407
+2147483648 2147483648
+Changing memory to (bytes): 2147483648 (Balloon size: 50)
+Done changing memory 50
+Time 12.8536s reached. Changing memory.
+value stored in times array: 12.8536
+2147483648 4194304
+Changing memory to (bytes): 4194304 (Balloon size: 2143027200)
+Done changing memory 2143027200
+Time 12.8742s reached. Changing memory.
+value stored in times array: 12.874
+2147483648 2147483648
+Changing memory to (bytes): 2147483648 (Balloon size: 50)
+Done changing memory 50
+Time 12.882s reached. Changing memory.
+value stored in times array: 12.8741
+2147483648 4194304
+Changing memory to (bytes): 4194304 (Balloon size: 2143027200)
+Done changing memory 2143027200
+Time 12.8967s reached. Changing memory.
+value stored in times array: 12.8966
+2147483648 2147483648
+Changing memory to (bytes): 2147483648 (Balloon size: 50)
+Done changing memory 50
+Time 12.9105s reached. Changing memory.
+value stored in times array: 12.9105
+2147483648 4194304
+Changing memory to (bytes): 4194304 (Balloon size: 2143027200)
+Done changing memory 2143027200
+Time 12.9829s reached. Changing memory.
+value stored in times array: 12.9829
+2147483648 2147483648
+Changing memory to (bytes): 2147483648 (Balloon size: 50)
+Done changing memory 50
+Time 13.0114s reached. Changing memory.
+value stored in times array: 12.983
+2147483648 4194304
+Changing memory to (bytes): 4194304 (Balloon size: 2143027200)
+Done changing memory 2143027200
+Time 13.0522s reached. Changing memory.
+value stored in times array: 13.0521
+2147483648 2147483648
+Changing memory to (bytes): 2147483648 (Balloon size: 50)
+Done changing memory 50
+Time 13.0664s reached. Changing memory.
+value stored in times array: 13.0522
+2147483648 4194304
+Changing memory to (bytes): 4194304 (Balloon size: 2143027200)
+Done changing memory 2143027200
+Time 13.0688s reached. Changing memory.
+value stored in times array: 13.0687
+2147483648 2147483648
+Changing memory to (bytes): 2147483648 (Balloon size: 50)
+Done changing memory 50
+Time 13.0701s reached. Changing memory.
+value stored in times array: 13.0688
+2147483648 4194304
+Changing memory to (bytes): 4194304 (Balloon size: 2143027200)
+Done changing memory 2143027200
+Time 13.0863s reached. Changing memory.
+value stored in times array: 13.0862
+2147483648 2147483648
+Changing memory to (bytes): 2147483648 (Balloon size: 50)
+Done changing memory 50
+Time 13.1227s reached. Changing memory.
+value stored in times array: 13.1227
+2147483648 4194304
+Changing memory to (bytes): 4194304 (Balloon size: 2143027200)
+Done changing memory 2143027200
+Time 13.1235s reached. Changing memory.
+value stored in times array: 11.7036
+2147483648 2147483648
+Changing memory to (bytes): 2147483648 (Balloon size: 50)
+Done changing memory 50
+Time 13.124s reached. Changing memory.
+value stored in times array: 11.7037
+2147483648 4194304
+Changing memory to (bytes): 4194304 (Balloon size: 2143027200)
+Done changing memory 2143027200
+Time 13.1244s reached. Changing memory.
+value stored in times array: 12.8568
+2147483648 2147483648
+Changing memory to (bytes): 2147483648 (Balloon size: 50)
+Done changing memory 50
+Time 13.1247s reached. Changing memory.
+value stored in times array: 12.857
+2147483648 4194304
+Changing memory to (bytes): 4194304 (Balloon size: 2143027200)
+Done changing memory 2143027200
+Time 13.1574s reached. Changing memory.
+value stored in times array: 13.1573
+2147483648 2147483648
+Changing memory to (bytes): 2147483648 (Balloon size: 50)
+Done changing memory 50
+Time 13.1698s reached. Changing memory.
+value stored in times array: 13.1574
+2147483648 4194304
+Changing memory to (bytes): 4194304 (Balloon size: 2143027200)
+Done changing memory 2143027200
+Time 13.4362s reached. Changing memory.
+value stored in times array: 13.4362
+2147483648 2147483648
+Changing memory to (bytes): 2147483648 (Balloon size: 50)
+Done changing memory 50
+Time 13.5302s reached. Changing memory.
+value stored in times array: 13.4363
+2147483648 4194304
+Changing memory to (bytes): 4194304 (Balloon size: 2143027200)
+Done changing memory 2143027200
+Time 13.5306s reached. Changing memory.
+value stored in times array: 13.5043
+2147483648 2147483648
+Changing memory to (bytes): 2147483648 (Balloon size: 50)
+Done changing memory 50
+Time 13.531s reached. Changing memory.
+value stored in times array: 13.5044
+2147483648 4194304
+Changing memory to (bytes): 4194304 (Balloon size: 2143027200)
+Done changing memory 2143027200
+Time 13.5734s reached. Changing memory.
+value stored in times array: 13.5733
+2147483648 2147483648
+Changing memory to (bytes): 2147483648 (Balloon size: 50)
+Done changing memory 50
+Time 13.5938s reached. Changing memory.
+value stored in times array: 13.5938
+2147483648 4194304
+Changing memory to (bytes): 4194304 (Balloon size: 2143027200)
+Done changing memory 2143027200
+Time 13.612s reached. Changing memory.
+value stored in times array: 13.6118
+2147483648 2147483648
+Changing memory to (bytes): 2147483648 (Balloon size: 50)
+Done changing memory 50
+Time 13.6185s reached. Changing memory.
+value stored in times array: 13.6119
+2147483648 4194304
+Changing memory to (bytes): 4194304 (Balloon size: 2143027200)
+Done changing memory 2143027200
+Time 13.63s reached. Changing memory.
+value stored in times array: 13.6299
+2147483648 2147483648
+Changing memory to (bytes): 2147483648 (Balloon size: 50)
+Done changing memory 50
+Time 13.6416s reached. Changing memory.
+value stored in times array: 13.6416
+2147483648 4194304
+Changing memory to (bytes): 4194304 (Balloon size: 2143027200)
+Done changing memory 2143027200
+Time 13.7148s reached. Changing memory.
+value stored in times array: 13.7147
+2147483648 2147483648
+Changing memory to (bytes): 2147483648 (Balloon size: 50)
+Done changing memory 50
+Time 13.742s reached. Changing memory.
+value stored in times array: 13.7147
+2147483648 4194304
+Changing memory to (bytes): 4194304 (Balloon size: 2143027200)
+Done changing memory 2143027200
+Time 13.7886s reached. Changing memory.
+value stored in times array: 13.7885
+2147483648 2147483648
+Changing memory to (bytes): 2147483648 (Balloon size: 50)
+Done changing memory 50
+Time 13.8063s reached. Changing memory.
+value stored in times array: 13.7886
+2147483648 4194304
+Changing memory to (bytes): 4194304 (Balloon size: 2143027200)
+Done changing memory 2143027200
+Time 13.8067s reached. Changing memory.
+value stored in times array: 13.8066
+2147483648 2147483648
+Changing memory to (bytes): 2147483648 (Balloon size: 50)
+Done changing memory 50
+Time 13.8072s reached. Changing memory.
+value stored in times array: 13.8067
+2147483648 4194304
+Changing memory to (bytes): 4194304 (Balloon size: 2143027200)
+Done changing memory 2143027200
+Time 13.8242s reached. Changing memory.
+value stored in times array: 13.8241
+2147483648 2147483648
+Changing memory to (bytes): 2147483648 (Balloon size: 50)
+Done changing memory 50
+Time 13.8389s reached. Changing memory.
+value stored in times array: 13.8389
+2147483648 4194304
+Changing memory to (bytes): 4194304 (Balloon size: 2143027200)
+Done changing memory 2143027200
+Time 13.8571s reached. Changing memory.
+value stored in times array: 13.857
+2147483648 2147483648
+Changing memory to (bytes): 2147483648 (Balloon size: 50)
+Done changing memory 50
+Time 13.8655s reached. Changing memory.
+value stored in times array: 13.8571
+2147483648 4194304
+Changing memory to (bytes): 4194304 (Balloon size: 2143027200)
+Done changing memory 2143027200
+Time 13.8762s reached. Changing memory.
+value stored in times array: 13.876
+2147483648 2147483648
+Changing memory to (bytes): 2147483648 (Balloon size: 50)
+Done changing memory 50
+Time 13.8878s reached. Changing memory.
+value stored in times array: 13.8878
+2147483648 4194304
+Changing memory to (bytes): 4194304 (Balloon size: 2143027200)
+Done changing memory 2143027200
+Time 14.1533s reached. Changing memory.
+value stored in times array: 14.1532
+2147483648 2147483648
+Changing memory to (bytes): 2147483648 (Balloon size: 50)
+Done changing memory 50
+Time 14.2659s reached. Changing memory.
+value stored in times array: 14.1533
+2147483648 4194304
+Changing memory to (bytes): 4194304 (Balloon size: 2143027200)
+Done changing memory 2143027200
+Time 14.444s reached. Changing memory.
+value stored in times array: 14.4439
+2147483648 2147483648
+Changing memory to (bytes): 2147483648 (Balloon size: 50)
+Done changing memory 50
+Time 14.5097s reached. Changing memory.
+value stored in times array: 14.444
+2147483648 4194304
+Changing memory to (bytes): 4194304 (Balloon size: 2143027200)
+Done changing memory 2143027200
+Time 14.5106s reached. Changing memory.
+value stored in times array: 14.4989
+2147483648 2147483648
+Changing memory to (bytes): 2147483648 (Balloon size: 50)
+Done changing memory 50
+Time 14.5113s reached. Changing memory.
+value stored in times array: 14.4991
+2147483648 4194304
+Changing memory to (bytes): 4194304 (Balloon size: 2143027200)
+Done changing memory 2143027200
+Time 14.5543s reached. Changing memory.
+value stored in times array: 14.5537
+2147483648 2147483648
+Changing memory to (bytes): 2147483648 (Balloon size: 50)
+Done changing memory 50
+Time 14.5868s reached. Changing memory.
+value stored in times array: 14.5868
+2147483648 4194304
+Changing memory to (bytes): 4194304 (Balloon size: 2143027200)
+Done changing memory 2143027200
+Time 14.6599s reached. Changing memory.
+value stored in times array: 14.6597
+2147483648 2147483648
+Changing memory to (bytes): 2147483648 (Balloon size: 50)
+Done changing memory 50
+Time 14.6862s reached. Changing memory.
+value stored in times array: 14.6598
+2147483648 4194304
+Changing memory to (bytes): 4194304 (Balloon size: 2143027200)
+Done changing memory 2143027200
+Time 14.7321s reached. Changing memory.
+value stored in times array: 14.732
+2147483648 2147483648
+Changing memory to (bytes): 2147483648 (Balloon size: 50)
+Done changing memory 50
+Time 14.7528s reached. Changing memory.
+value stored in times array: 14.7528
+2147483648 4194304
+Changing memory to (bytes): 4194304 (Balloon size: 2143027200)
+Done changing memory 2143027200
+Time 14.7726s reached. Changing memory.
+value stored in times array: 14.7726
+2147483648 2147483648
+Changing memory to (bytes): 2147483648 (Balloon size: 50)
+Done changing memory 50
+Time 14.7816s reached. Changing memory.
+value stored in times array: 14.7727
+2147483648 4194304
+Changing memory to (bytes): 4194304 (Balloon size: 2143027200)
+Done changing memory 2143027200
+Time 14.7935s reached. Changing memory.
+value stored in times array: 14.7933
+2147483648 2147483648
+Changing memory to (bytes): 2147483648 (Balloon size: 50)
+Done changing memory 50

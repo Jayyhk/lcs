@@ -25,10 +25,8 @@ RESULTS_FILE="res/constant/constant_results.txt"
 HIRSCHBERG_LOG="res/constant/constant_hirschberg.log"
 OBLIVIOUS_LOG="res/constant/constant_oblivious.log"
 
-# Clear log files
+# Clear files
 rm -f $HIRSCHBERG_LOG $OBLIVIOUS_LOG
-
-# Clear results file
 rm -f $RESULTS_FILE
 
 # Cleanup function
@@ -92,7 +90,7 @@ for N in 32768 65536 131072; do
     fi
 done
 
-echo "Constant experiment complete. Results saved to res/constant/constant_results.txt."
+echo "Constant experiment complete. Results saved to $RESULTS_FILE."
 
 # Fix permissions
 chown -R $SUDO_USER:$SUDO_USER res/constant/
