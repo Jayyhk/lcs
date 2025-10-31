@@ -1,6 +1,12 @@
+# Compiled object files and executables
 bin/*
 *.o
 *.obj
 *.exe
 *.out
 *.a
+
+# Balloon data files
+balloon_data1
+balloon_data2
+balloon_data3
