@@ -13,7 +13,7 @@ fi
 mkdir -p res/constant
 
 # --- Configuration ---
-BASE_CASE=2048        # Base case for recursion, larger = more memory usage
+BASE_CASE=256         # Base case for recursion, larger = more memory usage
 MEM_LIMIT=4194304     # 4MiB
 SWAP_LIMIT=2147483648 # 2GiB
 

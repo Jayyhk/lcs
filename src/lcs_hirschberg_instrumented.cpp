@@ -1,6 +1,8 @@
 /*
 Hirschberg's algorithm.
 Last Update: Oct 04, 2005 ( Rezaul Alam Chowdhury, UT Austin )
+
+THIS FILE HAS BEEN INSTRUMENTED TO SEND SIGNALS TO THE BALLOON
 */
 
 #include <math.h>
@@ -10,6 +12,11 @@ Last Update: Oct 04, 2005 ( Rezaul Alam Chowdhury, UT Austin )
 #include <sys/resource.h>
 #include <sys/time.h>
 #include <time.h>
+
+// --- Includes for signaling ---
+#include <fcntl.h>   // For open()
+#include <unistd.h>  // For write(), close()
+// ---
 
 #include "../include/util.h"
 
@@ -57,6 +64,19 @@ char alpha[MAX_ALPHABET_SIZE + 1];
 
 char *fname1;
 char *fname2;
+
+/*
+ * Helper function to send a 1-byte signal to the pipe.
+ * This "wakes up" the waiting balloon.
+ */
+void send_signal(int pipe_fd) {
+    printf("LCS: Sending signal to balloon...\n");
+    if (write(pipe_fd, "1", 1) == -1) {
+        perror("LCS: Error writing to pipe!");
+        // We don't exit, just log the error.
+    }
+}
+
 
 void free_memory(int r) {
     int i;
@@ -223,10 +243,11 @@ void copy_seq(int j) {
     Y = YS[j];
 }
 
-void ALG_B(int m, int n, SYMBOL_TYPE *XX, SYMBOL_TYPE *YY, int *LL) {
-
-    // ADDED THIS LINE: Print a "START" timestamp to stderr.
-    fprintf(stderr, "%.6f,START_SCAN\n", get_time_sec());
+// INSTRUMENTED: Added pipe_fd and signal calls
+void ALG_B(int m, int n, SYMBOL_TYPE *XX, SYMBOL_TYPE *YY, int *LL, int pipe_fd) {
+    
+    // --- 1. SEND START_SCAN SIGNAL ---
+    send_signal(pipe_fd);
 
     int i, j;
 
@@ -250,12 +271,13 @@ void ALG_B(int m, int n, SYMBOL_TYPE *XX, SYMBOL_TYPE *YY, int *LL) {
     for (j = 0; j <= n; j++) {
         LL[j] = K[1][j];
     }
-
-    // ADDED THIS LINE: Print an "END" timestamp to stderr.
-    fprintf(stderr, "%.6f,END_SCAN\n", get_time_sec());
+    
+    // --- 2. SEND END_SCAN SIGNAL ---
+    send_signal(pipe_fd);
 }
 
-void ALG_C(int m, int n, SYMBOL_TYPE *XX, SYMBOL_TYPE *YY, SYMBOL_TYPE *XXR, SYMBOL_TYPE *YYR) {
+// INSTRUMENTED: Added pipe_fd
+void ALG_C(int m, int n, SYMBOL_TYPE *XX, SYMBOL_TYPE *YY, SYMBOL_TYPE *XXR, SYMBOL_TYPE *YYR, int pipe_fd) {
     int i, j, k, M;
     SYMBOL_TYPE s;
 
@@ -308,8 +330,9 @@ void ALG_C(int m, int n, SYMBOL_TYPE *XX, SYMBOL_TYPE *YY, SYMBOL_TYPE *XXR, SYM
     } else {
         i = m >> 1;
 
-        ALG_B(i, n, XX, YY, L1);
-        ALG_B(m - i, n, XXR, YYR, L2);
+        // Pass pipe_fd to ALG_B
+        ALG_B(i, n, XX, YY, L1, pipe_fd);
+        ALG_B(m - i, n, XXR, YYR, L2, pipe_fd);
 
         M = 0;
         k = -1;
@@ -320,12 +343,14 @@ void ALG_C(int m, int n, SYMBOL_TYPE *XX, SYMBOL_TYPE *YY, SYMBOL_TYPE *XXR, SYM
             }
         }
 
-        ALG_C(i, k, XX, YY, XXR + m - i, YYR + n - k);
-        ALG_C(m - i, n - k, XX + i, YY + k, XXR, YYR);
+        // Pass pipe_fd to recursive calls
+        ALG_C(i, k, XX, YY, XXR + m - i, YYR + n - k, pipe_fd);
+        ALG_C(m - i, n - k, XX + i, YY + k, XXR, YYR, pipe_fd);
     }
 }
 
-int lcs_hirschberg(void) {
+// INSTRUMENTED: Added pipe_fd
+int lcs_hirschberg(int pipe_fd) {
     int i;
 
     for (i = 1; i <= nx; i++) {
@@ -339,7 +364,8 @@ int lcs_hirschberg(void) {
     YR[ny + 1] = 0;
 
     zp = 0;
-    ALG_C(nx, ny, X + 1, Y + 1, XR + 1, YR + 1);
+    // Pass pipe_fd to ALG_C
+    ALG_C(nx, ny, X + 1, Y + 1, XR + 1, YR + 1, pipe_fd);
 
     Z[zp + 1] = 0;
 
@@ -353,11 +379,12 @@ int main(int argc, char *argv[]) {
 
     printf(
         "=====================================================================================\n");
-    printf("Program: %s\n", argv[0]);
+    printf("Program: %s (Signal-Instrumented)\n", argv[0]);
 
-    if (argc < 3) {
+    // INSTRUMENTED: Changed arg check from 3 to 5
+    if (argc < 5) {
         printf("\nError: not enough arguments!\n");
-        printf("Specify: n ( = length of sequence ) and r ( = number of runs ).\n\n");
+        printf("Specify: n ( = length of sequence ), r ( = number of runs ), base ( = base case ), and pipe ( = /path/to/pipe )\n\n");
         return 0;
     }
 
@@ -397,11 +424,9 @@ int main(int argc, char *argv[]) {
         LOG_BASE_N++;
     }
 
-    if (argc > b + 4)
-        prn = atoi(argv[b + 4]);
-    else
-        prn = 0;
-
+    // INSTRUMENTED: Get pipe filename from argv[4]
+    char* pipe_filename = argv[b + 4];
+    
     if (!allocate_memory(m, n, r, BASE_N)) return 0;
 
     if (b == 0) {
@@ -420,18 +445,30 @@ int main(int argc, char *argv[]) {
 
     printf("m = %d, n = %d\n", m, n);
     printf("Runs = %d, base case = %d\n", r, BASE_N);
+    printf("Pipe = %s\n", pipe_filename); // Print pipe name
+
+    // --- INSTRUMENTED: Open the Pipe for Writing ---
+    // This connects to the balloon, which is waiting (blocked)
+    // on the other end of this pipe.
+    int pipe_fd = open(pipe_filename, O_WRONLY);
+    if (pipe_fd < 0) {
+        perror("LCS: Failed to open pipe for writing. Is balloon running?");
+        return 1;
+    }
+    printf("LCS: Connected to balloon pipe.\n");
+
 
     getrusage(RUSAGE_SELF, &ru[0]);
-
-    // ADDED THIS LINE to initialize the global start time.
-    get_time_sec();
 
     for (i = 0; i < r; i++) {
         init_disk_io();  // Initialize disk I/O counters
         init_page_faults();  // Initialize page fault counters
         double start = get_wall_time();
         copy_seq(i);
-        l = lcs_hirschberg();
+        
+        // INSTRUMENTED: Pass pipe_fd to algorithm
+        l = lcs_hirschberg(pipe_fd);
+        
         zps[i] = l;
         double end = get_wall_time();
         getrusage(RUSAGE_SELF, &ru[i + 1]);
@@ -439,7 +476,7 @@ int main(int argc, char *argv[]) {
         printf("\n");
         printf("RUN %d RESULTS\n", i + 1);
         printf("Time:\n");
-        printf("  Wall time:               %.4f seconds (%s)\n", end - start, conv_sec(end - start, str));
+        printf("  Wall time:                %.4f seconds (%s)\n", end - start, conv_sec(end - start, str));
 
         double run_ut = ru[i + 1].ru_utime.tv_sec + (ru[i + 1].ru_utime.tv_usec * 0.000001) -
                         (ru[i].ru_utime.tv_sec + (ru[i].ru_utime.tv_usec * 0.000001));
@@ -447,9 +484,9 @@ int main(int argc, char *argv[]) {
                         (ru[i].ru_stime.tv_sec + (ru[i].ru_stime.tv_usec * 0.000001));
         double run_tt = run_ut + run_st;
 
-        printf("  User time:               %.4f seconds (%s)\n", run_ut, conv_sec(run_ut, str));
-        printf("  System time:             %.4f seconds (%s)\n", run_st, conv_sec(run_st, str));
-        printf("  Total time:              %.4f seconds (%s)\n", run_tt, conv_sec(run_tt, str));
+        printf("  User time:                %.4f seconds (%s)\n", run_ut, conv_sec(run_ut, str));
+        printf("  System time:              %.4f seconds (%s)\n", run_st, conv_sec(run_st, str));
+        printf("  Total time:               %.4f seconds (%s)\n", run_tt, conv_sec(run_tt, str));
 
         print_proc_io();
         print_disk_io();  // Show disk I/O activity difference
@@ -463,6 +500,12 @@ int main(int argc, char *argv[]) {
     tt = ut + st;
 
     print_final_results(zps[r - 1], ut, st, tt, r, str);
+
+    // --- INSTRUMENTED: Close the Pipe ---
+    // This tells the balloon's 'read()' loop to exit,
+    // allowing the balloon to clean up and quit.
+    printf("LCS: Algorithm complete. Closing pipe.\n");
+    close(pipe_fd);
 
     free_memory(r);
 

@@ -1,0 +1,608 @@
+/*
+Our cache-oblivious LCS algorithm from SODA'06.
+Last Update: Sep 04, 2006 ( Rezaul Alam Chowdhury, UT Austin )
+
+THIS FILE HAS BEEN INSTRUMENTED TO SEND SIGNALS TO THE BALLOON
+*/
+
+#include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/resource.h>
+#include <sys/time.h>
+#include <time.h>
+
+// --- Includes for signaling ---
+#include <fcntl.h>   // For open()
+#include <unistd.h>  // For write(), close()
+// ---
+
+#include "../include/util.h"
+
+#define DEFAULT_BASE 32
+
+#define MAX_ALPHABET_SIZE 256
+
+#define SYMBOL_TYPE char
+
+#define IDX(b, t) (MAX_N + b + t)
+#define max(a, b) ((a) > (b)) ? (a) : (b)
+#define min(a, b) ((a) < (b)) ? (a) : (b)
+
+#define BIDX(j, i) (((j) << LOG_BASE_N) + j + i)
+
+int MAX_N;
+int BASE_N;
+int LOG_BASE_N;
+
+SYMBOL_TYPE *X;
+SYMBOL_TYPE *Y;
+SYMBOL_TYPE *Z;
+
+int nx, ny;
+
+int xp, yp, zp;
+
+char **XS;
+char **YS;
+
+int *nxs;
+int *nys;
+
+int *rlen;
+int *buf_rlen;
+int *buf_up;
+int *buf_left;
+int *buf_up_left;
+
+int *blen;
+
+struct rusage *ru;
+int *zps;
+
+char alpha[MAX_ALPHABET_SIZE + 1];
+
+char *fname1;
+char *fname2;
+
+
+/*
+ * Helper function to send a 1-byte signal to the pipe.
+ * This "wakes up" the waiting balloon.
+ */
+void send_signal(int pipe_fd) {
+    printf("LCS: Sending signal to balloon...\n");
+    if (write(pipe_fd, "1", 1) == -1) {
+        perror("LCS: Error writing to pipe!");
+        // We don't exit, just log the error.
+    }
+}
+
+
+void free_memory(int r) {
+    int i;
+
+    if (Z != NULL) free(Z);
+
+    if (rlen != NULL) free(rlen);
+
+    if (buf_rlen != NULL) free(buf_rlen);
+
+    if (buf_up != NULL) free(buf_up);
+    if (buf_left != NULL) free(buf_left);
+    if (buf_up_left != NULL) free(buf_up_left);
+
+    if (blen != NULL) free(blen);
+
+    if (XS != NULL) {
+        for (i = 0; i < r; i++)
+            if (XS[i] != NULL) free(XS[i]);
+
+        free(XS);
+    }
+
+    if (YS != NULL) {
+        for (i = 0; i < r; i++)
+            if (YS[i] != NULL) free(YS[i]);
+
+        free(YS);
+    }
+
+    if (nxs != NULL) free(nxs);
+    if (nys != NULL) free(nys);
+
+    if (ru != NULL) free(ru);
+
+    if (zps != NULL) free(zps);
+}
+
+int myceil(double v) {
+    int i;
+
+    i = ((int)v);
+
+    if (v > i) i++;
+
+    return i;
+}
+
+int allocate_memory(int m, int n, int r, int b) {
+    int i, d, nn, mm;
+
+    nn = 1;
+
+    while (nn < m) nn <<= 1;
+
+    mm = min(m, n);
+
+    Z = (SYMBOL_TYPE *)malloc((mm + 2) * sizeof(SYMBOL_TYPE));
+
+    rlen = (int *)malloc((2 * nn + 1) * sizeof(int));
+
+    mm = n * ((int)ceil((m * 1.0) / n) - 1);
+    if (mm > 0) buf_rlen = (int *)malloc((mm) * sizeof(int));
+
+    buf_up = (int *)malloc((3 * nn) * sizeof(int));
+    buf_left = (int *)malloc((3 * nn) * sizeof(int));
+    buf_up_left = (int *)malloc((3 * nn) * sizeof(int));
+
+    XS = (char **)malloc((r) * sizeof(char *));
+    YS = (char **)malloc((r) * sizeof(char *));
+
+    nxs = (int *)malloc((r) * sizeof(int));
+    nys = (int *)malloc((r) * sizeof(int));
+
+    blen = (int *)malloc((b + 1) * (b + 1) * sizeof(int));
+
+    ru = (struct rusage *)malloc((r + 1) * sizeof(struct rusage));
+    zps = (int *)malloc((r) * sizeof(int));
+
+    if ((Z == NULL) || (rlen == NULL) || ((mm > 0) && (buf_rlen == NULL)) || (buf_up == NULL) ||
+        (buf_left == NULL) || (buf_up_left == NULL) || (XS == NULL) || (YS == NULL) ||
+        (nxs == NULL) || (nys == NULL) || (blen == NULL) || (ru == NULL) || (zps == NULL)) {
+        printf("\nError: memory allocation failed!\n\n");
+        free_memory(r);
+        return 0;
+    }
+
+    for (i = 0; i < r; i++) {
+        XS[i] = (char *)malloc((m + 2) * sizeof(char));
+        YS[i] = (char *)malloc((n + 2) * sizeof(char));
+
+        if ((XS[i] == NULL) || (YS[i] == NULL)) {
+            printf("\nError: memory allocation failed!\n\n");
+            free_memory(r);
+            return 0;
+        }
+    }
+
+    return 1;
+}
+
+int read_data(int r) {
+    int i, d;
+
+    scanf("alphabet: %s\n\n", alpha);
+
+    for (i = 0; i < r; i++) {
+        if (scanf("sequence pair %d:\n\n", &d) != 1) return 0;
+        if (scanf("X = %s\n", XS[i] + 1) != 1) return 0;
+        nxs[i] = strlen(XS[i] + 1);
+        if (scanf("Y = %s\n\n", YS[i] + 1) != 1) return 0;
+        nys[i] = strlen(YS[i] + 1);
+    }
+
+    return 1;
+}
+
+int read_data_sep(int r) {
+    int i;
+    FILE *fp;
+
+    if ((fp = fopen(fname1, "r")) == NULL) return 0;
+    fscanf(fp, "%d\n", &i);
+    for (i = 0; i < r; i++) {
+        if (fscanf(fp, "%s\n", XS[i] + 1) != 1) return 0;
+        nxs[i] = strlen(XS[i] + 1);
+    }
+    fclose(fp);
+
+    if ((fp = fopen(fname2, "r")) == NULL) return 0;
+    fscanf(fp, "%d\n", &i);
+    for (i = 0; i < r; i++) {
+        if (fscanf(fp, "%s\n", YS[i] + 1) != 1) return 0;
+        nys[i] = strlen(YS[i] + 1);
+    }
+    fclose(fp);
+
+    return 1;
+}
+
+int get_m_n_sep(int *m, int *n) {
+    FILE *fp;
+
+    if ((fp = fopen(fname1, "r")) == NULL) return 0;
+    if (fscanf(fp, "%d", m) != 1) return 0;
+    fclose(fp);
+
+    if ((fp = fopen(fname2, "r")) == NULL) return 0;
+    if (fscanf(fp, "%d", n) != 1) return 0;
+    fclose(fp);
+
+    return 1;
+}
+
+void copy_seq(int j) {
+    int i;
+
+    nx = nxs[j];
+    ny = nys[j];
+
+    X = XS[j];
+    Y = YS[j];
+}
+
+void lcs_inverted_triangle(int bi, int bj, int n);
+
+void lcs_straight_triangle(int bi, int bj, int n) {
+    int i, j, k, l, lt, nn;
+
+    if (n <= BASE_N) {
+        for (k = 0; k < n; k++) {
+            i = min(bi + k, xp);
+            j = bj + (bi + k - i);
+            lt = IDX(0, i - j);
+            j = min(bj + k, yp);
+            i = bi + (bj + k - j);
+            for (l = IDX(0, i - j); l <= lt; l += 2, i++, j--) {
+                if (X[i] == Y[j])
+                    rlen[l] = rlen[l] + 1;
+                else
+                    rlen[l] = max(rlen[l - 1], rlen[l + 1]);
+            }
+        }
+    } else {
+        nn = n >> 1;
+
+        lcs_straight_triangle(bi, bj, nn);
+        lcs_inverted_triangle(bi, bj, nn);
+        if (xp >= bi + nn) lcs_straight_triangle(bi + nn, bj, nn);
+        if (yp >= bj + nn) lcs_straight_triangle(bi, bj + nn, nn);
+    }
+}
+
+void lcs_inverted_triangle(int bi, int bj, int n) {
+    int i, j, k, l, lt, nn;
+
+    if (n <= BASE_N) {
+        for (k = n - 2; k >= 0; k--) {
+            i = min(bi - 1 + n, xp);
+            j = bj - 1 + n - k + ((bi - 1 + n) - i);
+            lt = IDX(0, i - j);
+            j = min(bj - 1 + n, yp);
+            i = bi - 1 + n - k + ((bj - 1 + n) - j);
+            for (l = IDX(0, i - j); l <= lt; l += 2, i++, j--) {
+                if (X[i] == Y[j])
+                    rlen[l] = rlen[l] + 1;
+                else
+                    rlen[l] = max(rlen[l - 1], rlen[l + 1]);
+            }
+        }
+    } else {
+        nn = n >> 1;
+
+        if (xp >= bi + nn) lcs_inverted_triangle(bi + nn, bj, nn);
+        if (yp >= bj + nn) lcs_inverted_triangle(bi, bj + nn, nn);
+        if ((xp >= bi + nn) && (yp >= bj + nn)) {
+            lcs_straight_triangle(nn + bi, nn + bj, nn);
+            lcs_inverted_triangle(nn + bi, nn + bj, nn);
+        }
+    }
+}
+
+// INSTRUMENTED: Added pipe_fd
+void rec_LCS(int bi, int bj, int n, int f, int pipe_fd) {
+    int i, j, k, mm, nn, b = bi - bj, sv;
+
+    if (n <= BASE_N) {
+        mm = xp - bi + 1;
+        nn = yp - bj + 1;
+
+        for (k = 0; k <= mm; k++) blen[BIDX(0, k)] = rlen[IDX(b, k)];
+
+        for (k = 0; k <= nn; k++) blen[BIDX(k, 0)] = rlen[IDX(b, -k)];
+
+        for (j = 1; j <= nn; j++)
+            for (i = 1, k = BIDX(j, 1); i <= mm; i++, k++) {
+                if (X[bi + i - 1] == Y[bj + j - 1])
+                    blen[k] = blen[k - BASE_N - 2] + 1;
+                else
+                    blen[k] = max(blen[k - BASE_N - 1], blen[k - 1]);
+            }
+
+        while ((mm > 0) && (nn > 0)) {
+            if (X[bi + mm - 1] == Y[bj + nn - 1]) {
+                Z[zp++] = X[bi + mm - 1];
+                mm--;
+                nn--;
+            } else if (blen[BIDX(nn - 1, mm)] > blen[BIDX(nn, mm - 1)])
+                nn--;
+            else
+                mm--;
+        }
+
+        xp = mm + bi - 1;
+        yp = nn + bj - 1;
+    } else {
+        nn = n >> 1;
+
+        if ((xp >= bi + nn) || (yp >= bj + nn)) {
+            sv = 1;
+
+            for (k = -nn; k <= nn; k++) buf_up_left[f + k + nn] = rlen[IDX(b, k)];
+            
+            // --- 1. SEND START_SCAN SIGNAL ---
+            send_signal(pipe_fd);
+            lcs_straight_triangle(bi, bj, nn);
+            lcs_inverted_triangle(bi, bj, nn);
+            // --- 2. SEND END_SCAN SIGNAL ---
+            send_signal(pipe_fd);
+
+        } else
+            sv = 0;
+
+        if ((xp >= bi + nn) && (yp >= bj + nn)) {
+            for (k = -nn; k <= nn; k++) buf_left[f + k + nn] = rlen[IDX(b - nn, k)];
+
+            // --- 3. SEND START_SCAN SIGNAL ---
+            send_signal(pipe_fd);
+            lcs_straight_triangle(bi, bj + nn, nn);
+            lcs_inverted_triangle(bi, bj + nn, nn);
+            // --- 4. SEND END_SCAN SIGNAL ---
+            send_signal(pipe_fd);
+
+
+            for (k = -nn; k <= nn; k++) buf_up[f + k + nn] = rlen[IDX(b + nn, k)];
+
+            // --- 5. SEND START_SCAN SIGNAL ---
+            send_signal(pipe_fd);
+            lcs_straight_triangle(bi + nn, bj, nn);
+            lcs_inverted_triangle(bi + nn, bj, nn);
+            // --- 6. SEND END_SCAN SIGNAL ---
+            send_signal(pipe_fd);
+            
+
+            // Pass pipe_fd to recursive call
+            rec_LCS(bi + nn, bj + nn, nn, f + n + 1, pipe_fd);
+
+            if (xp >= bi + nn) {
+                for (k = -nn; k <= nn; k++) rlen[IDX(b + nn, k)] = buf_up[f + k + nn];
+            } else if (yp >= bj + nn) {
+                for (k = -nn; k <= nn; k++) rlen[IDX(b - nn, k)] = buf_left[f + k + nn];
+            }
+        }
+
+        if (xp >= bi + nn)
+            // Pass pipe_fd to recursive call
+            rec_LCS(bi + nn, bj, nn, f + n + 1, pipe_fd);
+        else if (yp >= bj + nn)
+            // Pass pipe_fd to recursive call
+            rec_LCS(bi, bj + nn, nn, f + n + 1, pipe_fd);
+
+        if ((xp >= bi) && (yp >= bj)) {
+            if (sv) {
+                for (k = -nn; k <= nn; k++) rlen[IDX(b, k)] = buf_up_left[f + k + nn];
+            }
+            
+            // Pass pipe_fd to recursive call
+            rec_LCS(bi, bj, nn, f + n + 1, pipe_fd);
+        }
+    }
+}
+
+// INSTRUMENTED: Added pipe_fd
+void lcs_oblivious(int r, int n, int pipe_fd) {
+    int i, j, k, l, t;
+
+    nx = nxs[r];
+    ny = nys[r];
+
+    X = XS[r];
+    Y = YS[r];
+
+    for (j = -ny; j < nx; j++) rlen[IDX(0, j)] = 0;
+
+    xp = nx;
+    yp = ny;
+    zp = 0;
+
+    // Pass pipe_fd to rec_LCS
+    rec_LCS(1, 1, n, 0, pipe_fd);
+}
+
+int find_rec_LCS(void) {
+    int i, j;
+    SYMBOL_TYPE s;
+
+    Z[zp] = 0;
+
+    for (i = 0, j = zp - 1; i < j; i++, j--) {
+        s = Z[i];
+        Z[i] = Z[j];
+        Z[j] = s;
+    }
+
+    printf("LCS Length = %d\n", zp);
+    printf("LCS = ");
+    for (i = 0; i < zp; i++) printf("%c", Z[i]);
+    printf("\n\n");
+
+    return zp;
+}
+
+void verify(void) {
+    int i, j;
+
+    for (i = j = 1; j <= zp; j++, i++) {
+        while ((i <= nx) && (Z[j - 1] != X[i])) i++;
+        if (i > nx) break;
+    }
+
+    if (j == zp + 1)
+        printf("Found in X!!!\n\n");
+    else
+        printf("Not Found in X!!!\n\n");
+
+    for (i = j = 1; j <= zp; j++, i++) {
+        while ((i <= nx) && (Z[j - 1] != Y[i])) i++;
+        if (i > ny) break;
+    }
+
+    if (j == zp + 1)
+        printf("Found in Y!!!\n\n");
+    else
+        printf("Not Found in Y!!!\n\n");
+}
+
+int main(int argc, char *argv[]) {
+    int i, l, m, n, nn, r, b, prn;
+    double ut, st, tt;
+    char str[50];
+
+    printf(
+        "=====================================================================================\n");
+    printf("Program: %s (Signal-Instrumented)\n", argv[0]);
+
+    // INSTRUMENTED: Changed arg check from 3 to 5
+    if (argc < 5) {
+        printf("\nError: not enough arguments!\n");
+        printf("Specify: n ( = length of sequence ), r ( = number of runs ), base ( = base case ), and pipe ( = /path/to/pipe )\n\n");
+        return 0;
+    }
+
+    n = atoi(argv[1]);
+    if (n == -1) {
+        fname1 = argv[2];
+        fname2 = argv[3];
+        b = 2;
+    } else
+        b = 0;
+    r = atoi(argv[b + 2]);
+    m = n;
+
+    if (n == 0) {
+        if (scanf("%d %d\n\n", &m, &n) != 2) {
+            printf("\nError: cannot read sequence lengths!\n");
+            return 0;
+        }
+    } else if (n == -1) {
+        if (!get_m_n_sep(&m, &n)) {
+            printf("\nError: cannot read sequence lengths!\n");
+            return 0;
+        }
+    }
+
+    if (m < n) {
+        printf("\nError: m < n!\n");
+        return 0;
+    }
+
+    MAX_N = 1;
+    while (MAX_N < m) MAX_N <<= 1;
+
+    if (argc > b + 3) {
+        BASE_N = atoi(argv[b + 3]);
+        if (BASE_N <= 0) BASE_N = DEFAULT_BASE;
+    } else
+        BASE_N = DEFAULT_BASE;
+
+    l = BASE_N;
+    LOG_BASE_N = 0;
+    while (l > 1) {
+        l >>= 1;
+        LOG_BASE_N++;
+    }
+
+    // INSTRUMENTED: Get pipe filename from argv[4]
+    char* pipe_filename = argv[b + 4];
+
+    if (!allocate_memory(m, n, r, BASE_N)) return 0;
+
+    if (b == 0) {
+        if (!read_data(r)) {
+            printf("\nError: failed to read data!\n\n");
+            free_memory(r);
+            return 0;
+        }
+    } else {
+        if (!read_data_sep(r)) {
+            printf("\nError: failed to read data!\n\n");
+            free_memory(r);
+            return 0;
+        }
+    }
+
+    printf("m = %d, n = %d\n", m, n);
+    printf("Runs = %d, base case = %d\n", r, BASE_N);
+    printf("Pipe = %s\n", pipe_filename); // Print pipe name
+
+    // --- INSTRUMENTED: Open the Pipe for Writing ---
+    int pipe_fd = open(pipe_filename, O_WRONLY);
+    if (pipe_fd < 0) {
+        perror("LCS: Failed to open pipe for writing. Is balloon running?");
+        return 1;
+    }
+    printf("LCS: Connected to balloon pipe.\n");
+
+
+    getrusage(RUSAGE_SELF, &ru[0]);
+
+    for (i = 0; i < r; i++) {
+        init_disk_io();  // Initialize disk I/O counters
+        init_page_faults();  // Initialize page fault counters
+        double start = get_wall_time();
+        
+        // INSTRUMENTED: Pass pipe_fd to algorithm
+        lcs_oblivious(i, MAX_N, pipe_fd);
+        
+        zps[i] = zp;
+        double end = get_wall_time();
+        getrusage(RUSAGE_SELF, &ru[i + 1]);
+
+        printf("\n");
+        printf("RUN %d RESULTS\n", i + 1);
+        printf("Time:\n");
+        printf("  Wall time:                %.4f seconds (%s)\n", end - start, conv_sec(end - start, str));
+
+        double run_ut = ru[i + 1].ru_utime.tv_sec + (ru[i + 1].ru_utime.tv_usec * 0.000001) -
+                        (ru[i].ru_utime.tv_sec + (ru[i].ru_utime.tv_usec * 0.000001));
+        double run_st = ru[i + 1].ru_stime.tv_sec + (ru[i + 1].ru_stime.tv_usec * 0.000001) -
+                        (ru[i].ru_stime.tv_sec + (ru[i].ru_stime.tv_usec * 0.000001));
+        double run_tt = run_ut + run_st;
+
+        printf("  User time:                %.4f seconds (%s)\n", run_ut, conv_sec(run_ut, str));
+        printf("  System time:              %.4f seconds (%s)\n", run_st, conv_sec(run_st, str));
+        printf("  Total time:               %.4f seconds (%s)\n", run_tt, conv_sec(run_tt, str));
+
+        print_proc_io();
+        print_disk_io();  // Show disk I/O activity difference
+        print_mem_data();
+    }
+
+    ut = ru[r].ru_utime.tv_sec + (ru[r].ru_utime.tv_usec * 0.000001) -
+         (ru[0].ru_utime.tv_sec + (ru[0].ru_utime.tv_usec * 0.000001));
+    st = ru[r].ru_stime.tv_sec + (ru[r].ru_stime.tv_usec * 0.000001) -
+         (ru[0].ru_stime.tv_sec + (ru[0].ru_stime.tv_usec * 0.000001));
+    tt = ut + st;
+
+    print_final_results(zps[r - 1], ut, st, tt, r, str);
+
+    // --- INSTRUMENTED: Close the Pipe ---
+    printf("LCS: Algorithm complete. Closing pipe.\n");
+    close(pipe_fd);
+
+    free_memory(r);
+
+    return 0;
+}

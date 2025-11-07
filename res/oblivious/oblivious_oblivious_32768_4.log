@@ -1,49 +1,49 @@
 =====================================================================================
-Program: bin/lcs_oblivious
+Program: ./bin/lcs_oblivious
 m = 32768, n = 32768
-Runs = 1, base case = 2048
+Runs = 1, base case = 256
 
 RUN 1 RESULTS
 Time:
-  Wall time:               42.2060 seconds (0h 0m 42s)
-  User time:               9.7894 seconds (0h 0m 10s)
-  System time:             5.9740 seconds (0h 0m 6s)
-  Total time:              15.7634 seconds (0h 0m 16s)
+  Wall time:               5.2318 seconds (0h 0m 5s)
+  User time:               5.1212 seconds (0h 0m 5s)
+  System time:             0.0080 seconds (0h 0m 0s)
+  Total time:              5.1292 seconds (0h 0m 5s)
 Process I/O:
-  Characters read:                  92966
-  Characters written:                 404
+  Characters read:                  93075
+  Characters written:                 400
   Read syscalls:                       60
   Write syscalls:                      14
-  Bytes read:                   626429952 (597.4 MB)
+  Bytes read:                     1269760 (1.2 MB)
   Bytes written:                     8192 (0.0 MB)
 Disk I/O (sdc swap):
-  Read operations:                 583042
-  Read operations merged:           27719
-  Sectors read:                   4886088 (2385.8 MB)
-  Read time:                       119585 ms
-  Write operations:                112884
-  Write operations merged:         384830
-  Sectors written:                3981712 (1944.2 MB)
-  Write time:                      372030 ms
-  I/Os (sectors read/written):    8867800
+  Read operations:                    319
+  Read operations merged:             740
+  Sectors read:                      8472 (4.1 MB)
+  Read time:                          309 ms
+  Write operations:                    44
+  Write operations merged:           1405
+  Sectors written:                  11592 (5.7 MB)
+  Write time:                          94 ms
+  I/Os (sectors read/written):      20064
 Memory Usage:
-  Total (virtual):             5368 pages (21.0 MB)
-  Resident (RSS):              1248 pages (4.9 MB)
-  Shared:                       544 pages (2.1 MB)
-  Text (code):                    6 pages (0.0 MB)
+  Total (virtual):             1332 pages (5.2 MB)
+  Resident (RSS):               768 pages (3.0 MB)
+  Shared:                       512 pages (2.0 MB)
+  Text (code):                    4 pages (0.0 MB)
   Library:                        0 pages (0.0 MB)
-  Data + stack:                4548 pages (17.8 MB)
+  Data + stack:                 512 pages (2.0 MB)
   Dirty pages:                    0 pages (0.0 MB)
-  Minor page faults:         169132 (soft faults)
-  Major page faults:             37 (hard faults)
+  Minor page faults:            706 (soft faults)
+  Major page faults:              3 (hard faults)
 
 FINAL RESULTS
 LCS Length: 10627
 Overall execution time:
-  User time:               9.7894 seconds (0h 0m 10s)
-  System time:             5.9740 seconds (0h 0m 6s)
-  Total time:              15.7634 seconds (0h 0m 16s)
+  User time:               5.1212 seconds (0h 0m 5s)
+  System time:             0.0080 seconds (0h 0m 0s)
+  Total time:              5.1292 seconds (0h 0m 5s)
 Average per run:
-  User time:               9.7894 seconds (0h 0m 10s)
-  System time:             5.9740 seconds (0h 0m 6s)
-  Total time:              15.7634 seconds (0h 0m 16s)
+  User time:               5.1212 seconds (0h 0m 5s)
+  System time:             0.0080 seconds (0h 0m 0s)
+  Total time:              5.1292 seconds (0h 0m 5s)

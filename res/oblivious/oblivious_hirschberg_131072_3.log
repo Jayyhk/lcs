@@ -1,49 +1,49 @@
 =====================================================================================
-Program: bin/lcs_hirschberg
+Program: ./bin/lcs_hirschberg
 m = 131072, n = 131072
-Runs = 1, base case = 2048
+Runs = 1, base case = 256
 
 RUN 1 RESULTS
 Time:
-  Wall time:               653.1447 seconds (0h 10m 53s)
-  User time:               232.2432 seconds (0h 3m 52s)
-  System time:             83.1493 seconds (0h 1m 23s)
-  Total time:              315.3924 seconds (0h 5m 15s)
+  Wall time:               374.5112 seconds (0h 6m 15s)
+  User time:               173.9524 seconds (0h 2m 54s)
+  System time:             41.4434 seconds (0h 0m 41s)
+  Total time:              215.3958 seconds (0h 3m 35s)
 Process I/O:
-  Characters read:                 289576
+  Characters read:                 289688
   Characters written:                 414
   Read syscalls:                      108
   Write syscalls:                      14
-  Bytes read:                 13904683008 (13260.5 MB)
+  Bytes read:                  8093257728 (7718.3 MB)
   Bytes written:                     8192 (0.0 MB)
 Disk I/O (sdc swap):
-  Read operations:                6167878
-  Read operations merged:         7402504
-  Sectors read:                 108563056 (53009.3 MB)
-  Read time:                      1459360 ms
-  Write operations:               1177726
-  Write operations merged:        5567433
-  Sectors written:               53961272 (26348.3 MB)
-  Write time:                     2139428 ms
-  I/Os (sectors read/written):  162524328
+  Read operations:                2532463
+  Read operations merged:         3673836
+  Sectors read:                  49650392 (24243.4 MB)
+  Read time:                       509272 ms
+  Write operations:                461230
+  Write operations merged:        2472206
+  Sectors written:               23467488 (11458.7 MB)
+  Write time:                      393024 ms
+  I/Os (sectors read/written):   73117880
 Memory Usage:
-  Total (virtual):             5692 pages (22.2 MB)
-  Resident (RSS):              1280 pages (5.0 MB)
-  Shared:                       576 pages (2.2 MB)
-  Text (code):                    5 pages (0.0 MB)
+  Total (virtual):             1657 pages (6.5 MB)
+  Resident (RSS):              1088 pages (4.2 MB)
+  Shared:                       512 pages (2.0 MB)
+  Text (code):                    4 pages (0.0 MB)
   Library:                        0 pages (0.0 MB)
-  Data + stack:                4873 pages (19.0 MB)
+  Data + stack:                 837 pages (3.3 MB)
   Dirty pages:                    0 pages (0.0 MB)
-  Minor page faults:        3324710 (soft faults)
-  Major page faults:           8491 (hard faults)
+  Minor page faults:        1884659 (soft faults)
+  Major page faults:           4187 (hard faults)
 
 FINAL RESULTS
 LCS Length: 42705
 Overall execution time:
-  User time:               232.2432 seconds (0h 3m 52s)
-  System time:             83.1493 seconds (0h 1m 23s)
-  Total time:              315.3924 seconds (0h 5m 15s)
+  User time:               173.9524 seconds (0h 2m 54s)
+  System time:             41.4434 seconds (0h 0m 41s)
+  Total time:              215.3958 seconds (0h 3m 35s)
 Average per run:
-  User time:               232.2432 seconds (0h 3m 52s)
-  System time:             83.1493 seconds (0h 1m 23s)
-  Total time:              315.3924 seconds (0h 5m 15s)
+  User time:               173.9524 seconds (0h 2m 54s)
+  System time:             41.4434 seconds (0h 0m 41s)
+  Total time:              215.3958 seconds (0h 3m 35s)

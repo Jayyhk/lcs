@@ -13,7 +13,7 @@ fi
 mkdir -p res/oblivious
 
 # --- Configuration ---
-BASE_CASE=2048
+BASE_CASE=256
 MEM_LIMIT=4194304     # 4MiB (This is the TOTAL pool they all share)
 SWAP_LIMIT=2147483648 # 2GiB
 NUM_INSTANCES=4       # Number of concurrent programs to run
