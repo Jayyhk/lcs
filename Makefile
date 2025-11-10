@@ -1,25 +1,27 @@
-CC = gcc
+CC = g++
 CXX = g++
-CFLAGS = -std=c99 -Iinclude
-CXXFLAGS = -std=c++11 -Iinclude
 
-SUITE = lcs_classic lcs_hirschberg lcs_oblivious lcs_hirschberg_instrumented lcs_oblivious_instrumented balloon
+CFLAGS = -std=c99 -O3 -DNDEBUG -Wall -Iinclude
+CXXFLAGS = -std=c++11 -O3 -DNDEBUG -Wall -Iinclude
+LCS_LDFLAGS = -lm
+BALLOON_LDFLAGS = -lrt -pthread
 
-.PHONY: lcs
-lcs: $(SUITE)
+SUITE = lcs_hirschberg lcs_oblivious lcs_hirschberg_instrumented lcs_oblivious_instrumented balloon
 
-lcs_classic: src/lcs_classic.c
-	$(CC) $(CFLAGS) $< -lm -o bin/$@
-lcs_hirschberg: src/lcs_hirschberg.c
-	$(CC) $(CFLAGS) $< -lm -o bin/$@
-lcs_oblivious: src/lcs_oblivious.c
-	$(CC) $(CFLAGS) $< -lm -o bin/$@
-lcs_hirschberg_instrumented: src/lcs_hirschberg_instrumented.cpp
-	$(CXX) $(CXXFLAGS) $< -lm -o bin/$@
-lcs_oblivious_instrumented: src/lcs_oblivious_instrumented.cpp
-	$(CXX) $(CXXFLAGS) $< -lm -o bin/$@
+all: $(SUITE)
+
+lcs_hirschberg: src/lcs_hirschberg.c include/util.h
+	$(CXX) $(CXXFLAGS) $< -o bin/$@ $(LCS_LDFLAGS)
+lcs_oblivious: src/lcs_oblivious.c include/util.h
+	$(CXX) $(CXXFLAGS) $< -o bin/$@ $(LCS_LDFLAGS)
+lcs_hirschberg_instrumented: src/lcs_hirschberg_instrumented.cpp include/util.h
+	$(CXX) $(CXXFLAGS) $< -o bin/$@ $(LCS_LDFLAGS)
+lcs_oblivious_instrumented: src/lcs_oblivious_instrumented.cpp include/util.h
+	$(CXX) $(CXXFLAGS) $< -o bin/$@ $(LCS_LDFLAGS)
 balloon: src/balloon.cpp
-	$(CXX) $(CXXFLAGS) $< -o bin/$@
+	$(CXX) $(CXXFLAGS) $< -o bin/$@ $(BALLOON_LDFLAGS)
 
 clean:
 	rm -f $(addprefix bin/,$(SUITE))
+
+.PHONY: all clean

@@ -60,7 +60,7 @@ echo "" >> $RESULTS_FILE
 echo "N, Hirschberg_IO_Avg, Oblivious_IO_Avg, Ratio" >> $RESULTS_FILE
 echo $$ > "$CGROUP_PATH/cgroup.procs"
 
-for N in 32768 65536 131072 262144; do
+for N in 32768 65536 131072 262144 524288; do
     echo "Running OBLIVIOUS test for N = $N"
     
     # --- Run Hirschberg (non-adaptive) ---
