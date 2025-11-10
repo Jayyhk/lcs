@@ -67,7 +67,7 @@ echo "" >> $RESULTS_FILE
 echo "N, Hirschberg_IO, Oblivious_IO, Ratio" >> $RESULTS_FILE
 
 # --- Run Experiment Loop ---
-for N in 32768 65536 131072; do
+for N in 32768 65536 131072 262144; do
     echo "Running ADVERSARIAL test for N = $N"
     
     # Create the pipe

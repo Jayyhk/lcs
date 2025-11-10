@@ -13,7 +13,7 @@ fi
 mkdir -p res/constant
 
 # --- Configuration ---
-BASE_CASE=256         # Base case for recursion, larger = more memory usage
+BASE_CASE=256         # Base case for recursion
 MEM_LIMIT=4194304     # 4MiB
 SWAP_LIMIT=2147483648 # 2GiB
 
@@ -21,13 +21,15 @@ CGROUP_NAME="constant"
 CGROUP_PATH="/sys/fs/cgroup/$CGROUP_NAME"
 RESULTS_FILE="res/constant/constant_results.txt"
 
+# Log directory
+LOG_DIR="res/constant"
+
 # Temp log files
-HIRSCHBERG_LOG="res/constant/constant_hirschberg.log"
-OBLIVIOUS_LOG="res/constant/constant_oblivious.log"
+HIRSCHBERG_LOG="$LOG_DIR/constant_hirschberg.log"
+OBLIVIOUS_LOG="$LOG_DIR/constant_oblivious.log"
 
 # Clear files
-rm -f $HIRSCHBERG_LOG $OBLIVIOUS_LOG
-rm -f $RESULTS_FILE
+rm -f $HIRSCHBERG_LOG $OBLIVIOUS_LOG $RESULTS_FILE
 
 # Cleanup function
 cleanup() {
@@ -49,8 +51,7 @@ fi
 # Set memory limits using variables
 echo $MEM_LIMIT > "$CGROUP_PATH/memory.max"
 echo $SWAP_LIMIT > "$CGROUP_PATH/memory.swap.max"
-echo 0 > "$CGROUP_PATH/memory.oom.group"
-echo "Cgroup setup complete. Memory limit: 4MiB, Swap limit: 2GiB."
+echo "Cgroup setup complete. Memory limit: $(($MEM_LIMIT / 1024 / 1024))MiB, Swap limit: $(($SWAP_LIMIT / 1024 / 1024 / 1024))GiB."
 
 # Write setup info to results file
 echo "Cgroup setup: $CGROUP_NAME" >> $RESULTS_FILE
@@ -59,29 +60,29 @@ echo "Swap limit: $(($SWAP_LIMIT / 1024 / 1024 / 1024))GiB" >> $RESULTS_FILE
 echo "BASE_CASE: $BASE_CASE" >> $RESULTS_FILE
 echo "" >> $RESULTS_FILE
 echo "N, Hirschberg_IO, Oblivious_IO, Ratio" >> $RESULTS_FILE
+echo $$ > "$CGROUP_PATH/cgroup.procs"
 
-for N in 32768 65536 131072; do
+for N in 32768 65536 131072 262144; do
     echo "Running CONSTANT test for N = $N"
-  
-    # Clear caches
-    sync; echo 3 > /proc/sys/vm/drop_caches
-  
-    # Run Hirschberg (non-adaptive) inside the cgroup
+    
+    # --- Run Hirschberg (non-adaptive) ---
     echo "  Running Hirschberg (constant)..."
-    stdbuf -o0 cgexec -g memory:$CGROUP_NAME ./bin/lcs_hirschberg $N 1 $BASE_CASE < rsrc/data-$N.in >> $HIRSCHBERG_LOG 2>&1
+    sync; echo 3 > /proc/sys/vm/drop_caches
+    stdbuf -o0 nice -n 10 ./bin/lcs_hirschberg $N 1 $BASE_CASE < rsrc/data-$N.in >> $HIRSCHBERG_LOG 2>&1
+    
     LCS_HIRSCHBERG_IO=$(cat $HIRSCHBERG_LOG | grep 'I/Os' | tail -1 | awk '{print $4}')
     LCS_HIRSCHBERG_IO=${LCS_HIRSCHBERG_IO:-0}
 
-    # Clear caches again
+    # --- Run Oblivious (adaptive) ---
+    echo "  Running Oblivious (constant)..."
     sync; echo 3 > /proc/sys/vm/drop_caches
 
-    # Run Oblivious (adaptive) inside the cgroup
-    echo "  Running Oblivious (constant)..."
-    stdbuf -o0 cgexec -g memory:$CGROUP_NAME ./bin/lcs_oblivious $N 1 $BASE_CASE < rsrc/data-$N.in >> $OBLIVIOUS_LOG 2>&1
+    stdbuf -o0 nice -n 10 ./bin/lcs_oblivious $N 1 $BASE_CASE < rsrc/data-$N.in >> $OBLIVIOUS_LOG 2>&1
+
     LCS_OBLIVIOUS_IO=$(cat $OBLIVIOUS_LOG | grep 'I/Os' | tail -1 | awk '{print $4}')
     LCS_OBLIVIOUS_IO=${LCS_OBLIVIOUS_IO:-0}
 
-    # Calculate and print the normalized I/O for plotting
+    # --- Record Results ---
     if [ "$LCS_OBLIVIOUS_IO" -gt 0 ]; then
         RESULT=$(echo "scale=6; $LCS_HIRSCHBERG_IO / $LCS_OBLIVIOUS_IO" | bc -l)
         echo "$N, $LCS_HIRSCHBERG_IO, $LCS_OBLIVIOUS_IO, $RESULT" >> $RESULTS_FILE

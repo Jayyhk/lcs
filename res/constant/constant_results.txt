@@ -1,9 +1,0 @@
-Cgroup setup: constant
-Memory limit: 4MiB
-Swap limit: 2GiB
-BASE_CASE: 256
-
-N, Hirschberg_IO, Oblivious_IO, Ratio
-32768, 0, 0, 0
-65536, 0, 0, 0
-131072, 0, 8888, 0

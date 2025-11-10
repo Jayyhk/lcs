@@ -13,8 +13,8 @@ fi
 mkdir -p res/oblivious
 
 # --- Configuration ---
-BASE_CASE=256
-MEM_LIMIT=4194304     # 4MiB (This is the TOTAL pool they all share)
+BASE_CASE=256         # Base case for recursion
+MEM_LIMIT=4194304     # 4MiB
 SWAP_LIMIT=2147483648 # 2GiB
 NUM_INSTANCES=4       # Number of concurrent programs to run
 
@@ -22,7 +22,7 @@ CGROUP_NAME="oblivious"
 CGROUP_PATH="/sys/fs/cgroup/$CGROUP_NAME"
 RESULTS_FILE="res/oblivious/oblivious_results.txt"
 
-# Temp log directory
+# Log directory
 LOG_DIR="res/oblivious"
 
 # Clear files
@@ -49,30 +49,28 @@ fi
 # Set memory limits using variables
 echo $MEM_LIMIT > "$CGROUP_PATH/memory.max"
 echo $SWAP_LIMIT > "$CGROUP_PATH/memory.swap.max"
-echo 0 > "$CGROUP_PATH/memory.oom.group"
-echo "Cgroup setup complete. Memory limit: 4MiB, Swap limit: 2GiB."
+echo "Cgroup setup complete. Memory limit: $(($MEM_LIMIT / 1024 / 1024))MiB, Swap limit: $(($SWAP_LIMIT / 1024 / 1024 / 1024))GiB."
 
 # Write setup info to results file
-echo "Cgroup setup: $CGROUP_NAME (Oblivious)" >> $RESULTS_FILE
+echo "Cgroup setup: $CGROUP_NAME" >> $RESULTS_FILE
 echo "Memory limit: $(($MEM_LIMIT / 1024 / 1024))MiB (Shared by $NUM_INSTANCES instances)" >> $RESULTS_FILE
 echo "Swap limit: $(($SWAP_LIMIT / 1024 / 1024 / 1024))GiB" >> $RESULTS_FILE
 echo "BASE_CASE: $BASE_CASE" >> $RESULTS_FILE
 echo "" >> $RESULTS_FILE
 echo "N, Hirschberg_IO_Avg, Oblivious_IO_Avg, Ratio" >> $RESULTS_FILE
+echo $$ > "$CGROUP_PATH/cgroup.procs"
 
-for N in 32768 65536 131072; do
+for N in 32768 65536 131072 262144; do
     echo "Running OBLIVIOUS test for N = $N"
     
-    # --- Run Hirschberg (Oblivious) ---
-    echo "  Running $NUM_INSTANCES Hirschberg (oblivious)..."
+    # --- Run Hirschberg (non-adaptive) ---
+    echo "  Running $NUM_INSTANCES Hirschberg..."
     sync; echo 3 > /proc/sys/vm/drop_caches
     
-    # Run all instances in the background
     for i in $(seq 1 $NUM_INSTANCES); do
-        stdbuf -o0 cgexec -g memory:$CGROUP_NAME ./bin/lcs_hirschberg $N 1 $BASE_CASE < rsrc/data-$N.in > "$LOG_DIR/oblivious_hirschberg_${N}_$i.log" 2>&1 &
+        stdbuf -o0 nice -n 10 ./bin/lcs_hirschberg $N 1 $BASE_CASE < rsrc/data-$N.in > "$LOG_DIR/oblivious_hirschberg_${N}_$i.log" 2>&1 &
     done
     
-    # Wait for all background jobs to finish
     wait
     
     # Calculate average I/Os
@@ -81,15 +79,14 @@ for N in 32768 65536 131072; do
         IO=$(cat "$LOG_DIR/oblivious_hirschberg_${N}_$i.log" | grep 'I/Os' | tail -1 | awk '{print $4}')
         HIRSCHBERG_TOTAL_IO=$(($HIRSCHBERG_TOTAL_IO + ${IO:-0}))
     done
-    # Use bc for floating point division
     LCS_HIRSCHBERG_IO_AVG=$(echo "scale=2; $HIRSCHBERG_TOTAL_IO / $NUM_INSTANCES" | bc)
 
-    # --- Run Oblivious (Oblivious) ---
-    echo "  Running $NUM_INSTANCES Oblivious (oblivious)..."
+    # --- Run Oblivious (adaptive) ---
+    echo "  Running $NUM_INSTANCES Oblivious..."
     sync; echo 3 > /proc/sys/vm/drop_caches
 
     for i in $(seq 1 $NUM_INSTANCES); do
-        stdbuf -o0 cgexec -g memory:$CGROUP_NAME ./bin/lcs_oblivious $N 1 $BASE_CASE < rsrc/data-$N.in > "$LOG_DIR/oblivious_oblivious_${N}_$i.log" 2>&1 &
+        stdbuf -o0 nice -n 10 ./bin/lcs_oblivious $N 1 $BASE_CASE < rsrc/data-$N.in > "$LOG_DIR/oblivious_oblivious_${N}_$i.log" 2>&1 &
     done
     
     wait
@@ -102,7 +99,6 @@ for N in 32768 65536 131072; do
     LCS_OBLIVIOUS_IO_AVG=$(echo "scale=2; $OBLIVIOUS_TOTAL_IO / $NUM_INSTANCES" | bc)
     
     # --- Record Results ---
-    # We must use bc for the comparison since the numbers might be floats (e.g., "150.33")
     if (( $(echo "$LCS_OBLIVIOUS_IO_AVG > 0" | bc -l) )); then
         RESULT=$(echo "scale=6; $LCS_HIRSCHBERG_IO_AVG / $LCS_OBLIVIOUS_IO_AVG" | bc -l)
         echo "$N, $LCS_HIRSCHBERG_IO_AVG, $LCS_OBLIVIOUS_IO_AVG, $RESULT" >> $RESULTS_FILE
