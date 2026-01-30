@@ -20,7 +20,7 @@ THIS FILE HAS BEEN INSTRUMENTED TO SEND SIGNALS TO THE BALLOON
 
 #include "../include/util.h"
 
-#define DEFAULT_BASE 32
+#define DEFAULT_BASE 256
 
 #define MAX_ALPHABET_SIZE 256
 
@@ -73,33 +73,18 @@ int ack_fd;
  * This "wakes up" the waiting balloon.
  */
 void send_signal(int pipe_fd) {
-    struct timeval start, end;
-    double elapsed_time;
-
-    // 1. Start Timer
-    gettimeofday(&start, NULL);
-
-    // 2. Send Signal ("Inflate!")
+    // 1. Send Signal ("Inflate!")
     // printf("LCS: Sending signal to balloon...\n"); // Optional: Comment out to reduce log spam
     if (write(pipe_fd, "1", 1) == -1) {
         perror("LCS: Error writing to pipe!");
     }
 
-    // 3. Wait for Handshake (Blocking Read)
+    // 2. Wait for Handshake (Blocking Read)
     // The OS pauses this process here until Balloon writes "K"
     char buf[1];
     if (read(ack_fd, buf, 1) == -1) {
         perror("LCS: Error reading ack from balloon!");
-    } 
-
-    // 4. Stop Timer
-    gettimeofday(&end, NULL);
-
-    // 5. Calculate and Print Duration
-    elapsed_time = (end.tv_sec - start.tv_sec) + 
-                   (end.tv_usec - start.tv_usec) / 1000000.0;
-    
-    printf("LCS: Handshake/Memory Pause took %.4f seconds.\n", elapsed_time);
+    }
 }
 
 
@@ -568,7 +553,7 @@ int main(int argc, char *argv[]) {
 
     printf("m = %d, n = %d\n", m, n);
     printf("Runs = %d, base case = %d\n", r, BASE_N);
-    printf("Pipe = %s\n", pipe_filename); // Print pipe name
+    // printf("Pipe = %s\n", pipe_filename); // Print pipe name
 
     // --- INSTRUMENTED: Open the Pipe for Writing ---
     int pipe_fd = open(pipe_filename, O_WRONLY);
@@ -576,7 +561,7 @@ int main(int argc, char *argv[]) {
         perror("LCS: Failed to open pipe for writing. Is balloon running?");
         return 1;
     }
-    printf("LCS: Connected to balloon pipe.\n");
+    // printf("LCS: Connected to balloon pipe.\n");
 
     // Open ACK pipe for reading
     char ack_pipe_filename[256];
@@ -586,10 +571,12 @@ int main(int argc, char *argv[]) {
         perror("LCS: Failed to open ack pipe for reading");
         return 1;
     }
-    printf("LCS: Connected to ack pipe.\n");
+    // printf("LCS: Connected to ack pipe.\n");
 
 
     getrusage(RUSAGE_SELF, &ru[0]);
+
+    double total_wall_time = 0.0;
 
     for (i = 0; i < r; i++) {
         init_disk_io();  // Initialize disk I/O counters
@@ -607,6 +594,8 @@ int main(int argc, char *argv[]) {
         printf("RUN %d RESULTS\n", i + 1);
         printf("Time:\n");
         printf("  Wall time:                %.4f seconds (%s)\n", end - start, conv_sec(end - start, str));
+
+        total_wall_time += (end - start);
 
         double run_ut = ru[i + 1].ru_utime.tv_sec + (ru[i + 1].ru_utime.tv_usec * 0.000001) -
                         (ru[i].ru_utime.tv_sec + (ru[i].ru_utime.tv_usec * 0.000001));
@@ -629,10 +618,10 @@ int main(int argc, char *argv[]) {
          (ru[0].ru_stime.tv_sec + (ru[0].ru_stime.tv_usec * 0.000001));
     tt = ut + st;
 
-    print_final_results(zps[r - 1], ut, st, tt, r, str);
+    print_final_results(zps[r - 1], ut, st, tt, total_wall_time, r, str);
 
     // --- INSTRUMENTED: Close the Pipe ---
-    printf("LCS: Algorithm complete. Closing pipe.\n");
+    // printf("LCS: Algorithm complete. Closing pipe.\n");
     close(pipe_fd);
     close(ack_fd);
 

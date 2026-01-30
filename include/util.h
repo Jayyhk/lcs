@@ -274,17 +274,19 @@ void print_mem_data() {
     printf("  Major page faults:   %'12ld (hard faults)\n", major_diff);
 }
 
-void print_final_results(int lcs_length, double ut, double st, double tt, int r, char *str) {
+void print_final_results(int lcs_length, double ut, double st, double tt, double wt, int r, char *str) {
     printf("\n");
     printf("FINAL RESULTS\n");
     printf("LCS Length: %d\n", lcs_length);
 
     printf("Overall execution time:\n");
+    printf("  Wall time:               %.4f seconds (%s)\n", wt, conv_sec(wt, str));
     printf("  User time:               %.4f seconds (%s)\n", ut, conv_sec(ut, str));
     printf("  System time:             %.4f seconds (%s)\n", st, conv_sec(st, str));
     printf("  Total time:              %.4f seconds (%s)\n", tt, conv_sec(tt, str));
 
     printf("Average per run:\n");
+    printf("  Wall time:               %.4f seconds (%s)\n", wt / r, conv_sec(wt / r, str));
     printf("  User time:               %.4f seconds (%s)\n", ut / r, conv_sec(ut / r, str));
     printf("  System time:             %.4f seconds (%s)\n", st / r, conv_sec(st / r, str));
     printf("  Total time:              %.4f seconds (%s)\n", tt / r, conv_sec(tt / r, str));

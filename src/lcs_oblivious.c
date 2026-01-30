@@ -13,7 +13,7 @@ Last Update: Sep 04, 2006 ( Rezaul Alam Chowdhury, UT Austin )
 
 #include "../include/util.h"
 
-#define DEFAULT_BASE 32
+#define DEFAULT_BASE 256
 
 #define MAX_ALPHABET_SIZE 256
 
@@ -541,7 +541,7 @@ int main(int argc, char *argv[]) {
          (ru[0].ru_stime.tv_sec + (ru[0].ru_stime.tv_usec * 0.000001));
     tt = ut + st;
 
-    print_final_results(zps[r - 1], ut, st, tt, r, str);
+    print_final_results(zps[r - 1], ut, st, tt, 0.0, r, str);
 
     free_memory(r);
 
