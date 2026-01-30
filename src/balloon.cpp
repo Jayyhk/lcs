@@ -28,6 +28,7 @@
 #include <vector>
 #include <unistd.h>
 #include <errno.h> // For errno
+#include <chrono>
 
 // --- Globals ---
 unsigned long long CGROUP_MEMORY = 0;
@@ -56,12 +57,15 @@ unsigned long long set_memory_in_bytes(unsigned long long cgroup_memory, unsigne
         // Cgroup is larger than target. Inflate the balloon.
         // (cgroup - target) is the total "free" memory.
         // Divide by num_balloons to get this balloon's share.
+        unsigned long long share = (cgroup_memory - target_memory) / num_balloons;
         // Magic number 256*1024 is ~256KB buffer for OS overhead.
-        unsigned long long result = (cgroup_memory - target_memory) / num_balloons - 256 * 1024;
+        unsigned long long overhead = 256 * 1024; 
         
-        // Ensure we don't return a negative (underflow) or tiny value
-        if (result > cgroup_memory) return 0ULL; // Handle underflow
-        return result;
+        // CRITICAL FIX: Check for underflow
+        if (share <= overhead) {
+            return 50ULL; // Too small, effectively 0
+        }
+        return share - overhead;
     } else {
         // Cgroup is smaller or equal to target.
         // We want to give the algorithm all the memory.
@@ -158,6 +162,7 @@ int main(int argc, char* argv[]) {
     BALLOON_ID = atoi(argv[3]);
     std::string mem_profile_filename = argv[4];
     std::string pipe_filename = argv[5];
+    std::string ack_pipe_filename = pipe_filename + "_ack";
 
     if (CGROUP_MEMORY == 0 || NUM_BALLOONS == 0) {
         std::cout << "Error: CgroupMem and NumBalloons must be > 0" << std::endl;
@@ -193,25 +198,28 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
+    // 1. Open ACK Pipe (WRITE)
+    int ack_fd = open(ack_pipe_filename.c_str(), O_WRONLY);
+    if (ack_fd < 0) {
+        perror("Balloon: Failed to open ack pipe for writing");
+        return 1;
+    }
+
     char buf[1]; // Buffer for the signal
     
     // This loop blocks on read() until a signal arrives or the pipe is closed
     // read() > 0 means we got a signal
     // read() == 0 means the other end (LCS) closed the pipe
     while (read(fifo_fd, buf, 1) > 0) {
-        
-        // --- A signal was received! ---
-        profile_index++; // Move to the next memory value
-        
-        if (profile_index < memory_profile.size()) {
-            // We have more values in our profile, apply the next one
-            std::cout << "Balloon: Signal " << profile_index << " received! Moving to next memory state." << std::endl;
+        if (!memory_profile.empty()) {
+            profile_index = (profile_index + 1) % memory_profile.size();
+            std::cout << "Balloon: Moving to profile index " << profile_index << std::endl;
+            
+            // 1. Inflate/Deflate
             change_memory(fdout, memory_profile[profile_index]);
-        } else {
-            // We are out of profile values.
-            // Hold the last state.
-            std::cout << "Balloon: Signal received, but end of profile reached. Holding last state." << std::endl;
-            // We don't do anything, just loop and wait for pipe to close
+            
+            // 2. Send Handshake
+            if (write(ack_fd, "K", 1) < 0) perror("Balloon Ack Write");
         }
     }
 
@@ -226,6 +234,7 @@ int main(int argc, char* argv[]) {
     }
     
     close(fifo_fd);
+    close(ack_fd);
     close(fdout);
     unlink(filename.c_str()); // Delete the /tmp/balloon_data file
     

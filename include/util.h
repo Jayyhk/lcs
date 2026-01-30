@@ -114,12 +114,16 @@ void init_disk_io() {
             }
             count++;
         }
-        if (strcmp(word, "sdc") == 0) {  // Monitor swap disk (memory pressure)
-            type = 0;
-            count = 0;
-        } else if (strcmp(word, "sdd") == 0) {  // Monitor main disk (file I/O)
-            type = 1;
-            count = 0;
+        // MATCH: nvme0n1 (Your physical disk)
+        if (strstr(word, "nvme0n1") != NULL && strlen(word) == 7) { 
+            // We check length == 7 to match "nvme0n1" but avoid "nvme0n1p1" etc.
+            
+            // Map Physical Disk to "Swap" slot (Type 0)
+            // Since you use a swap FILE, swap I/O shows up here as total disk load.
+            if (type == -1 || type == 0) { 
+                type = 0; 
+                count = 0;
+            }
         }
     }
     fclose(in);
@@ -146,12 +150,16 @@ void print_disk_io() {
             }
             count++;
         }
-        if (strcmp(word, "sdc") == 0) {  // Monitor swap disk (memory pressure)
-            type = 0;
-            count = 0;
-        } else if (strcmp(word, "sdd") == 0) {  // Monitor main disk (file I/O)
-            type = 1;
-            count = 0;
+        // MATCH: nvme0n1 (Your physical disk)
+        if (strstr(word, "nvme0n1") != NULL && strlen(word) == 7) { 
+            // We check length == 7 to match "nvme0n1" but avoid "nvme0n1p1" etc.
+            
+            // Map Physical Disk to "Swap" slot (Type 0)
+            // Since you use a swap FILE, swap I/O shows up here as total disk load.
+            if (type == -1 || type == 0) { 
+                type = 0; 
+                count = 0;
+            }
         }
     }
     fclose(in);

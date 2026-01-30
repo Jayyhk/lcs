@@ -65,16 +65,40 @@ char alpha[MAX_ALPHABET_SIZE + 1];
 char *fname1;
 char *fname2;
 
+int ack_fd;
+
 /*
  * Helper function to send a 1-byte signal to the pipe.
  * This "wakes up" the waiting balloon.
  */
 void send_signal(int pipe_fd) {
-    printf("LCS: Sending signal to balloon...\n");
+    struct timeval start, end;
+    double elapsed_time;
+
+    // 1. Start Timer
+    gettimeofday(&start, NULL);
+
+    // 2. Send Signal ("Inflate!")
+    // printf("LCS: Sending signal to balloon...\n"); // Optional: Comment out to reduce log spam
     if (write(pipe_fd, "1", 1) == -1) {
         perror("LCS: Error writing to pipe!");
-        // We don't exit, just log the error.
     }
+
+    // 3. Wait for Handshake (Blocking Read)
+    // The OS pauses this process here until Balloon writes "K"
+    char buf[1];
+    if (read(ack_fd, buf, 1) == -1) {
+        perror("LCS: Error reading ack from balloon!");
+    } 
+
+    // 4. Stop Timer
+    gettimeofday(&end, NULL);
+
+    // 5. Calculate and Print Duration
+    elapsed_time = (end.tv_sec - start.tv_sec) + 
+                   (end.tv_usec - start.tv_usec) / 1000000.0;
+    
+    printf("LCS: Handshake/Memory Pause took %.4f seconds.\n", elapsed_time);
 }
 
 
@@ -457,6 +481,16 @@ int main(int argc, char *argv[]) {
     }
     printf("LCS: Connected to balloon pipe.\n");
 
+    // Open ACK pipe for reading
+    char ack_pipe_filename[256];
+    sprintf(ack_pipe_filename, "%s_ack", pipe_filename);
+    ack_fd = open(ack_pipe_filename, O_RDONLY);
+    if (ack_fd < 0) {
+        perror("LCS: Failed to open ack pipe for reading");
+        return 1;
+    }
+    printf("LCS: Connected to ack pipe.\n");
+
 
     getrusage(RUSAGE_SELF, &ru[0]);
 
@@ -506,6 +540,7 @@ int main(int argc, char *argv[]) {
     // allowing the balloon to clean up and quit.
     printf("LCS: Algorithm complete. Closing pipe.\n");
     close(pipe_fd);
+    close(ack_fd);
 
     free_memory(r);
 

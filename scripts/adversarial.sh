@@ -40,7 +40,7 @@ rm -f $RESULTS_FILE
 cleanup() {
     echo "Cleaning up..."
     rmdir "$CGROUP_PATH" 2>/dev/null || true
-    rm -f $PIPE_FILE 2>/dev/null || true
+    rm -f $PIPE_FILE "${PIPE_FILE}_ack" 2>/dev/null || true
 }
 
 # Trap to ensure cleanup on exit
@@ -52,12 +52,14 @@ mkdir -p "$CGROUP_PATH"
 echo $MEM_LIMIT_BYTES > "$CGROUP_PATH/memory.max"
 echo $SWAP_LIMIT > "$CGROUP_PATH/memory.swap.max"
 echo 0 > "$CGROUP_PATH/memory.oom.group"
+echo $$ > "$CGROUP_PATH/cgroup.procs"
 mkdir -p res/adversarial/balloon # For logs
 
 echo "Creating static adversarial profile..."
+# Index 0: Resting State (High App Memory / Low Balloon)
 echo "2048" > $PROFILE_FILE
+# Index 1: Attack State (Low App Memory / High Balloon)
 echo "4"    >> $PROFILE_FILE
-echo "2048" >> $PROFILE_FILE
 
 # Write headers to results file
 echo "Cgroup setup: $CGROUP_NAME" >> $RESULTS_FILE
@@ -67,12 +69,13 @@ echo "" >> $RESULTS_FILE
 echo "N, Hirschberg_IO, Oblivious_IO, Ratio" >> $RESULTS_FILE
 
 # --- Run Experiment Loop ---
-for N in 32768 65536 131072 262144; do
+for N in 32768; do
     echo "Running ADVERSARIAL test for N = $N"
     
-    # Create the pipe
-    rm -f $PIPE_FILE
+    # Create the signal AND ack pipes
+    rm -f $PIPE_FILE "${PIPE_FILE}_ack"
     mkfifo $PIPE_FILE
+    mkfifo "${PIPE_FILE}_ack"
 
     # --- 1. Run Hirschberg (non-adaptive) ---
     echo "  Running Hirschberg (adversarial)..."
@@ -81,10 +84,11 @@ for N in 32768 65536 131072 262144; do
     # Start the Balloon in the background. It will mmap() its
     # first memory value (2048) and then block, waiting on the pipe.
     # Args: CgroupMem(MB), NumBalloons, BalloonID, ProfileFile, PipeFile
-    stdbuf -o0 cgexec -g memory:$CGROUP_NAME ./bin/balloon \
+    stdbuf -o0 ./bin/balloon \
         $MEM_LIMIT_MB 1 1 $PROFILE_FILE $PIPE_FILE \
         > res/adversarial/balloon/balloon_h_$N.log 2>&1 &
     BALLOON_PID=$!
+    echo $BALLOON_PID > "$CGROUP_PATH/cgroup.procs"
     
     # Give the balloon a moment to start and block on the pipe
     sleep 0.5 
@@ -93,10 +97,11 @@ for N in 32768 65536 131072 262144; do
     # It will run, send a signal (waking the balloon), scan,
     # send another signal, and finish.
     # Args: N, 1, BaseCase, PipeFile
-    stdbuf -o0 cgexec -g memory:$CGROUP_NAME ./bin/lcs_hirschberg_instrumented \
+    stdbuf -o0 ./bin/lcs_hirschberg_instrumented \
         $N 1 $BASE_CASE $PIPE_FILE \
         < "rsrc/data-$N.in" >> $HIRSCHBERG_LOG 2>&1 &
     LCS_PID=$!
+    echo $LCS_PID > "$CGROUP_PATH/cgroup.procs"
 
     wait $LCS_PID
     kill $BALLOON_PID 2>/dev/null
@@ -105,21 +110,24 @@ for N in 32768 65536 131072 262144; do
     # --- 2. Run Oblivious (adaptive) ---
     echo "  Running Oblivious (adversarial)..."
     
-    rm -f $PIPE_FILE
+    rm -f $PIPE_FILE "${PIPE_FILE}_ack"
     mkfifo $PIPE_FILE
+    mkfifo "${PIPE_FILE}_ack"
     sync; echo 3 > /proc/sys/vm/drop_caches
 
     # Start the Balloon again for the next run
-    stdbuf -o0 cgexec -g memory:$CGROUP_NAME ./bin/balloon \
+    stdbuf -o0 ./bin/balloon \
         $MEM_LIMIT_MB 1 1 $PROFILE_FILE $PIPE_FILE \
         > res/adversarial/balloon/balloon_o_$N.log 2>&1 &
     BALLOON_PID=$!
+    echo $BALLOON_PID > "$CGROUP_PATH/cgroup.procs"
     sleep 0.5
 
-    stdbuf -o0 cgexec -g memory:$CGROUP_NAME ./bin/lcs_oblivious_instrumented \
+    stdbuf -o0 ./bin/lcs_oblivious_instrumented \
         $N 1 $BASE_CASE $PIPE_FILE \
         < "rsrc/data-$N.in" >> $OBLIVIOUS_LOG 2>&1 &
     LCS_PID=$!
+    echo $LCS_PID > "$CGROUP_PATH/cgroup.procs"
     
     wait $LCS_PID
     kill $BALLOON_PID 2>/dev/null
@@ -139,7 +147,7 @@ for N in 32768 65536 131072 262144; do
         echo "$N, $LCS_HIRSCHBERG_IO, $LCS_OBLIVIOUS_IO, 0" >> $RESULTS_FILE
     fi
     
-    rm -f $PIPE_FILE
+    rm -f $PIPE_FILE "${PIPE_FILE}_ack"
 done
 
 echo "Adversarial experiment complete. Results saved to $RESULTS_FILE."
