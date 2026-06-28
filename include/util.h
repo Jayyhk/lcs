@@ -94,6 +94,24 @@ long long io_counter_sda_new[11];
 long long io_counter_sdc[11];
 long long io_counter_sdc_new[11];
 int io_counters_initialized = 0;
+long long swap_io_start = 0;
+
+// Total swap I/O = pages read from swap (pswpin) + pages written to swap (pswpout),
+// from /proc/vmstat. This is the read+write disk I/O caused by memory pressure,
+// matching the "disk I/Os" metric in the ESA 2022 cache-adaptivity paper.
+static long long read_swap_io_pages() {
+    FILE *f = fopen("/proc/vmstat", "r");
+    if (f == NULL) return -1;
+    char key[64];
+    long long val, pswpin = -1, pswpout = -1;
+    while (fscanf(f, "%63s %lld", key, &val) == 2) {
+        if (strcmp(key, "pswpin") == 0) pswpin = val;
+        else if (strcmp(key, "pswpout") == 0) pswpout = val;
+    }
+    fclose(f);
+    if (pswpin < 0 || pswpout < 0) return -1;
+    return pswpin + pswpout;
+}
 
 void init_disk_io() {
     FILE *in = fopen("/proc/diskstats", "r");
@@ -127,6 +145,7 @@ void init_disk_io() {
         }
     }
     fclose(in);
+    swap_io_start = read_swap_io_pages();
     io_counters_initialized = 1;
 }
 
@@ -169,20 +188,10 @@ void print_disk_io() {
         return;
     }
 
-    printf("Disk I/O (sdc swap):\n");
-    printf("  Read operations:           %'12lld\n", io_counter_sda_new[0] - io_counter_sda[0]);
-    printf("  Read operations merged:    %'12lld\n", io_counter_sda_new[1] - io_counter_sda[1]);
-    printf("  Sectors read:              %'12lld (%'.1f MB)\n",
-           io_counter_sda_new[2] - io_counter_sda[2],
-           (io_counter_sda_new[2] - io_counter_sda[2]) * 512.0 / (1024.0 * 1024.0));
-    printf("  Read time:                 %'12lld ms\n", io_counter_sda_new[3] - io_counter_sda[3]);
-    printf("  Write operations:          %'12lld\n", io_counter_sda_new[4] - io_counter_sda[4]);
-    printf("  Write operations merged:   %'12lld\n", io_counter_sda_new[5] - io_counter_sda[5]);
-    printf("  Sectors written:           %'12lld (%'.1f MB)\n",
-           io_counter_sda_new[6] - io_counter_sda[6],
-           (io_counter_sda_new[6] - io_counter_sda[6]) * 512.0 / (1024.0 * 1024.0));
-    printf("  Write time:                %'12lld ms\n", io_counter_sda_new[7] - io_counter_sda[7]);
-    printf("  I/Os (sectors read/written):  %'9lld\n", (io_counter_sda_new[2] - io_counter_sda[2]) + (io_counter_sda_new[6] - io_counter_sda[6]));
+    printf("Disk I/O (this run, swap in+out):\n");
+    { long long swap_end = read_swap_io_pages();
+      long long swap_delta = (swap_end >= 0 && swap_io_start >= 0) ? (swap_end - swap_io_start) : -1;
+      printf("  I/Os (swap pages): %lld\n", swap_delta); }
 }
 
 void read_page_faults(long *minor_faults, long *major_faults) {

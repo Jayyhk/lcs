@@ -1,5 +1,0 @@
-Cgroup setup: adversarial
-Memory limit: 2048MiB
-BASE_CASE: 256
-
-N, Hirschberg_IO, Oblivious_IO, Ratio

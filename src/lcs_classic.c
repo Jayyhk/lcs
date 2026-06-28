@@ -76,7 +76,7 @@ void free_memory(int r, int n) {
 }
 
 int allocate_memory(int m, int n, int r) {
-    int i, d, mm;
+    int i, mm;
 
     mm = min(m, n);
 
@@ -127,7 +127,7 @@ int allocate_memory(int m, int n, int r) {
 int read_data(int r) {
     int i, d;
 
-    scanf("alphabet: %s\n\n", alpha);
+    if (scanf("alphabet: %s\n\n", alpha) != 1) { /* ignore: keep behavior */ }
 
     for (i = 0; i < r; i++) {
         if (scanf("sequence pair %d:\n\n", &d) != 1) return 0;
@@ -170,7 +170,7 @@ int lcs_classic(int r) {
 }
 
 int main(int argc, char *argv[]) {
-    int i, l, m, n, nn, r;
+    int i, m, n, r;
     double ut, st, tt;
     char str[50];
 

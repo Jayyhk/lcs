@@ -1,6 +1,0 @@
-Cgroup setup: benevolent
-Memory limit: 2048MiB
-BASE_CASE: 256
-
-N, Hirschberg_IO, Oblivious_IO, Ratio
-32768, 895060032, 1102499064, .811846

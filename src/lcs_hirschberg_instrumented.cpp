@@ -14,6 +14,7 @@ THIS FILE HAS BEEN INSTRUMENTED TO SEND SIGNALS TO THE BALLOON
 #include <time.h>
 
 // --- Includes for signaling ---
+#include <csignal>   // For signal(), SIGPIPE
 #include <fcntl.h>   // For open()
 #include <unistd.h>  // For write(), close()
 // ---
@@ -71,18 +72,30 @@ int ack_fd;
  * Helper function to send a 1-byte signal to the pipe.
  * This "wakes up" the waiting balloon.
  */
+static int balloon_gone = 0;
+
 void send_signal(int pipe_fd) {
+    // If the balloon has already disappeared, do not touch the pipe again.
+    if (balloon_gone) return;
+
     // 1. Send Signal ("Inflate!")
     // printf("LCS: Sending signal to balloon...\n"); // Optional: Comment out to reduce log spam
     if (write(pipe_fd, "1", 1) == -1) {
         perror("LCS: Error writing to pipe!");
+        balloon_gone = 1;
+        return;
     }
 
     // 2. Wait for Handshake (Blocking Read)
     // The OS pauses this process here until Balloon writes "K"
     char buf[1];
-    if (read(ack_fd, buf, 1) == -1) {
-        perror("LCS: Error reading ack from balloon!");
+    ssize_t ack = read(ack_fd, buf, 1);
+    if (ack <= 0) {
+        // ack == 0 means EOF (balloon closed the pipe / exited);
+        // ack == -1 means a read error. Either way, the balloon is gone.
+        if (ack == -1) perror("LCS: Error reading ack from balloon!");
+        balloon_gone = 1;
+        return;
     }
 }
 
@@ -130,7 +143,7 @@ void free_memory(int r) {
 }
 
 int allocate_memory(int m, int n, int r, int b) {
-    int i, d, mm;
+    int i, mm;
 
     mm = min(m, n);
 
@@ -190,7 +203,7 @@ int allocate_memory(int m, int n, int r, int b) {
 int read_data(int r) {
     int i, d;
 
-    scanf("alphabet: %s\n\n", alpha);
+    if (scanf("alphabet: %s\n\n", alpha) != 1) { /* ignore: keep behavior */ }
 
     for (i = 0; i < r; i++) {
         if (scanf("sequence pair %d:\n\n", &d) != 1) return 0;
@@ -208,7 +221,7 @@ int read_data_sep(int r) {
     FILE *fp;
 
     if ((fp = fopen(fname1, "r")) == NULL) return 0;
-    fscanf(fp, "%d\n", &i);
+    if (fscanf(fp, "%d\n", &i) != 1) { /* ignore: keep behavior */ }
     for (i = 0; i < r; i++) {
         if (fscanf(fp, "%s\n", XS[i] + 1) != 1) return 0;
         nxs[i] = strlen(XS[i] + 1);
@@ -217,7 +230,7 @@ int read_data_sep(int r) {
     fclose(fp);
 
     if ((fp = fopen(fname2, "r")) == NULL) return 0;
-    fscanf(fp, "%d\n", &i);
+    if (fscanf(fp, "%d\n", &i) != 1) { /* ignore: keep behavior */ }
     for (i = 0; i < r; i++) {
         if (fscanf(fp, "%s\n", YS[i] + 1) != 1) return 0;
         nys[i] = strlen(YS[i] + 1);
@@ -243,8 +256,6 @@ int get_m_n_sep(int *m, int *n) {
 }
 
 void copy_seq(int j) {
-    int i;
-
     nx = nxs[j];
     ny = nys[j];
 
@@ -382,9 +393,13 @@ int lcs_hirschberg(int pipe_fd) {
 }
 
 int main(int argc, char *argv[]) {
-    int i, l, m, n, r, b, prn;
+    int i, l, m, n, r, b;
     double ut, st, tt;
     char str[50];
+
+    // Ignore SIGPIPE so a write() to a closed pipe returns an error instead of
+    // killing the process if the balloon has already exited.
+    signal(SIGPIPE, SIG_IGN);
 
     printf(
         "=====================================================================================\n");

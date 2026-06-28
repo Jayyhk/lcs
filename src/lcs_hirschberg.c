@@ -101,7 +101,7 @@ void free_memory(int r) {
 }
 
 int allocate_memory(int m, int n, int r, int b) {
-    int i, d, mm;
+    int i, mm;
 
     mm = min(m, n);
 
@@ -161,7 +161,7 @@ int allocate_memory(int m, int n, int r, int b) {
 int read_data(int r) {
     int i, d;
 
-    scanf("alphabet: %s\n\n", alpha);
+    if (scanf("alphabet: %s\n\n", alpha) != 1) { /* ignore: keep behavior */ }
 
     for (i = 0; i < r; i++) {
         if (scanf("sequence pair %d:\n\n", &d) != 1) return 0;
@@ -179,7 +179,7 @@ int read_data_sep(int r) {
     FILE *fp;
 
     if ((fp = fopen(fname1, "r")) == NULL) return 0;
-    fscanf(fp, "%d\n", &i);
+    if (fscanf(fp, "%d\n", &i) != 1) { /* ignore: keep behavior */ }
     for (i = 0; i < r; i++) {
         if (fscanf(fp, "%s\n", XS[i] + 1) != 1) return 0;
         nxs[i] = strlen(XS[i] + 1);
@@ -188,7 +188,7 @@ int read_data_sep(int r) {
     fclose(fp);
 
     if ((fp = fopen(fname2, "r")) == NULL) return 0;
-    fscanf(fp, "%d\n", &i);
+    if (fscanf(fp, "%d\n", &i) != 1) { /* ignore: keep behavior */ }
     for (i = 0; i < r; i++) {
         if (fscanf(fp, "%s\n", YS[i] + 1) != 1) return 0;
         nys[i] = strlen(YS[i] + 1);
@@ -214,8 +214,6 @@ int get_m_n_sep(int *m, int *n) {
 }
 
 void copy_seq(int j) {
-    int i;
-
     nx = nxs[j];
     ny = nys[j];
 
@@ -340,7 +338,7 @@ int lcs_hirschberg(void) {
 }
 
 int main(int argc, char *argv[]) {
-    int i, l, m, n, r, b, prn;
+    int i, l, m, n, r, b;
     double ut, st, tt;
     char str[50];
 
@@ -394,11 +392,6 @@ int main(int argc, char *argv[]) {
         l >>= 1;
         LOG_BASE_N++;
     }
-
-    if (argc > b + 4)
-        prn = atoi(argv[b + 4]);
-    else
-        prn = 0;
 
     if (!allocate_memory(m, n, r, BASE_N)) return 0;
 
