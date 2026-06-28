@@ -75,7 +75,7 @@ void read_memory_profile(std::string mem_profile_filename) {
 }
 
 // Function to change the balloon's memory
-void change_memory(int fdout, unsigned long long new_target_memory_bytes) {
+void change_memory(unsigned long long new_target_memory_bytes) {
     // 1. Unmap old memory, if it exists
     if (dst != (int*)MAP_FAILED && MEMORY > 0) {
         munmap(dst, MEMORY);
@@ -85,20 +85,14 @@ void change_memory(int fdout, unsigned long long new_target_memory_bytes) {
     MEMORY = set_memory_in_bytes(CGROUP_MEMORY, new_target_memory_bytes, NUM_BALLOONS);
     std::cout << "Balloon: Target Memory (bytes): " << new_target_memory_bytes << " -> New Balloon Size (bytes): " << MEMORY << std::endl;
 
-    // 3. Truncate file to the new balloon size
-    if (ftruncate(fdout, MEMORY) != 0) {
-        perror("Balloon ftruncate error (continuing without resize)");
+    // 3. Map new memory (anonymous: consume RAM directly with no backing file, so
+    //    the balloon does no disk writeback and never shows up in disk-I/O accounting)
+    if (MEMORY <= 0) {
         dst = (int*)MAP_FAILED;
         return;
     }
-    
-    // 4. Map new memory
-    if (MEMORY <= 0) {
-        dst = (int*)MAP_FAILED; 
-        return;
-    }
 
-    dst = (int*)mmap(0, MEMORY, PROT_READ | PROT_WRITE, MAP_SHARED, fdout, 0);
+    dst = (int*)mmap(0, MEMORY, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
     if (dst == (int*)MAP_FAILED) {
         perror("Balloon mmap error (continuing without claiming memory)");
         return;
@@ -133,13 +127,9 @@ int main(int argc, char* argv[]) {
     read_memory_profile(mem_profile_filename);
     if (memory_profile.empty()) return 1;
 
-    // --- 3. Setup balloon mmap file ---
-    std::string filename = "/tmp/balloon_data" + std::to_string(BALLOON_ID);
-    int fdout = open(filename.c_str(), O_RDWR | O_CREAT, 0x0666);
-    
-    // --- 4. Set INITIAL memory state ---
+    // --- 3. Set INITIAL memory state ---
     profile_index = 0;
-    change_memory(fdout, memory_profile[profile_index]);
+    change_memory(memory_profile[profile_index]);
 
     // --- 5. Open pipe and wait for signals ---
     std::cout << "Balloon: Live. Waiting for signal on pipe: " << pipe_filename << std::endl;
@@ -152,7 +142,7 @@ int main(int argc, char* argv[]) {
             profile_index = (profile_index + 1) % memory_profile.size();
             std::cout << "Balloon: Moving to profile index " << profile_index << std::endl;
             
-            change_memory(fdout, memory_profile[profile_index]);
+            change_memory(memory_profile[profile_index]);
             
             if (write(ack_fd, "K", 1) < 0) perror("Balloon Ack Write");
         }
@@ -163,7 +153,5 @@ int main(int argc, char* argv[]) {
     if (dst != (int*)MAP_FAILED && MEMORY > 0) munmap(dst, MEMORY);
     close(fifo_fd);
     close(ack_fd);
-    close(fdout);
-    unlink(filename.c_str());
     return 0;
 }

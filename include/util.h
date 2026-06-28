@@ -88,11 +88,6 @@ void print_proc_io() {
            write_bytes / (1024.0 * 1024.0));
 }
 
-// Global variables to store previous I/O counters for difference calculation
-long long io_counter_sda[11];
-long long io_counter_sda_new[11];
-long long io_counter_sdc[11];
-long long io_counter_sdc_new[11];
 int io_counters_initialized = 0;
 long long io_bytes_start = 0;
 
@@ -111,84 +106,20 @@ static long long read_self_io_bytes() {
 }
 
 void init_disk_io() {
-    FILE *in = fopen("/proc/diskstats", "r");
-    if (in == NULL) {
-        return;
-    }
-
-    char word[256];
-    int count = -1;
-    int type = -1;  // 0 for sdc (swap), 1 for sdd (main disk)
-
-    while (fscanf(in, "%s", word) != EOF) {
-        if (count >= 0 && count < 11) {
-            if (type == 0) {
-                io_counter_sda[count] = atoll(word);  // Using sda array for sdc data
-            } else if (type == 1) {
-                io_counter_sdc[count] = atoll(word);  // Using sdc array for sdd data
-            }
-            count++;
-        }
-        // MATCH: nvme0n1 (Your physical disk)
-        if (strstr(word, "nvme0n1") != NULL && strlen(word) == 7) { 
-            // We check length == 7 to match "nvme0n1" but avoid "nvme0n1p1" etc.
-            
-            // Map Physical Disk to "Swap" slot (Type 0)
-            // Since you use a swap FILE, swap I/O shows up here as total disk load.
-            if (type == -1 || type == 0) { 
-                type = 0; 
-                count = 0;
-            }
-        }
-    }
-    fclose(in);
     io_bytes_start = read_self_io_bytes();
     io_counters_initialized = 1;
 }
 
 void print_disk_io() {
-    FILE *in = fopen("/proc/diskstats", "r");
-    if (in == NULL) {
-        printf("Disk I/O data unavailable\n");
-        return;
-    }
-
-    char word[256];
-    int count = -1;
-    int type = -1;  // 0 for sdc (swap), 1 for sdd (main disk)
-
-    while (fscanf(in, "%s", word) != EOF) {
-        if (count >= 0 && count < 11) {
-            if (type == 0) {
-                io_counter_sda_new[count] = atoll(word);  // Using sda array for sdc data
-            } else if (type == 1) {
-                io_counter_sdc_new[count] = atoll(word);  // Using sdc array for sdd data
-            }
-            count++;
-        }
-        // MATCH: nvme0n1 (Your physical disk)
-        if (strstr(word, "nvme0n1") != NULL && strlen(word) == 7) { 
-            // We check length == 7 to match "nvme0n1" but avoid "nvme0n1p1" etc.
-            
-            // Map Physical Disk to "Swap" slot (Type 0)
-            // Since you use a swap FILE, swap I/O shows up here as total disk load.
-            if (type == -1 || type == 0) { 
-                type = 0; 
-                count = 0;
-            }
-        }
-    }
-    fclose(in);
-
     if (!io_counters_initialized) {
         printf("Disk I/O counters not initialized\n");
         return;
     }
 
     printf("Disk I/O (this run, /proc/self/io):\n");
-    { long long io_end = read_self_io_bytes();
-      long long io_delta = (io_end >= 0 && io_bytes_start >= 0) ? (io_end - io_bytes_start) : -1;
-      printf("  I/Os (read+write bytes): %lld\n", io_delta); }
+    long long io_end = read_self_io_bytes();
+    long long io_delta = (io_end >= 0 && io_bytes_start >= 0) ? (io_end - io_bytes_start) : -1;
+    printf("  I/Os (read+write bytes): %lld\n", io_delta);
 }
 
 void read_page_faults(long *minor_faults, long *major_faults) {
