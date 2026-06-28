@@ -525,6 +525,11 @@ int main(int argc, char *argv[]) {
     } else
         BASE_N = DEFAULT_BASE;
 
+    if ((BASE_N & (BASE_N - 1)) != 0) {
+        fprintf(stderr, "Error: BASE_CASE (%d) must be a power of two.\n", BASE_N);
+        exit(1);
+    }
+
     l = BASE_N;
     LOG_BASE_N = 0;
     while (l > 1) {

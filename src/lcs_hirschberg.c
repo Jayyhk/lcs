@@ -85,8 +85,8 @@ void free_memory(int r) {
         free(YS);
     }
 
-    if (nxs == NULL) free(nxs);
-    if (nys == NULL) free(nys);
+    if (nxs != NULL) free(nxs);
+    if (nys != NULL) free(nys);
 
     if (K != NULL) {
         for (i = 0; i < 2; i++)
@@ -382,6 +382,11 @@ int main(int argc, char *argv[]) {
         if (BASE_N <= 0) BASE_N = DEFAULT_BASE;
     } else
         BASE_N = DEFAULT_BASE;
+
+    if ((BASE_N & (BASE_N - 1)) != 0) {
+        fprintf(stderr, "Error: BASE_CASE (%d) must be a power of two.\n", BASE_N);
+        exit(1);
+    }
 
     l = BASE_N;
     LOG_BASE_N = 0;

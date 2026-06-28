@@ -87,8 +87,9 @@ void change_memory(int fdout, unsigned long long new_target_memory_bytes) {
 
     // 3. Truncate file to the new balloon size
     if (ftruncate(fdout, MEMORY) != 0) {
-        perror("Balloon ftruncate error");
-        exit(1);
+        perror("Balloon ftruncate error (continuing without resize)");
+        dst = (int*)MAP_FAILED;
+        return;
     }
     
     // 4. Map new memory
@@ -99,8 +100,8 @@ void change_memory(int fdout, unsigned long long new_target_memory_bytes) {
 
     dst = (int*)mmap(0, MEMORY, PROT_READ | PROT_WRITE, MAP_SHARED, fdout, 0);
     if (dst == (int*)MAP_FAILED) {
-        perror("Balloon mmap error");
-        exit(1);
+        perror("Balloon mmap error (continuing without claiming memory)");
+        return;
     }
     
     // 5. Touch the new memory to "claim" it from the OS

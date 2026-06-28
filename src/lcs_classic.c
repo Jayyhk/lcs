@@ -249,7 +249,7 @@ int main(int argc, char *argv[]) {
          (ru[0].ru_stime.tv_sec + (ru[0].ru_stime.tv_usec * 0.000001));
     tt = ut + st;
 
-    print_final_results(zps[r - 1], ut, st, tt, r, str);
+    print_final_results(zps[r - 1], ut, st, tt, 0.0, r, str);
 
     free_memory(r, n);
 
