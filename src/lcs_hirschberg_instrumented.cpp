@@ -2,7 +2,7 @@
 Hirschberg's algorithm.
 Last Update: Oct 04, 2005 ( Rezaul Alam Chowdhury, UT Austin )
 
-THIS FILE HAS BEEN INSTRUMENTED TO SEND SIGNALS TO THE BALLOON
+THIS FILE HAS BEEN INSTRUMENTED TO SEND SIGNALS TO THE CONTROLLER
 */
 
 #include <math.h>
@@ -70,31 +70,31 @@ int ack_fd;
 
 /*
  * Helper function to send a 1-byte signal to the pipe.
- * This "wakes up" the waiting balloon.
+ * This "wakes up" the waiting controller.
  */
-static int balloon_gone = 0;
+static int controller_gone = 0;
 
 void send_signal(int pipe_fd) {
-    // If the balloon has already disappeared, do not touch the pipe again.
-    if (balloon_gone) return;
+    // If the controller has already disappeared, do not touch the pipe again.
+    if (controller_gone) return;
 
     // 1. Send Signal ("Inflate!")
-    // printf("LCS: Sending signal to balloon...\n"); // Optional: Comment out to reduce log spam
+    // printf("LCS: Sending signal to controller...\n"); // Optional: Comment out to reduce log spam
     if (write(pipe_fd, "1", 1) == -1) {
         perror("LCS: Error writing to pipe!");
-        balloon_gone = 1;
+        controller_gone = 1;
         return;
     }
 
     // 2. Wait for Handshake (Blocking Read)
-    // The OS pauses this process here until Balloon writes "K"
+    // The OS pauses this process here until Controller writes "K"
     char buf[1];
     ssize_t ack = read(ack_fd, buf, 1);
     if (ack <= 0) {
-        // ack == 0 means EOF (balloon closed the pipe / exited);
-        // ack == -1 means a read error. Either way, the balloon is gone.
-        if (ack == -1) perror("LCS: Error reading ack from balloon!");
-        balloon_gone = 1;
+        // ack == 0 means EOF (controller closed the pipe / exited);
+        // ack == -1 means a read error. Either way, the controller is gone.
+        if (ack == -1) perror("LCS: Error reading ack from controller!");
+        controller_gone = 1;
         return;
     }
 }
@@ -398,7 +398,7 @@ int main(int argc, char *argv[]) {
     char str[50];
 
     // Ignore SIGPIPE so a write() to a closed pipe returns an error instead of
-    // killing the process if the balloon has already exited.
+    // killing the process if the controller has already exited.
     signal(SIGPIPE, SIG_IGN);
 
     printf(
@@ -477,14 +477,14 @@ int main(int argc, char *argv[]) {
     // printf("Pipe = %s\n", pipe_filename); // Print pipe name
 
     // --- INSTRUMENTED: Open the Pipe for Writing ---
-    // This connects to the balloon, which is waiting (blocked)
+    // This connects to the controller, which is waiting (blocked)
     // on the other end of this pipe.
     int pipe_fd = open(pipe_filename, O_WRONLY);
     if (pipe_fd < 0) {
-        perror("LCS: Failed to open pipe for writing. Is balloon running?");
+        perror("LCS: Failed to open pipe for writing. Is controller running?");
         return 1;
     }
-    // printf("LCS: Connected to balloon pipe.\n");
+    // printf("LCS: Connected to controller pipe.\n");
 
     // Open ACK pipe for reading
     char ack_pipe_filename[256];
@@ -545,8 +545,8 @@ int main(int argc, char *argv[]) {
     print_final_results(zps[r - 1], ut, st, tt, total_wall_time, r, str);
 
     // --- INSTRUMENTED: Close the Pipe ---
-    // This tells the balloon's 'read()' loop to exit,
-    // allowing the balloon to clean up and quit.
+    // This tells the controller's 'read()' loop to exit,
+    // allowing the controller to clean up and quit.
     // printf("LCS: Algorithm complete. Closing pipe.\n");
     close(pipe_fd);
     close(ack_fd);
