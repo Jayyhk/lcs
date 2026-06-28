@@ -3,42 +3,34 @@
 now=$(date)
 echo "$now"
 
-# This script must be run as root to manage cgroups
 if [ "$EUID" -ne 0 ]; then
     echo "Please run as root (using sudo)"
     exit 1
 fi
 
-# Create res directory if it doesn't exist
 mkdir -p res/oblivious
 
-# --- Configuration ---
-BASE_CASE=256         # Base case for recursion
-MEM_LIMIT=4194304     # 4MiB
-SWAP_LIMIT=2147483648 # 2GiB
-NUM_INSTANCES=4       # Number of concurrent programs to run
+BASE_CASE=256
+MEM_LIMIT=8388608
+SWAP_LIMIT=max
+NUM_INSTANCES=4
 
 CGROUP_NAME="oblivious"
 CGROUP_PATH="/sys/fs/cgroup/$CGROUP_NAME"
 RESULTS_FILE="res/oblivious/oblivious_results.txt"
 
-# Log directory
 LOG_DIR="res/oblivious"
 
-# Clear files
 rm -f $LOG_DIR/oblivious_*.log
 rm -f $RESULTS_FILE
 
-# Cleanup function
 cleanup() {
     echo "Cleaning up cgroup: $CGROUP_NAME"
     rmdir "$CGROUP_PATH" 2>/dev/null || true
 }
 
-# Trap to ensure cleanup on exit
 trap cleanup EXIT
 
-# --- Cgroup Setup ---
 echo "Setting up cgroup: $CGROUP_NAME"
 mkdir -p "$CGROUP_PATH"
 if [ $? -ne 0 ]; then
@@ -46,24 +38,21 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-# Set memory limits using variables
 echo $MEM_LIMIT > "$CGROUP_PATH/memory.max"
 echo $SWAP_LIMIT > "$CGROUP_PATH/memory.swap.max"
-echo "Cgroup setup complete. Memory limit: $(($MEM_LIMIT / 1024 / 1024))MiB, Swap limit: $(($SWAP_LIMIT / 1024 / 1024 / 1024))GiB."
+echo "Cgroup setup complete. Memory limit: $(($MEM_LIMIT / 1024 / 1024))MiB, Swap limit: $SWAP_LIMIT."
 
-# Write setup info to results file
 echo "Cgroup setup: $CGROUP_NAME" >> $RESULTS_FILE
 echo "Memory limit: $(($MEM_LIMIT / 1024 / 1024))MiB (Shared by $NUM_INSTANCES instances)" >> $RESULTS_FILE
-echo "Swap limit: $(($SWAP_LIMIT / 1024 / 1024 / 1024))GiB" >> $RESULTS_FILE
+echo "Swap limit: $SWAP_LIMIT" >> $RESULTS_FILE
 echo "BASE_CASE: $BASE_CASE" >> $RESULTS_FILE
 echo "" >> $RESULTS_FILE
 echo "N, Hirschberg_IO_Avg, Oblivious_IO_Avg, Ratio" >> $RESULTS_FILE
 echo $$ > "$CGROUP_PATH/cgroup.procs"
 
-for N in 32768; do
+for N in 131072; do
     echo "Running OBLIVIOUS test for N = $N"
     
-    # --- Run Hirschberg (non-adaptive) ---
     echo "  Running $NUM_INSTANCES Hirschberg..."
     sync; echo 3 > /proc/sys/vm/drop_caches
     
@@ -73,7 +62,6 @@ for N in 32768; do
     
     wait
     
-    # Calculate average I/Os
     HIRSCHBERG_TOTAL_IO=0
     for i in $(seq 1 $NUM_INSTANCES); do
         IO=$(cat "$LOG_DIR/oblivious_hirschberg_${N}_$i.log" | grep 'I/Os' | tail -1 | awk '{print $4}')
@@ -81,7 +69,6 @@ for N in 32768; do
     done
     LCS_HIRSCHBERG_IO_AVG=$(echo "scale=2; $HIRSCHBERG_TOTAL_IO / $NUM_INSTANCES" | bc)
 
-    # --- Run Oblivious (adaptive) ---
     echo "  Running $NUM_INSTANCES Oblivious..."
     sync; echo 3 > /proc/sys/vm/drop_caches
 
@@ -98,7 +85,6 @@ for N in 32768; do
     done
     LCS_OBLIVIOUS_IO_AVG=$(echo "scale=2; $OBLIVIOUS_TOTAL_IO / $NUM_INSTANCES" | bc)
     
-    # --- Record Results ---
     if (( $(echo "$LCS_OBLIVIOUS_IO_AVG > 0" | bc -l) )); then
         RESULT=$(echo "scale=6; $LCS_HIRSCHBERG_IO_AVG / $LCS_OBLIVIOUS_IO_AVG" | bc -l)
         echo "$N, $LCS_HIRSCHBERG_IO_AVG, $LCS_OBLIVIOUS_IO_AVG, $RESULT" >> $RESULTS_FILE
@@ -109,5 +95,4 @@ done
 
 echo "Oblivious experiment complete. Results saved to $RESULTS_FILE."
 
-# Fix permissions
 chown -R $SUDO_USER:$SUDO_USER res/oblivious/

@@ -4,14 +4,11 @@ CXX = g++
 CFLAGS = -std=c99 -O3 -DNDEBUG -Wall -Iinclude
 CXXFLAGS = -std=c++11 -O3 -DNDEBUG -Wall -Iinclude
 LCS_LDFLAGS = -lm
-BALLOON_LDFLAGS = -lrt -pthread
 
-SUITE = lcs_classic lcs_hirschberg lcs_oblivious lcs_hirschberg_instrumented lcs_oblivious_instrumented balloon
+SUITE = lcs_classic lcs_hirschberg lcs_oblivious lcs_hirschberg_instrumented lcs_oblivious_instrumented mem_controller
 
 all: $(SUITE)
 
-balloon: src/balloon.cpp
-	$(CXX) $(CXXFLAGS) $< -o bin/$@ $(BALLOON_LDFLAGS)
 lcs_classic: src/lcs_classic.c include/util.h
 	$(CXX) $(CXXFLAGS) $< -o bin/$@ $(LCS_LDFLAGS)
 lcs_hirschberg: src/lcs_hirschberg.c include/util.h
@@ -22,6 +19,8 @@ lcs_hirschberg_instrumented: src/lcs_hirschberg_instrumented.cpp include/util.h
 	$(CXX) $(CXXFLAGS) $< -o bin/$@ $(LCS_LDFLAGS)
 lcs_oblivious_instrumented: src/lcs_oblivious_instrumented.cpp include/util.h
 	$(CXX) $(CXXFLAGS) $< -o bin/$@ $(LCS_LDFLAGS)
+mem_controller: src/mem_controller.cpp
+	$(CXX) $(CXXFLAGS) $< -o bin/$@
 
 clean:
 	rm -f $(addprefix bin/,$(SUITE))

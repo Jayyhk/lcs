@@ -3,152 +3,96 @@
 now=$(date)
 echo "$now"
 
-# This script must be run as root
 if [ "$EUID" -ne 0 ]; then
     echo "Please run as root (using sudo)"
     exit 1
 fi
-set -e # Exit on error
 
-# --- Configuration ---
 CGROUP_NAME="benevolent"
 CGROUP_PATH="/sys/fs/cgroup/$CGROUP_NAME"
 BASE_CASE=256
 RESULTS_FILE="res/benevolent/benevolent_results.txt"
 
-# Set ONE static, HIGH memory limit for the cgroup
-MEM_LIMIT_BYTES=2147483648 # 2GiB
-MEM_LIMIT_MB=2048          # 2GiB
-SWAP_LIMIT=2147483648      # 2GiB
+SWAP_LIMIT=max
+INIT_MAX=2097152
 
-# Temporary file for the signaling pipe
-PIPE_FILE="/tmp/balloon_signal"
-
-# This just lists the memory values the balloon will step through.
+PIPE_FILE="/tmp/lcs_mem_signal"
 PROFILE_FILE="res/benevolent/benevolent_profile.txt"
 
-# Temp log files
 HIRSCHBERG_LOG="res/benevolent/benevolent_hirschberg.log"
 OBLIVIOUS_LOG="res/benevolent/benevolent_oblivious.log"
 
-# Clear files
-rm -f res/benevolent/balloon/*
-rm -f $HIRSCHBERG_LOG $OBLIVIOUS_LOG
-rm -f $RESULTS_FILE
+mkdir -p res/benevolent
+rm -f "$HIRSCHBERG_LOG" "$OBLIVIOUS_LOG" "$RESULTS_FILE"
 
-# Cleanup function
 cleanup() {
     echo "Cleaning up..."
+    pkill -9 -f bin/mem_controller 2>/dev/null || true
+    pkill -9 -f 'bin/lcs_.*_instrumented' 2>/dev/null || true
+    sleep 0.5
     rmdir "$CGROUP_PATH" 2>/dev/null || true
-    rm -f $PIPE_FILE "${PIPE_FILE}_ack" 2>/dev/null || true
+    rm -f "$PIPE_FILE" "${PIPE_FILE}_ack" 2>/dev/null || true
 }
-
-# Trap to ensure cleanup on exit
 trap cleanup EXIT
 
-# --- Cgroup Setup ---
 echo "Setting up cgroup: $CGROUP_NAME"
 mkdir -p "$CGROUP_PATH"
-echo $MEM_LIMIT_BYTES > "$CGROUP_PATH/memory.max"
+echo $INIT_MAX > "$CGROUP_PATH/memory.max"
 echo $SWAP_LIMIT > "$CGROUP_PATH/memory.swap.max"
-echo 0 > "$CGROUP_PATH/memory.oom.group"
-echo $$ > "$CGROUP_PATH/cgroup.procs"
-mkdir -p res/benevolent/balloon # For logs
+echo 0 > "$CGROUP_PATH/memory.oom.group" 2>/dev/null || true
 
-echo "Creating static benevolent profile..."
-# Index 0: Resting State (Low App Memory / High Balloon)
-echo "4"    > $PROFILE_FILE
-# Index 1: Helping State (High App Memory / Low Balloon)
-echo "2048" >> $PROFILE_FILE
+echo "2" > "$PROFILE_FILE"
+echo "64" >> "$PROFILE_FILE"
 
-# Write headers to results file
-echo "Cgroup setup: $CGROUP_NAME" >> $RESULTS_FILE
-echo "Memory limit: ${MEM_LIMIT_MB}MiB" >> $RESULTS_FILE
-echo "BASE_CASE: $BASE_CASE" >> $RESULTS_FILE
-echo "" >> $RESULTS_FILE
-echo "N, Hirschberg_IO, Oblivious_IO, Ratio" >> $RESULTS_FILE
+echo "Cgroup: $CGROUP_NAME  (memory.max driven by mem_controller: 2 MiB <-> 64 MiB)" >> "$RESULTS_FILE"
+echo "BASE_CASE: $BASE_CASE" >> "$RESULTS_FILE"
+echo "" >> "$RESULTS_FILE"
+echo "N, Hirschberg_IO, Oblivious_IO, Ratio" >> "$RESULTS_FILE"
 
-# --- Run Experiment Loop ---
-for N in 32768; do
-    echo "Running BENEVOLENT test for N = $N"
-    
-    # --- NEW: Create the signal AND ack pipes ---
-    rm -f $PIPE_FILE "${PIPE_FILE}_ack"
-    mkfifo $PIPE_FILE
-    mkfifo "${PIPE_FILE}_ack"
-
-    # --- 1. Run Hirschberg (non-adaptive) ---
-    echo "  Running Hirschberg (benevolent)..."
+run_one() {
+    local exe="$1" log="$2"
+    rm -f "$PIPE_FILE" "${PIPE_FILE}_ack"
+    mkfifo "$PIPE_FILE" "${PIPE_FILE}_ack"
     sync; echo 3 > /proc/sys/vm/drop_caches
+    echo $INIT_MAX > "$CGROUP_PATH/memory.max"
 
-    # Start the Balloon in the background. It will mmap() its
-    # first memory value (4) and then block, waiting on the pipe.
-    # Args: CgroupMem(MB), NumBalloons, BalloonID, ProfileFile, PipeFile
-    stdbuf -o0 ./bin/balloon \
-        $MEM_LIMIT_MB 1 1 $PROFILE_FILE $PIPE_FILE \
-        > res/benevolent/balloon/balloon_h_$N.log 2>&1 &
-    BALLOON_PID=$!
-    echo $BALLOON_PID > "$CGROUP_PATH/cgroup.procs"
-    
-    # Give the balloon a moment to start and block on the pipe
-    sleep 0.5 
-
-    # Start the lcs_hirschberg program.
-    # It will run, send a signal (waking the balloon), scan,
-    # send another signal, and finish.
-    # Args: N, 1, BaseCase, PipeFile
-    stdbuf -o0 ./bin/lcs_hirschberg_instrumented \
-        $N 1 $BASE_CASE $PIPE_FILE \
-        < "rsrc/data-$N.in" >> $HIRSCHBERG_LOG 2>&1 &
-    LCS_PID=$!
-    echo $LCS_PID > "$CGROUP_PATH/cgroup.procs"
-
-    wait $LCS_PID
-    kill $BALLOON_PID 2>/dev/null
-    wait $BALLOON_PID 2>/dev/null || true
-    
-    # --- 2. Run Oblivious (adaptive) ---
-    echo "  Running Oblivious (benevolent)..."
-    
-    rm -f $PIPE_FILE "${PIPE_FILE}_ack"
-    mkfifo $PIPE_FILE
-    mkfifo "${PIPE_FILE}_ack"
-    sync; echo 3 > /proc/sys/vm/drop_caches
-
-    # Start the Balloon again for the next run
-    stdbuf -o0 ./bin/balloon \
-        $MEM_LIMIT_MB 1 1 $PROFILE_FILE $PIPE_FILE \
-        > res/benevolent/balloon/balloon_o_$N.log 2>&1 &
-    BALLOON_PID=$!
-    echo $BALLOON_PID > "$CGROUP_PATH/cgroup.procs"
+    stdbuf -o0 ./bin/mem_controller "$CGROUP_PATH" "$PROFILE_FILE" "$PIPE_FILE" \
+        > "res/benevolent/controller_${exe}.log" 2>&1 &
+    local controller_pid=$!
     sleep 0.5
 
-    stdbuf -o0 ./bin/lcs_oblivious_instrumented \
-        $N 1 $BASE_CASE $PIPE_FILE \
-        < "rsrc/data-$N.in" >> $OBLIVIOUS_LOG 2>&1 &
-    LCS_PID=$!
-    echo $LCS_PID > "$CGROUP_PATH/cgroup.procs"
-    
-    wait $LCS_PID
-    kill $BALLOON_PID 2>/dev/null
-    wait $BALLOON_PID 2>/dev/null || true
-    
-    # --- 3. Record Results ---
-    LCS_HIRSCHBERG_IO=$(cat $HIRSCHBERG_LOG | grep 'I/Os' | tail -1 | awk '{print $4}')
-    LCS_HIRSCHBERG_IO=${LCS_HIRSCHBERG_IO:-0} 
-    
-    LCS_OBLIVIOUS_IO=$(cat $OBLIVIOUS_LOG | grep 'I/Os' | tail -1 | awk '{print $4}')
+    stdbuf -o0 ./bin/"$exe" "$N" 1 $BASE_CASE "$PIPE_FILE" \
+        < "rsrc/data-$N.in" >> "$log" 2>&1 &
+    local lcs_pid=$!
+    echo $lcs_pid > "$CGROUP_PATH/cgroup.procs"
+
+    wait $lcs_pid 2>/dev/null || true
+    kill $controller_pid 2>/dev/null || true
+    wait $controller_pid 2>/dev/null || true
+}
+
+for N in 131072; do
+    echo "Running BENEVOLENT test for N = $N"
+
+    echo "  Running Hirschberg (non-adaptive)..."
+    run_one lcs_hirschberg_instrumented "$HIRSCHBERG_LOG"
+
+    echo "  Running Oblivious (adaptive)..."
+    run_one lcs_oblivious_instrumented "$OBLIVIOUS_LOG"
+
+    LCS_HIRSCHBERG_IO=$(grep 'I/Os' "$HIRSCHBERG_LOG" | tail -1 | awk '{print $4}')
+    LCS_HIRSCHBERG_IO=${LCS_HIRSCHBERG_IO:-0}
+    LCS_OBLIVIOUS_IO=$(grep 'I/Os' "$OBLIVIOUS_LOG" | tail -1 | awk '{print $4}')
     LCS_OBLIVIOUS_IO=${LCS_OBLIVIOUS_IO:-0}
 
     if [ "$LCS_OBLIVIOUS_IO" -gt 0 ]; then
         RESULT=$(echo "scale=6; $LCS_HIRSCHBERG_IO / $LCS_OBLIVIOUS_IO" | bc -l)
-        echo "$N, $LCS_HIRSCHBERG_IO, $LCS_OBLIVIOUS_IO, $RESULT" >> $RESULTS_FILE
+        echo "$N, $LCS_HIRSCHBERG_IO, $LCS_OBLIVIOUS_IO, $RESULT" >> "$RESULTS_FILE"
     else
-        echo "$N, $LCS_HIRSCHBERG_IO, $LCS_OBLIVIOUS_IO, 0" >> $RESULTS_FILE
+        echo "$N, $LCS_HIRSCHBERG_IO, $LCS_OBLIVIOUS_IO, 0" >> "$RESULTS_FILE"
     fi
-    
-    rm -f $PIPE_FILE "${PIPE_FILE}_ack"
+    rm -f "$PIPE_FILE" "${PIPE_FILE}_ack"
 done
 
 echo "Benevolent experiment complete. Results saved to $RESULTS_FILE."
-chown -R $SUDO_USER:$SUDO_USER res/benevolent/
+chown -R "$SUDO_USER:$SUDO_USER" res/benevolent/
