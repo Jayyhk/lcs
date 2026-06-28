@@ -8,11 +8,11 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
-mkdir -p res/constant
+sudo -u "$SUDO_USER" mkdir -p res/constant
 
 BASE_CASE=256
 MEM_LIMIT=2097152
-SWAP_LIMIT=max
+SWAP_LIMIT=67108864
 
 CGROUP_NAME="constant"
 CGROUP_PATH="/sys/fs/cgroup/$CGROUP_NAME"

@@ -13,7 +13,7 @@ CGROUP_PATH="/sys/fs/cgroup/$CGROUP_NAME"
 BASE_CASE=256
 RESULTS_FILE="res/adversarial/adversarial_results.txt"
 
-SWAP_LIMIT=max
+SWAP_LIMIT=67108864
 INIT_MAX=67108864
 
 PIPE_FILE="/tmp/lcs_mem_signal"
@@ -22,7 +22,7 @@ PROFILE_FILE="res/adversarial/adversarial_profile.txt"
 HIRSCHBERG_LOG="res/adversarial/adversarial_hirschberg.log"
 OBLIVIOUS_LOG="res/adversarial/adversarial_oblivious.log"
 
-mkdir -p res/adversarial
+sudo -u "$SUDO_USER" mkdir -p res/adversarial
 rm -f "$HIRSCHBERG_LOG" "$OBLIVIOUS_LOG" "$RESULTS_FILE"
 
 cleanup() {

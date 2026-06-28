@@ -13,7 +13,7 @@ CGROUP_PATH="/sys/fs/cgroup/$CGROUP_NAME"
 BASE_CASE=256
 RESULTS_FILE="res/benevolent/benevolent_results.txt"
 
-SWAP_LIMIT=max
+SWAP_LIMIT=67108864
 INIT_MAX=2097152
 
 PIPE_FILE="/tmp/lcs_mem_signal"
@@ -22,7 +22,7 @@ PROFILE_FILE="res/benevolent/benevolent_profile.txt"
 HIRSCHBERG_LOG="res/benevolent/benevolent_hirschberg.log"
 OBLIVIOUS_LOG="res/benevolent/benevolent_oblivious.log"
 
-mkdir -p res/benevolent
+sudo -u "$SUDO_USER" mkdir -p res/benevolent
 rm -f "$HIRSCHBERG_LOG" "$OBLIVIOUS_LOG" "$RESULTS_FILE"
 
 cleanup() {

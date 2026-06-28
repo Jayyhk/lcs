@@ -8,11 +8,11 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
-mkdir -p res/oblivious
+sudo -u "$SUDO_USER" mkdir -p res/oblivious
 
 BASE_CASE=256
 MEM_LIMIT=8388608
-SWAP_LIMIT=max
+SWAP_LIMIT=67108864
 NUM_INSTANCES=4
 
 CGROUP_NAME="oblivious"
