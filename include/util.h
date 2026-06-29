@@ -91,22 +91,40 @@ void print_proc_io() {
 int io_counters_initialized = 0;
 long long io_bytes_start = 0;
 
-static long long read_self_io_bytes() {
-    FILE *f = fopen("/proc/self/io", "r");
-    if (f == NULL) return -1;
-    char line[256];
-    long long rb = -1, wb = -1, v;
-    while (fgets(line, sizeof(line), f)) {
-        if (sscanf(line, "read_bytes: %lld", &v) == 1) rb = v;
-        else if (sscanf(line, "write_bytes: %lld", &v) == 1) wb = v;
+static long long read_cgroup_swap_bytes() {
+    FILE *cg = fopen("/proc/self/cgroup", "r");
+    if (cg == NULL) return -1;
+    char line[512];
+    char cgpath[512] = "";
+    while (fgets(line, sizeof(line), cg)) {
+        if (strncmp(line, "0::", 3) == 0) {
+            char *p = line + 3;
+            size_t n = strlen(p);
+            while (n > 0 && (p[n - 1] == '\n' || p[n - 1] == '\r')) p[--n] = '\0';
+            strncpy(cgpath, p, sizeof(cgpath) - 1);
+            break;
+        }
     }
-    fclose(f);
-    if (rb < 0 || wb < 0) return -1;
-    return rb + wb;
+    fclose(cg);
+    if (cgpath[0] == '\0') return -1;
+
+    char statpath[1024];
+    snprintf(statpath, sizeof(statpath), "/sys/fs/cgroup%s/memory.stat", cgpath);
+    FILE *st = fopen(statpath, "r");
+    if (st == NULL) return -1;
+    long long pswpin = -1, pswpout = -1, val;
+    char key[64];
+    while (fscanf(st, "%63s %lld", key, &val) == 2) {
+        if (strcmp(key, "pswpin") == 0) pswpin = val;
+        else if (strcmp(key, "pswpout") == 0) pswpout = val;
+    }
+    fclose(st);
+    if (pswpin < 0 || pswpout < 0) return -1;
+    return (pswpin + pswpout) * 4096LL;
 }
 
 void init_disk_io() {
-    io_bytes_start = read_self_io_bytes();
+    io_bytes_start = read_cgroup_swap_bytes();
     io_counters_initialized = 1;
 }
 
@@ -116,10 +134,10 @@ void print_disk_io() {
         return;
     }
 
-    printf("Disk I/O (this run, /proc/self/io):\n");
-    long long io_end = read_self_io_bytes();
+    printf("Disk I/O (this run, cgroup swap):\n");
+    long long io_end = read_cgroup_swap_bytes();
     long long io_delta = (io_end >= 0 && io_bytes_start >= 0) ? (io_end - io_bytes_start) : -1;
-    printf("  I/Os (read+write bytes): %lld\n", io_delta);
+    printf("  I/Os (swap in+out): %lld\n", io_delta);
 }
 
 void read_page_faults(long *minor_faults, long *major_faults) {

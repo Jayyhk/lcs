@@ -13,72 +13,79 @@ CGROUP_PATH="/sys/fs/cgroup/$CGROUP_NAME"
 BASE_CASE=256
 RESULTS_FILE="res/benevolent/benevolent_results.txt"
 
-SWAP_LIMIT=67108864
-INIT_MAX=67108864
-REPLAY_INTERVAL=0.5
+SWAP_LIMIT=536870912
+LOW_MIB=2
+HIGH_MIB=64
 
+PIPE_FILE="/tmp/lcs_mem_signal_benev"
 PROFILE_FILE="res/benevolent/benevolent_profile.txt"
+TRACE_FILE="res/benevolent/benevolent_trace.txt"
 HIRSCHBERG_LOG="res/benevolent/benevolent_hirschberg.log"
 OBLIVIOUS_LOG="res/benevolent/benevolent_oblivious.log"
 
 sudo -u "$SUDO_USER" mkdir -p res/benevolent
 rm -f "$HIRSCHBERG_LOG" "$OBLIVIOUS_LOG" "$RESULTS_FILE"
 
-REPLAY_PID=""
 cleanup() {
     echo "Cleaning up..."
-    [ -n "$REPLAY_PID" ] && kill -9 "$REPLAY_PID" 2>/dev/null
-    pkill -9 -f 'bin/lcs_hirschberg' 2>/dev/null || true
-    pkill -9 -f 'bin/lcs_oblivious' 2>/dev/null || true
+    pkill -9 -f bin/mem_controller 2>/dev/null || true
+    pkill -9 -f bin/mem_replay 2>/dev/null || true
+    pkill -9 -f 'bin/lcs_' 2>/dev/null || true
     sleep 0.3
     rmdir "$CGROUP_PATH" 2>/dev/null || true
+    rm -f "$PIPE_FILE" "${PIPE_FILE}_ack" 2>/dev/null || true
 }
 trap cleanup EXIT
 
 mkdir -p "$CGROUP_PATH"
-echo $INIT_MAX > "$CGROUP_PATH/memory.max"
+echo $((HIGH_MIB * 1048576)) > "$CGROUP_PATH/memory.max"
 echo $SWAP_LIMIT > "$CGROUP_PATH/memory.swap.max"
 echo 0 > "$CGROUP_PATH/memory.oom.group" 2>/dev/null || true
 
-printf '2\n4\n8\n16\n32\n64\n64\n32\n16\n8\n4\n' > "$PROFILE_FILE"
+# Benevolent = mirror of adversarial. Controller starts at profile[0] and advances
+# on every signal; Hirschberg signals at ALG_B scan start and end. So profile[1] is
+# in effect DURING the scan, profile[0] AFTER it. HIGH-first => LOW during the scan
+# and HIGH after -- favorable to the non-adaptive algorithm (memory is withdrawn
+# only while it is scanning and cannot exploit it). See ESA paper Section 3.
+printf '%s\n%s\n' "$HIGH_MIB" "$LOW_MIB" > "$PROFILE_FILE"
 
-echo "Cgroup: $CGROUP_NAME (time-based replay of $PROFILE_FILE every ${REPLAY_INTERVAL}s, MiB)" >> "$RESULTS_FILE"
+echo "Cgroup: $CGROUP_NAME (benevolent: LOW=${LOW_MIB}MiB during Hirschberg ALG_B scans, HIGH=${HIGH_MIB}MiB after; profile generated from Hirschberg and replayed for oblivious)" >> "$RESULTS_FILE"
 echo "BASE_CASE: $BASE_CASE" >> "$RESULTS_FILE"
 echo "" >> "$RESULTS_FILE"
 echo "N, Hirschberg_IO, Oblivious_IO, Ratio" >> "$RESULTS_FILE"
 
-replay_profile() {
-    local -a prof
-    mapfile -t prof < "$PROFILE_FILE"
-    local n=${#prof[@]} i=0
-    while :; do
-        echo $(( ${prof[$i]} * 1048576 )) > "$CGROUP_PATH/memory.max" 2>/dev/null
-        i=$(( (i + 1) % n ))
-        sleep "$REPLAY_INTERVAL"
-    done
-}
+for N in "${@:-131072}"; do
+    echo "Running BENEVOLENT for N = $N"
 
-run_one() {
-    local exe="$1" log="$2"
+    echo "  Phase A: Hirschberg (instrumented) generates + runs under the benevolent profile..."
+    rm -f "$PIPE_FILE" "${PIPE_FILE}_ack"
+    mkfifo "$PIPE_FILE" "${PIPE_FILE}_ack"
     sync; echo 3 > /proc/sys/vm/drop_caches
-    echo $INIT_MAX > "$CGROUP_PATH/memory.max"
-    replay_profile &
-    REPLAY_PID=$!
-    ionice -c3 nice -n19 ./bin/"$exe" "$N" 1 $BASE_CASE < "rsrc/data-$N.in" >> "$log" 2>&1 &
-    local lcs_pid=$!
+    echo $((HIGH_MIB * 1048576)) > "$CGROUP_PATH/memory.max"
+    ionice -c3 nice -n19 ./bin/mem_controller "$CGROUP_PATH" "$PROFILE_FILE" "$PIPE_FILE" "$TRACE_FILE" > /dev/null 2>&1 &
+    ctrl_pid=$!
+    sleep 0.5
+    ionice -c3 nice -n19 ./bin/lcs_hirschberg_instrumented "$N" 1 $BASE_CASE "$PIPE_FILE" \
+        < "rsrc/data-$N.in" >> "$HIRSCHBERG_LOG" 2>&1 &
+    lcs_pid=$!
     echo $lcs_pid > "$CGROUP_PATH/cgroup.procs"
     wait $lcs_pid 2>/dev/null || true
-    kill -9 "$REPLAY_PID" 2>/dev/null || true
-    wait "$REPLAY_PID" 2>/dev/null || true
-    REPLAY_PID=""
-}
+    kill $ctrl_pid 2>/dev/null || true
+    wait $ctrl_pid 2>/dev/null || true
 
-for N in 131072; do
-    echo "Running BENEVOLENT (time-based) for N = $N"
-    echo "  Hirschberg (non-adaptive)..."
-    run_one lcs_hirschberg "$HIRSCHBERG_LOG"
-    echo "  Oblivious (adaptive)..."
-    run_one lcs_oblivious "$OBLIVIOUS_LOG"
+    echo "  Phase B: Oblivious (plain) runs under Hirschberg's replayed profile..."
+    rm -f "$PIPE_FILE" "${PIPE_FILE}_ack"
+    sync; echo 3 > /proc/sys/vm/drop_caches
+    echo $((HIGH_MIB * 1048576)) > "$CGROUP_PATH/memory.max"
+    ionice -c3 nice -n19 ./bin/mem_replay "$CGROUP_PATH" "$TRACE_FILE" > /dev/null 2>&1 &
+    replay_pid=$!
+    ionice -c3 nice -n19 ./bin/lcs_oblivious "$N" 1 $BASE_CASE \
+        < "rsrc/data-$N.in" >> "$OBLIVIOUS_LOG" 2>&1 &
+    lcs_pid=$!
+    echo $lcs_pid > "$CGROUP_PATH/cgroup.procs"
+    wait $lcs_pid 2>/dev/null || true
+    kill $replay_pid 2>/dev/null || true
+    wait $replay_pid 2>/dev/null || true
 
     LCS_HIRSCHBERG_IO=$(grep 'I/Os' "$HIRSCHBERG_LOG" | tail -1 | awk '{print $4}')
     LCS_HIRSCHBERG_IO=${LCS_HIRSCHBERG_IO:-0}
@@ -93,5 +100,5 @@ for N in 131072; do
     fi
 done
 
-echo "Benevolent (time-based) complete. Results in $RESULTS_FILE."
+echo "Benevolent complete. Results in $RESULTS_FILE."
 chown -R "$SUDO_USER:$SUDO_USER" res/benevolent/

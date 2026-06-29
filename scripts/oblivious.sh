@@ -12,7 +12,7 @@ sudo -u "$SUDO_USER" mkdir -p res/oblivious
 
 BASE_CASE=256
 MEM_LIMIT=8388608
-SWAP_LIMIT=67108864
+SWAP_LIMIT=536870912
 NUM_INSTANCES=4
 
 CGROUP_NAME="oblivious"
@@ -48,16 +48,15 @@ echo "Swap limit: $SWAP_LIMIT" >> $RESULTS_FILE
 echo "BASE_CASE: $BASE_CASE" >> $RESULTS_FILE
 echo "" >> $RESULTS_FILE
 echo "N, Hirschberg_IO_Avg, Oblivious_IO_Avg, Ratio" >> $RESULTS_FILE
-echo $$ > "$CGROUP_PATH/cgroup.procs"
 
-for N in 131072; do
+for N in "${@:-131072}"; do
     echo "Running OBLIVIOUS test for N = $N"
     
     echo "  Running $NUM_INSTANCES Hirschberg..."
     sync; echo 3 > /proc/sys/vm/drop_caches
     
     for i in $(seq 1 $NUM_INSTANCES); do
-        stdbuf -o0 nice -n 10 ./bin/lcs_hirschberg $N 1 $BASE_CASE < rsrc/data-$N.in > "$LOG_DIR/oblivious_hirschberg_${N}_$i.log" 2>&1 &
+        ( echo $BASHPID > "$CGROUP_PATH/cgroup.procs"; exec stdbuf -o0 nice -n 10 ./bin/lcs_hirschberg $N 1 $BASE_CASE ) < rsrc/data-$N.in > "$LOG_DIR/oblivious_hirschberg_${N}_$i.log" 2>&1 &
     done
     
     wait
@@ -73,7 +72,7 @@ for N in 131072; do
     sync; echo 3 > /proc/sys/vm/drop_caches
 
     for i in $(seq 1 $NUM_INSTANCES); do
-        stdbuf -o0 nice -n 10 ./bin/lcs_oblivious $N 1 $BASE_CASE < rsrc/data-$N.in > "$LOG_DIR/oblivious_oblivious_${N}_$i.log" 2>&1 &
+        ( echo $BASHPID > "$CGROUP_PATH/cgroup.procs"; exec stdbuf -o0 nice -n 10 ./bin/lcs_oblivious $N 1 $BASE_CASE ) < rsrc/data-$N.in > "$LOG_DIR/oblivious_oblivious_${N}_$i.log" 2>&1 &
     done
     
     wait
