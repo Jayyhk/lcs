@@ -1,5 +1,0 @@
-Cgroup: benevolent (benevolent: memory = 2MiB/2 during each Hirschberg ALG_B scan, 2MiB baseline; profile generated from Hirschberg and replayed for oblivious)
-BASE_CASE: 32
-
-N, Hirschberg_IO, Oblivious_IO, Ratio
-131072, 0, 23085056, 0

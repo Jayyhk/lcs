@@ -5,6 +5,46 @@
 #include <time.h>
 #include <unistd.h>
 #include <math.h>
+#include <sys/mman.h>
+#include <fcntl.h>
+#include <sys/types.h>
+
+/* ---- File-backed allocator (paper-style MAP_SHARED) -------------------------
+ * Working buffers live in a scratch file on disk, so cache pressure causes real
+ * page-cache writeback (counted by /proc/self/io read_bytes/write_bytes) instead
+ * of anonymous swap. File pages are always reclaimable, so a tight cgroup cap
+ * thrashes-to-completion rather than OOM-killing. Set LCS_BACKING_DIR to choose
+ * the (disk-backed!) directory; defaults to the cwd. The file is unlinked right
+ * after creation, so it is released automatically when the process exits.
+ * -------------------------------------------------------------------------- */
+static int g_backing_fd = -1;
+static long long g_backing_off = 0;
+
+static void finit_backing(void) {
+    const char *dir = getenv("LCS_BACKING_DIR");
+    if (dir == NULL || dir[0] == '\0') dir = ".";
+    char path[600];
+    snprintf(path, sizeof(path), "%s/lcs_backing_%d.dat", dir, (int)getpid());
+    g_backing_fd = open(path, O_RDWR | O_CREAT | O_TRUNC, 0600);
+    if (g_backing_fd < 0) { perror("finit_backing: open"); exit(1); }
+    unlink(path);
+    g_backing_off = 0;
+}
+
+static void *fmalloc(size_t size) {
+    if (g_backing_fd < 0) finit_backing();
+    long pg = sysconf(_SC_PAGESIZE);
+    size_t aligned = ((size + pg - 1) / pg) * pg;
+    if (aligned == 0) aligned = (size_t)pg;
+    long long off = g_backing_off;
+    g_backing_off += (long long)aligned;
+    if (ftruncate(g_backing_fd, g_backing_off) != 0) { perror("fmalloc: ftruncate"); exit(1); }
+    void *p = mmap(NULL, aligned, PROT_READ | PROT_WRITE, MAP_SHARED, g_backing_fd, off);
+    if (p == MAP_FAILED) { perror("fmalloc: mmap"); exit(1); }
+    return p;
+}
+
+static void ffree(void *p) { (void)p; /* no-op: backing file released at process exit */ }
 
 char *conv_sec(double t, char *st) {
     int h, m, s;
@@ -91,40 +131,22 @@ void print_proc_io() {
 int io_counters_initialized = 0;
 long long io_bytes_start = 0;
 
-static long long read_cgroup_swap_bytes() {
-    FILE *cg = fopen("/proc/self/cgroup", "r");
-    if (cg == NULL) return -1;
-    char line[512];
-    char cgpath[512] = "";
-    while (fgets(line, sizeof(line), cg)) {
-        if (strncmp(line, "0::", 3) == 0) {
-            char *p = line + 3;
-            size_t n = strlen(p);
-            while (n > 0 && (p[n - 1] == '\n' || p[n - 1] == '\r')) p[--n] = '\0';
-            strncpy(cgpath, p, sizeof(cgpath) - 1);
-            break;
-        }
+static long long read_self_io_bytes() {
+    FILE *f = fopen("/proc/self/io", "r");
+    if (f == NULL) return -1;
+    char line[256];
+    long long rb = -1, wb = -1, v;
+    while (fgets(line, sizeof(line), f)) {
+        if (sscanf(line, "read_bytes: %lld", &v) == 1) rb = v;
+        else if (sscanf(line, "write_bytes: %lld", &v) == 1) wb = v;
     }
-    fclose(cg);
-    if (cgpath[0] == '\0') return -1;
-
-    char statpath[1024];
-    snprintf(statpath, sizeof(statpath), "/sys/fs/cgroup%s/memory.stat", cgpath);
-    FILE *st = fopen(statpath, "r");
-    if (st == NULL) return -1;
-    long long pswpin = -1, pswpout = -1, val;
-    char key[64];
-    while (fscanf(st, "%63s %lld", key, &val) == 2) {
-        if (strcmp(key, "pswpin") == 0) pswpin = val;
-        else if (strcmp(key, "pswpout") == 0) pswpout = val;
-    }
-    fclose(st);
-    if (pswpin < 0 || pswpout < 0) return -1;
-    return (pswpin + pswpout) * 4096LL;
+    fclose(f);
+    if (rb < 0 || wb < 0) return -1;
+    return rb + wb;
 }
 
 void init_disk_io() {
-    io_bytes_start = read_cgroup_swap_bytes();
+    io_bytes_start = read_self_io_bytes();
     io_counters_initialized = 1;
 }
 
@@ -134,10 +156,10 @@ void print_disk_io() {
         return;
     }
 
-    printf("Disk I/O (this run, cgroup swap):\n");
-    long long io_end = read_cgroup_swap_bytes();
+    printf("Disk I/O (this run, /proc/self/io):\n");
+    long long io_end = read_self_io_bytes();
     long long io_delta = (io_end >= 0 && io_bytes_start >= 0) ? (io_end - io_bytes_start) : -1;
-    printf("  I/Os (swap in+out): %lld\n", io_delta);
+    printf("  I/Os (read+write bytes): %lld\n", io_delta);
 }
 
 void read_page_faults(long *minor_faults, long *major_faults) {

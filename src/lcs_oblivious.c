@@ -62,38 +62,38 @@ char *fname2;
 void free_memory(int r) {
     int i;
 
-    if (Z != NULL) free(Z);
+    if (Z != NULL) ffree(Z);
 
-    if (rlen != NULL) free(rlen);
+    if (rlen != NULL) ffree(rlen);
 
-    if (buf_rlen != NULL) free(buf_rlen);
+    if (buf_rlen != NULL) ffree(buf_rlen);
 
-    if (buf_up != NULL) free(buf_up);
-    if (buf_left != NULL) free(buf_left);
-    if (buf_up_left != NULL) free(buf_up_left);
+    if (buf_up != NULL) ffree(buf_up);
+    if (buf_left != NULL) ffree(buf_left);
+    if (buf_up_left != NULL) ffree(buf_up_left);
 
-    if (blen != NULL) free(blen);
+    if (blen != NULL) ffree(blen);
 
     if (XS != NULL) {
         for (i = 0; i < r; i++)
-            if (XS[i] != NULL) free(XS[i]);
+            if (XS[i] != NULL) ffree(XS[i]);
 
-        free(XS);
+        ffree(XS);
     }
 
     if (YS != NULL) {
         for (i = 0; i < r; i++)
-            if (YS[i] != NULL) free(YS[i]);
+            if (YS[i] != NULL) ffree(YS[i]);
 
-        free(YS);
+        ffree(YS);
     }
 
-    if (nxs != NULL) free(nxs);
-    if (nys != NULL) free(nys);
+    if (nxs != NULL) ffree(nxs);
+    if (nys != NULL) ffree(nys);
 
-    if (ru != NULL) free(ru);
+    if (ru != NULL) ffree(ru);
 
-    if (zps != NULL) free(zps);
+    if (zps != NULL) ffree(zps);
 }
 
 int myceil(double v) {
@@ -115,27 +115,27 @@ int allocate_memory(int m, int n, int r, int b) {
 
     mm = min(m, n);
 
-    Z = (SYMBOL_TYPE *)malloc((mm + 2) * sizeof(SYMBOL_TYPE));
+    Z = (SYMBOL_TYPE *)fmalloc((mm + 2) * sizeof(SYMBOL_TYPE));
 
-    rlen = (int *)malloc((2 * nn + 1) * sizeof(int));
+    rlen = (int *)fmalloc((2 * nn + 1) * sizeof(int));
 
     mm = n * ((int)ceil((m * 1.0) / n) - 1);
-    if (mm > 0) buf_rlen = (int *)malloc((mm) * sizeof(int));
+    if (mm > 0) buf_rlen = (int *)fmalloc((mm) * sizeof(int));
 
-    buf_up = (int *)malloc((3 * nn) * sizeof(int));
-    buf_left = (int *)malloc((3 * nn) * sizeof(int));
-    buf_up_left = (int *)malloc((3 * nn) * sizeof(int));
+    buf_up = (int *)fmalloc((3 * nn) * sizeof(int));
+    buf_left = (int *)fmalloc((3 * nn) * sizeof(int));
+    buf_up_left = (int *)fmalloc((3 * nn) * sizeof(int));
 
-    XS = (char **)malloc((r) * sizeof(char *));
-    YS = (char **)malloc((r) * sizeof(char *));
+    XS = (char **)fmalloc((r) * sizeof(char *));
+    YS = (char **)fmalloc((r) * sizeof(char *));
 
-    nxs = (int *)malloc((r) * sizeof(int));
-    nys = (int *)malloc((r) * sizeof(int));
+    nxs = (int *)fmalloc((r) * sizeof(int));
+    nys = (int *)fmalloc((r) * sizeof(int));
 
-    blen = (int *)malloc((b + 1) * (b + 1) * sizeof(int));
+    blen = (int *)fmalloc((b + 1) * (b + 1) * sizeof(int));
 
-    ru = (struct rusage *)malloc((r + 1) * sizeof(struct rusage));
-    zps = (int *)malloc((r) * sizeof(int));
+    ru = (struct rusage *)fmalloc((r + 1) * sizeof(struct rusage));
+    zps = (int *)fmalloc((r) * sizeof(int));
 
     if ((Z == NULL) || (rlen == NULL) || ((mm > 0) && (buf_rlen == NULL)) || (buf_up == NULL) ||
         (buf_left == NULL) || (buf_up_left == NULL) || (XS == NULL) || (YS == NULL) ||
@@ -146,8 +146,8 @@ int allocate_memory(int m, int n, int r, int b) {
     }
 
     for (i = 0; i < r; i++) {
-        XS[i] = (char *)malloc((m + 2) * sizeof(char));
-        YS[i] = (char *)malloc((n + 2) * sizeof(char));
+        XS[i] = (char *)fmalloc((m + 2) * sizeof(char));
+        YS[i] = (char *)fmalloc((n + 2) * sizeof(char));
 
         if ((XS[i] == NULL) || (YS[i] == NULL)) {
             printf("\nError: memory allocation failed!\n\n");

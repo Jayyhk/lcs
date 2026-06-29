@@ -1,10 +1,6 @@
-# Compiled object files and executables
 bin/*
 *.o
 *.obj
 *.exe
 *.out
 *.a
-
-# Logs
-*.log

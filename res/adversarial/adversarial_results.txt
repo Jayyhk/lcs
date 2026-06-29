@@ -1,5 +1,0 @@
-Cgroup: adversarial (worst-case adversarial: memory = min(64MiB, 2MiB + subproblem) during each Hirschberg ALG_B scan, 2MiB baseline; profile generated from Hirschberg and replayed for oblivious)
-BASE_CASE: 32
-
-N, Hirschberg_IO, Oblivious_IO, Ratio
-131072, 6049792, 5373952, 1.125762
