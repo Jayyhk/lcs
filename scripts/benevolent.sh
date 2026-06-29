@@ -44,7 +44,7 @@ echo 0 > "$CGROUP_PATH/memory.oom.group" 2>/dev/null || true
 
 printf '%s\n' "$LOW_MIB" > "$PROFILE_FILE"
 
-echo "Cgroup: $CGROUP_NAME (benevolent: memory = ${LOW_MIB}MiB/2 during each Hirschberg ALG_B scan, ${LOW_MIB}MiB baseline; profile generated from Hirschberg and replayed for oblivious)" >> "$RESULTS_FILE"
+echo "Cgroup: $CGROUP_NAME (benevolent: memory reduced to linear working set (m+n) during each Hirschberg ALG_B scan, ${LOW_MIB}MiB baseline; profile generated from Hirschberg and replayed for oblivious)" >> "$RESULTS_FILE"
 echo "BASE_CASE: $BASE_CASE" >> "$RESULTS_FILE"
 echo "" >> "$RESULTS_FILE"
 echo "N, Hirschberg_IO, Oblivious_IO, Ratio" >> "$RESULTS_FILE"

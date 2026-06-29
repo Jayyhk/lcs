@@ -72,6 +72,25 @@ int ack_fd;
 long long g_base_bytes = 0;   // baseline (LOW) memory in bytes
 long long g_cap_bytes = 0;    // maximum (HIGH) memory we will request, in bytes
 int g_mode = 0;               // 0 = adversarial (raise during scan), 1 = benevolent (lower)
+long long g_floor_bytes = 0;  // min memory.max that won't OOM, derived at runtime (see below)
+
+/* The cgroup OOMs if memory.max drops below the process's NON-reclaimable resident
+ * set: anonymous pages (stack + C++ runtime) plus the page tables. File-backed
+ * buffers are always reclaimable, so they don't count. Read those two from
+ * /proc/self/status (RssAnon + VmPTE) so the benevolent floor is derived, not magic,
+ * and scales with the footprint (VmPTE grows with N). */
+static long long read_nonreclaimable_bytes(void) {
+    FILE *f = fopen("/proc/self/status", "r");
+    if (f == NULL) return 0;
+    long anon = 0, pte = 0, v;
+    char line[256];
+    while (fgets(line, sizeof(line), f)) {
+        if (sscanf(line, "RssAnon: %ld kB", &v) == 1) anon = v;
+        else if (sscanf(line, "VmPTE: %ld kB", &v) == 1) pte = v;
+    }
+    fclose(f);
+    return (long long)(anon + pte) * 1024LL;
+}
 
 /*
  * Send an 8-byte memory target (in bytes) to the controller, then block until it
@@ -272,10 +291,15 @@ void ALG_B(int m, int n, SYMBOL_TYPE *XX, SYMBOL_TYPE *YY, int *LL, int pipe_fd)
     // --- 1. SCAN START: set memory coupled to this m*n subproblem ---
     // Adversarial (paper Sec.3): give "enough memory to store each recursive
     // sub-problem during its linear scan" = base + (subproblem size), capped.
-    // Benevolent: instead withdraw memory during the scan.
+    // Benevolent: reduce to the linear working set (m+n) -- mirror of adversarial.
     long long scan_mem;
     if (g_mode == 1) {
-        scan_mem = g_base_bytes / 2;
+        // benevolent: reduce to the linear working set O(m+n) -- mirror of the
+        // adversarial O(m*n) area; only ever a decrease, with a sane floor.
+        scan_mem = (long long)(m + n) * (long long)sizeof(int);
+        if (scan_mem > g_base_bytes) scan_mem = g_base_bytes;
+        if (g_floor_bytes == 0) g_floor_bytes = 2LL * read_nonreclaimable_bytes();
+        if (scan_mem < g_floor_bytes) scan_mem = g_floor_bytes;  // >= 2x(RssAnon+VmPTE)
     } else {
         long long sub = g_base_bytes + (long long)m * (long long)n * (long long)sizeof(int);
         scan_mem = (sub < g_cap_bytes) ? sub : g_cap_bytes;

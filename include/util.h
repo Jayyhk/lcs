@@ -20,7 +20,7 @@
 static int g_backing_fd = -1;
 static long long g_backing_off = 0;
 
-static void finit_backing(void) {
+static inline void finit_backing(void) {
     const char *dir = getenv("LCS_BACKING_DIR");
     if (dir == NULL || dir[0] == '\0') dir = ".";
     char path[600];
@@ -31,7 +31,7 @@ static void finit_backing(void) {
     g_backing_off = 0;
 }
 
-static void *fmalloc(size_t size) {
+static inline void *fmalloc(size_t size) {
     if (g_backing_fd < 0) finit_backing();
     long pg = sysconf(_SC_PAGESIZE);
     size_t aligned = ((size + pg - 1) / pg) * pg;
@@ -44,7 +44,7 @@ static void *fmalloc(size_t size) {
     return p;
 }
 
-static void ffree(void *p) { (void)p; /* no-op: backing file released at process exit */ }
+static inline void ffree(void *p) { (void)p; /* no-op: backing file released at process exit */ }
 
 char *conv_sec(double t, char *st) {
     int h, m, s;
