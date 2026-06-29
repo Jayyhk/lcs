@@ -10,7 +10,7 @@ fi
 
 sudo -u "$SUDO_USER" mkdir -p res/constant
 
-BASE_CASE=256
+BASE_CASE=32
 MEM_LIMIT=2097152
 SWAP_LIMIT=536870912
 

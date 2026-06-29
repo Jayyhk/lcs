@@ -68,26 +68,29 @@ char *fname2;
 
 int ack_fd;
 
+// Depth/subproblem-scaled memory profile parameters (set from argv).
+long long g_base_bytes = 0;   // baseline (LOW) memory in bytes
+long long g_cap_bytes = 0;    // maximum (HIGH) memory we will request, in bytes
+int g_mode = 0;               // 0 = adversarial (raise during scan), 1 = benevolent (lower)
+
 /*
- * Helper function to send a 1-byte signal to the pipe.
- * This "wakes up" the waiting controller.
+ * Send an 8-byte memory target (in bytes) to the controller, then block until it
+ * acknowledges so the memory.max change lands synchronously at the scan boundary.
  */
 static int controller_gone = 0;
 
-void send_signal(int pipe_fd) {
+void send_value(int pipe_fd, long long value) {
     // If the controller has already disappeared, do not touch the pipe again.
     if (controller_gone) return;
 
-    // 1. Send Signal ("Inflate!")
-    // printf("LCS: Sending signal to controller...\n"); // Optional: Comment out to reduce log spam
-    if (write(pipe_fd, "1", 1) == -1) {
+    // 1. Send the memory target.
+    if (write(pipe_fd, &value, sizeof(value)) != (ssize_t)sizeof(value)) {
         perror("LCS: Error writing to pipe!");
         controller_gone = 1;
         return;
     }
 
-    // 2. Wait for Handshake (Blocking Read)
-    // The OS pauses this process here until Controller writes "K"
+    // 2. Wait for the controller's ack (blocking) so memory.max is set before we proceed.
     char buf[1];
     ssize_t ack = read(ack_fd, buf, 1);
     if (ack <= 0) {
@@ -265,9 +268,19 @@ void copy_seq(int j) {
 
 // INSTRUMENTED: Added pipe_fd and signal calls
 void ALG_B(int m, int n, SYMBOL_TYPE *XX, SYMBOL_TYPE *YY, int *LL, int pipe_fd) {
-    
-    // --- 1. SEND START_SCAN SIGNAL ---
-    send_signal(pipe_fd);
+
+    // --- 1. SCAN START: set memory coupled to this m*n subproblem ---
+    // Adversarial (paper Sec.3): give "enough memory to store each recursive
+    // sub-problem during its linear scan" = base + (subproblem size), capped.
+    // Benevolent: instead withdraw memory during the scan.
+    long long scan_mem;
+    if (g_mode == 1) {
+        scan_mem = g_base_bytes / 2;
+    } else {
+        long long sub = g_base_bytes + (long long)m * (long long)n * (long long)sizeof(int);
+        scan_mem = (sub < g_cap_bytes) ? sub : g_cap_bytes;
+    }
+    send_value(pipe_fd, scan_mem);
 
     int i, j;
 
@@ -291,9 +304,9 @@ void ALG_B(int m, int n, SYMBOL_TYPE *XX, SYMBOL_TYPE *YY, int *LL, int pipe_fd)
     for (j = 0; j <= n; j++) {
         LL[j] = K[1][j];
     }
-    
-    // --- 2. SEND END_SCAN SIGNAL ---
-    send_signal(pipe_fd);
+
+    // --- 2. SCAN END: return to baseline memory ---
+    send_value(pipe_fd, g_base_bytes);
 }
 
 // INSTRUMENTED: Added pipe_fd
@@ -455,7 +468,15 @@ int main(int argc, char *argv[]) {
 
     // INSTRUMENTED: Get pipe filename from argv[4]
     char* pipe_filename = argv[b + 4];
-    
+
+    // INSTRUMENTED: depth/subproblem-scaled profile parameters.
+    //   argv[b+5] = base (LOW) MiB, argv[b+6] = cap (HIGH) MiB, argv[b+7] = mode (0 adv, 1 ben)
+    long long base_mib = (argc > b + 5) ? atoll(argv[b + 5]) : 2;
+    long long cap_mib  = (argc > b + 6) ? atoll(argv[b + 6]) : 64;
+    g_mode = (argc > b + 7) ? atoi(argv[b + 7]) : 0;
+    g_base_bytes = base_mib * 1048576LL;
+    g_cap_bytes = cap_mib * 1048576LL;
+
     if (!allocate_memory(m, n, r, BASE_N)) return 0;
 
     if (b == 0) {

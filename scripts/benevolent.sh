@@ -10,7 +10,7 @@ fi
 
 CGROUP_NAME="benevolent"
 CGROUP_PATH="/sys/fs/cgroup/$CGROUP_NAME"
-BASE_CASE=256
+BASE_CASE=32
 RESULTS_FILE="res/benevolent/benevolent_results.txt"
 
 SWAP_LIMIT=536870912
@@ -42,14 +42,9 @@ echo $((HIGH_MIB * 1048576)) > "$CGROUP_PATH/memory.max"
 echo $SWAP_LIMIT > "$CGROUP_PATH/memory.swap.max"
 echo 0 > "$CGROUP_PATH/memory.oom.group" 2>/dev/null || true
 
-# Benevolent = mirror of adversarial. Controller starts at profile[0] and advances
-# on every signal; Hirschberg signals at ALG_B scan start and end. So profile[1] is
-# in effect DURING the scan, profile[0] AFTER it. HIGH-first => LOW during the scan
-# and HIGH after -- favorable to the non-adaptive algorithm (memory is withdrawn
-# only while it is scanning and cannot exploit it). See ESA paper Section 3.
-printf '%s\n%s\n' "$HIGH_MIB" "$LOW_MIB" > "$PROFILE_FILE"
+printf '%s\n' "$LOW_MIB" > "$PROFILE_FILE"
 
-echo "Cgroup: $CGROUP_NAME (benevolent: LOW=${LOW_MIB}MiB during Hirschberg ALG_B scans, HIGH=${HIGH_MIB}MiB after; profile generated from Hirschberg and replayed for oblivious)" >> "$RESULTS_FILE"
+echo "Cgroup: $CGROUP_NAME (benevolent: memory = ${LOW_MIB}MiB/2 during each Hirschberg ALG_B scan, ${LOW_MIB}MiB baseline; profile generated from Hirschberg and replayed for oblivious)" >> "$RESULTS_FILE"
 echo "BASE_CASE: $BASE_CASE" >> "$RESULTS_FILE"
 echo "" >> "$RESULTS_FILE"
 echo "N, Hirschberg_IO, Oblivious_IO, Ratio" >> "$RESULTS_FILE"
@@ -65,7 +60,7 @@ for N in "${@:-131072}"; do
     ionice -c3 nice -n19 ./bin/mem_controller "$CGROUP_PATH" "$PROFILE_FILE" "$PIPE_FILE" "$TRACE_FILE" > /dev/null 2>&1 &
     ctrl_pid=$!
     sleep 0.5
-    ionice -c3 nice -n19 ./bin/lcs_hirschberg_instrumented "$N" 1 $BASE_CASE "$PIPE_FILE" \
+    ionice -c3 nice -n19 ./bin/lcs_hirschberg_instrumented "$N" 1 $BASE_CASE "$PIPE_FILE" "$LOW_MIB" "$HIGH_MIB" 1 \
         < "rsrc/data-$N.in" >> "$HIRSCHBERG_LOG" 2>&1 &
     lcs_pid=$!
     echo $lcs_pid > "$CGROUP_PATH/cgroup.procs"

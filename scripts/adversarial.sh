@@ -10,7 +10,7 @@ fi
 
 CGROUP_NAME="adversarial"
 CGROUP_PATH="/sys/fs/cgroup/$CGROUP_NAME"
-BASE_CASE=256
+BASE_CASE=32
 RESULTS_FILE="res/adversarial/adversarial_results.txt"
 
 SWAP_LIMIT=536870912
@@ -42,9 +42,9 @@ echo $((HIGH_MIB * 1048576)) > "$CGROUP_PATH/memory.max"
 echo $SWAP_LIMIT > "$CGROUP_PATH/memory.swap.max"
 echo 0 > "$CGROUP_PATH/memory.oom.group" 2>/dev/null || true
 
-printf '%s\n%s\n' "$LOW_MIB" "$HIGH_MIB" > "$PROFILE_FILE"
+printf '%s\n' "$LOW_MIB" > "$PROFILE_FILE"
 
-echo "Cgroup: $CGROUP_NAME (worst-case: HIGH=${HIGH_MIB}MiB during Hirschberg ALG_B scans, LOW=${LOW_MIB}MiB after; profile generated from Hirschberg and replayed for oblivious)" >> "$RESULTS_FILE"
+echo "Cgroup: $CGROUP_NAME (worst-case adversarial: memory = min(${HIGH_MIB}MiB, ${LOW_MIB}MiB + subproblem) during each Hirschberg ALG_B scan, ${LOW_MIB}MiB baseline; profile generated from Hirschberg and replayed for oblivious)" >> "$RESULTS_FILE"
 echo "BASE_CASE: $BASE_CASE" >> "$RESULTS_FILE"
 echo "" >> "$RESULTS_FILE"
 echo "N, Hirschberg_IO, Oblivious_IO, Ratio" >> "$RESULTS_FILE"
@@ -60,7 +60,7 @@ for N in "${@:-131072}"; do
     ionice -c3 nice -n19 ./bin/mem_controller "$CGROUP_PATH" "$PROFILE_FILE" "$PIPE_FILE" "$TRACE_FILE" > /dev/null 2>&1 &
     ctrl_pid=$!
     sleep 0.5
-    ionice -c3 nice -n19 ./bin/lcs_hirschberg_instrumented "$N" 1 $BASE_CASE "$PIPE_FILE" \
+    ionice -c3 nice -n19 ./bin/lcs_hirschberg_instrumented "$N" 1 $BASE_CASE "$PIPE_FILE" "$LOW_MIB" "$HIGH_MIB" 0 \
         < "rsrc/data-$N.in" >> "$HIRSCHBERG_LOG" 2>&1 &
     lcs_pid=$!
     echo $lcs_pid > "$CGROUP_PATH/cgroup.procs"

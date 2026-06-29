@@ -71,8 +71,7 @@ int main(int argc, char *argv[]) {
     }
 
     t0 = now_ms();
-    size_t idx = 0;
-    set_memory_max(profile_bytes[0]);
+    set_memory_max(profile_bytes[0]);  // initial baseline memory (profile line 1)
     fflush(stdout);
 
     int fifo_fd = open(pipe_file.c_str(), O_RDONLY);
@@ -82,10 +81,18 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    char buf[1];
-    while (read(fifo_fd, buf, 1) > 0) {
-        idx = (idx + 1) % profile_bytes.size();
-        set_memory_max(profile_bytes[idx]);
+    // Each message from the LCS is an 8-byte memory target (in bytes) computed from
+    // the current subproblem. Apply it to memory.max directly, record it, and ack.
+    long long value;
+    ssize_t got;
+    while ((got = read(fifo_fd, &value, sizeof(value))) > 0) {
+        while (got < (ssize_t)sizeof(value)) {
+            ssize_t more = read(fifo_fd, ((char *)&value) + got, sizeof(value) - got);
+            if (more <= 0) { got = -1; break; }
+            got += more;
+        }
+        if (got != (ssize_t)sizeof(value)) break;
+        set_memory_max(value);
         if (write(ack_fd, "K", 1) < 0) {
             perror("Controller: ack write failed (LCS gone?)");
             break;
