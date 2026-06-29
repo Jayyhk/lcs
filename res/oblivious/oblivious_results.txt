@@ -1,0 +1,8 @@
+Cgroup: oblivious (oblivious: 8MiB shared by N concurrent instances; cgroup-wide swap pswpin+pswpout per batch)
+BASE_CASE: 32, Swap limit: 536870912
+
+N, Instances, Hirschberg_IO, Oblivious_IO, Ratio
+131072, 1, 0, 0, 0
+131072, 2, 0, 4530176, 0
+131072, 3, 4022272, 13950976, .288314
+131072, 4, 13963264, 29827072, .468140
